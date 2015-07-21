@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-07-21T22:40:15+08:00</updated>
+  <updated>2015-07-22T02:09:57+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -48,12 +48,18 @@
 
 <h3>代码</h3>
 
-<pre><code>System.out.println("hello");
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
+</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-for(int i=0; i&lt;a.size(); i++){
-    System.out.println("test");
-}
-</code></pre>
 
 <h3>代码嵌入文字</h3>
 
