@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-07-21T13:27:13+08:00</updated>
+  <updated>2015-07-21T13:28:00+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -15,7 +15,7 @@
   
   <entry>
     <title type="html"><![CDATA[Hello World第一篇]]></title>
-    <link href="http://joshuaton.github.io/blog/hello-world.html/"/>
+    <link href="http://joshuaton.github.io/blog/hello-world.html"/>
     <updated>2015-07-21T12:26:37+08:00</updated>
     <id>http://joshuaton.github.io/blog/hello-world</id>
     <content type="html"><![CDATA[<p>哈哈，我的“你好，世界”</p>
