@@ -10,6 +10,8 @@
 
   
   <meta name="description" content="哈哈，我的“你好，世界”
+终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。
+Octopress 搭建流程 – Github Pages
 ">
   
 
@@ -32,6 +34,17 @@
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 -->
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
 
   
 
@@ -87,7 +100,9 @@
   </header>
 
 
-<div class="entry-content"><p>哈哈，我的“你好，世界”</p>
+<div class="entry-content"><p>哈哈，我的“你好，世界”<br/>
+终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
+<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">Octopress 搭建流程 – Github Pages</a></p>
 </div>
 
 
