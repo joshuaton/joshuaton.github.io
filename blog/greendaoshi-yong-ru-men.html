@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>分类：other - Jason's Blog</title>
+  <title>greenDAO使用入门 - Jason's Blog</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="Category: other">
+  <meta name="description" content="ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。 之前上网查了一下目前主流的Android ORM，有如下几种：
+* ORMLite
+* SugarORM &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://joshuaton.github.io/blog/categories/other/index.html">
+  <link rel="canonical" href="http://joshuaton.github.io/blog/greendaoshi-yong-ru-men.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Jason's Blog" type="application/atom+xml">
@@ -77,35 +79,99 @@ $(document).bind('DOMNodeInserted', function(event) {
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">分类：other</h1>
+    
+      <h1 class="entry-title">greenDAO使用入门</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-26T11:25:29+08:00'><span class='date'>2015 年7 月26 日</span> <span class='time'>11:25 am</span></time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
 
-  
-  <h2>2015</h2>
+<p>之前上网查了一下目前主流的Android ORM，有如下几种：
+* ORMLite
+* SugarORM
+* GreenDAO
+* Active Android
+* Realm</p>
 
-<article>
-  
-<h1><a href="/blog/markdownxue-xi.html">Markdown学习</a></h1>
-<time datetime="2015-07-21T22:14:36+08:00" pubdate><span class='month'>07 月</span> <span class='day'>21 日</span> <span class='year'>2015</span></time>
+<p>当这些库都没有用过的时候，如何进行技术选型呢，我用了个很简单的办法，看下Github上的star数就好了，greenDAO是其中最多的，并且初步横向比较了下，greenDAO的性能不错，下边是网上一张greeDAO和ORMLite的性能对比图</p>
 
-<footer>
-  <span class="categories">分类： <a class='category' href='/blog/categories/other/'>other</a></span>
-</footer>
+<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-performance.png" alt="" /></p>
 
+<p>greenDAO的使用比较简单，下边就开始介绍下如何使用greenDAO吧。</p>
 
-</article>
+<h2>1. DAOGenerate工程和Android App工程</h2>
 
+<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-orm-320.png" alt="" /></p>
+
+<p>上边这张图说明了greenDAO的作用</p>
+
+<h2>2. 创建DAOGenerate工程</h2>
+
+<h2>3. 在App工程里创建DBHelper类</h2>
+
+<h2>4. 在业务逻辑里使用DBHelper类</h2>
+
+<hr />
+
+<p>参考资料：
+*  <a href="http://greendao-orm.com/">greenDAO – Android ORM for SQLite</a>
+*  <a href="http://glblong.blog.51cto.com/3058613/1354953">Android开源：数据库ORM框架GreenDao学习心得及使用总结</a></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">jason</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-26T11:25:29+08:00'><span class='date'>2015 年7 月26 日</span> <span class='time'>11:25 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/android/'>android</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/markdownxue-xi.html" title="Previous Post: Markdown学习">&laquo; Markdown学习</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
 </div>

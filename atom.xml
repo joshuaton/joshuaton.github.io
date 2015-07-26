@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-07-22T22:38:13+08:00</updated>
+  <updated>2015-07-26T11:49:05+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[greenDAO使用入门]]></title>
+    <link href="http://joshuaton.github.io/blog/greendaoshi-yong-ru-men.html"/>
+    <updated>2015-07-26T11:25:29+08:00</updated>
+    <id>http://joshuaton.github.io/blog/greendaoshi-yong-ru-men</id>
+    <content type="html"><![CDATA[<p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
+
+<p>之前上网查了一下目前主流的Android ORM，有如下几种：
+* ORMLite
+* SugarORM
+* GreenDAO
+* Active Android
+* Realm</p>
+
+<p>当这些库都没有用过的时候，如何进行技术选型呢，我用了个很简单的办法，看下Github上的star数就好了，greenDAO是其中最多的，并且初步横向比较了下，greenDAO的性能不错，下边是网上一张greeDAO和ORMLite的性能对比图</p>
+
+<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-performance.png" alt="" /></p>
+
+<p>greenDAO的使用比较简单，下边就开始介绍下如何使用greenDAO吧。</p>
+
+<h2>1. DAOGenerate工程和Android App工程</h2>
+
+<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-orm-320.png" alt="" /></p>
+
+<p>上边这张图说明了greenDAO的作用</p>
+
+<h2>2. 创建DAOGenerate工程</h2>
+
+<h2>3. 在App工程里创建DBHelper类</h2>
+
+<h2>4. 在业务逻辑里使用DBHelper类</h2>
+
+<hr />
+
+<p>参考资料：
+*  <a href="http://greendao-orm.com/">greenDAO – Android ORM for SQLite</a>
+*  <a href="http://glblong.blog.51cto.com/3058613/1354953">Android开源：数据库ORM框架GreenDao学习心得及使用总结</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Markdown学习]]></title>
@@ -107,6 +147,7 @@ un<em>frigging</em>believable</p>
     <id>http://joshuaton.github.io/blog/hello-world</id>
     <content type="html"><![CDATA[<p>哈哈，我的“你好，世界”<br/>
 终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
+注：用 Octopress + Github Pages构建博客是不需要自己准备服务器的哦，这点就完爆WordPress了。
 <a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">Octopress 搭建流程 – Github Pages</a></p>
 ]]></content>
   </entry>
