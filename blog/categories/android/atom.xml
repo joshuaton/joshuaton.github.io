@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-07-26T21:48:45+08:00</updated>
+  <updated>2015-07-27T10:52:18+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -162,7 +162,7 @@ new DaoGenerator().generateAll(schema, &ldquo;./PmdCampus/src-gen&rdquo;);
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">进行建表和设置要生成DAO文件的目标工程的项目路径</span><span class="err">。</span><span class="n">addChat方法里定义了Chat对象的属性</span><span class="err">，</span><span class="n">数据库中的字段也会一一对应</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">之后运行main函数</span><span class="err">，</span><span class="n">就会在PmdCampus</span><span class="o">/</span><span class="n">src</span><span class="o">-</span><span class="n">gen目录下生成Java</span> <span class="n">Objects和DAO类了</span><span class="err">。</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;https://www.evernote.com/shard/s225/sh/4f89560e-9974-4e37-823c-1812b016ce8a/f53194c8b7654849/res/c9c0b332-4489-41a9-a383-506760db76f8.png?resizeSmall&amp;amp;width=832&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://a3.qpic.cn/psb?/V14KMI9a1eqqvc/9JFh1Vyg28vdmYYkSOpnnlUfd03CGN2upLsuZox7d88!/b/dA4AAAAAAAAA&amp;amp;bo=YQF1AAAAAAADBzc!&amp;amp;rf=viewer_4&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">.</span> <span class="n">在Android</span> <span class="n">App工程里创建DBHelper类</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
 </span><span class='line'>
