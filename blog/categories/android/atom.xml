@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-02T17:22:54+08:00</updated>
+  <updated>2015-08-02T17:27:29+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -20,11 +20,11 @@
     <id>http://joshuaton.github.io/blog/greendaoshi-yong-ru-men</id>
     <content type="html"><![CDATA[<p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
 
-<p>之前上网查了一下目前主流的Android ORM，有如下几种：
-* ORMLite
-* SugarORM
-* GreenDAO
-* Active Android
+<p>之前上网查了一下目前主流的Android ORM，有如下几种：<br/>
+* ORMLite<br/>
+* SugarORM<br/>
+* GreenDAO<br/>
+* Active Android<br/>
 * Realm</p>
 
 <p>当这些库都没有用过的时候，如何进行技术选型呢，我用了个很简单的办法，看下Github上的star数就好了，greenDAO是其中最多的，并且初步横向比较了下，greenDAO的性能不错，下边是网上一张greeDAO和ORMLite的性能对比图</p>
@@ -32,6 +32,9 @@
 <p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-performance.png" alt="" /></p>
 
 <p>greenDAO的使用比较简单，下边就开始介绍下如何使用greenDAO吧。</p>
+
+<!--more-->
+
 
 <h2>1. DAOGenerator工程和Android App工程</h2>
 

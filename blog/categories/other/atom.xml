@@ -4,7 +4,7 @@
   <title><![CDATA[分类：other | Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/blog/categories/other/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-02T17:22:54+08:00</updated>
+  <updated>2015-08-02T17:27:29+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -19,6 +19,9 @@
     <updated>2015-08-02T16:27:32+08:00</updated>
     <id>http://joshuaton.github.io/blog/shadowsocksshang-wang-gong-lue</id>
     <content type="html"><![CDATA[<p>由于某些原因，某博士的KX上网快要停止服务了，平时离不开Google，离不开……，为了自己能够更方便的工作和娱乐，也不再求人，于是研究了下如何自己搭建KX上网服务。下边就说一下如何利用Shadowsocks来搭建KX上网服务。</p>
+
+<!--more-->
+
 
 <h2>1. 为什么选择Shadowsocks</h2>
 
@@ -100,6 +103,9 @@ nohup ssserver -c /etc/shadowsocks/config.json &amp;gt; log &amp;amp;
 <h2>这是H2</h2>
 
 <h3>这是H3</h3>
+
+<!--more-->
+
 
 <blockquote><p>这是一段引用</p>
 
