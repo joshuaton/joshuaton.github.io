@@ -4,7 +4,7 @@
   <title><![CDATA[分类：other | Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/blog/categories/other/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-02T17:31:00+08:00</updated>
+  <updated>2015-08-02T18:07:22+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -37,7 +37,7 @@ Shadowsocks还有一个好处是客户端是多终端的，Mac，Windows，iOS�
 
 <p>我第一次用国外的VPS，选了DigitalOcean，原因是便宜，最低配置的5美元一个月，并且注册就会送10美元，相对于免费使用2个月。大家可以根据自己的需要选择合适的机器。</p>
 
-<p><img src="http://a3.qpic.cn/psb?/V14KMI9a1eqqvc/*8ZHruGPMjxmI.bn2mb7itzKRAeRmJLNifCHzzH0QO0!/b/dGEBAAAAAAAA&amp;bo=6QSAAgAAAAADAEo!&amp;rf=viewer_4&amp;t=5" alt="" /></p>
+<p><img src="http://thumb.115.com/thumb/0/62/4C/0624C289B389B4BCA2F12FB344013D5260B77D19_800_800?s=cZm9J5KHwZhNf8VFYQSprA&amp;t=1438531200&amp;sync=1" alt="" /></p>
 
 <p>可以通过这个邀请链接申请主机<br/>
 <a href="https://www.digitalocean.com/?refcode=9e02e540da9b">https://www.digitalocean.com/?refcode=9e02e540da9b</a><br/>
@@ -81,7 +81,7 @@ nohup ssserver -c /etc/shadowsocks/config.json &amp;gt; log &amp;amp;
 <h2>4. 在客户端使用Shadowsocks</h2>
 
 <p>以iMac为例，下载Shadowsocks，运行后点击小飞机的图标，然后点击“打开服务器设定”，按照服务器配置就好了
-<img src="http://a1.qpic.cn/psb?/V14KMI9a1eqqvc/Kqx7nP49xUaLBrCy*y2wzOA0JvEGMfIX9LMcTSbMMOQ!/b/dA8AAAAAAAAA&amp;bo=kgISAgAAAAAFB6Q!&amp;rf=viewer_4" alt="" /></p>
+<img src="http://thumb.115.com/thumb/9/AD/6F/9AD6F2EC7C58C4EAFE5D07244ECE1CDCF52739AB_800_800?s=5pDmhFikTktImepvWCxfNw&amp;t=1438531200&amp;sync=1" alt="" /></p>
 
 <p>到这里KX上网搭建工作完成，开始愉快的享受吧！</p>
 
