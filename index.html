@@ -9,9 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。 之前上网查了一下目前主流的Android ORM，有如下几种：
-* ORMLite
-* SugarORM &hellip;">
+  <meta name="description" content="由于某些原因，某博士的KX上网快要停止服务了，平时离不开Google，离不开……，为了自己能够更方便的工作和娱乐，也不再求人，于是研究了下如何自己搭建KX上网服务。下边就说一下如何利用Shadowsocks来搭建KX上网服务。 1. 为什么选择Shadowsocks &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +78,118 @@ $(document).bind('DOMNodeInserted', function(event) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/shadowsocksshang-wang-gong-lue.html">Shadowsocks上网攻略</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-02T16:27:32+08:00'><span class='date'>2015 年8 月2 日</span> <span class='time'>4:27 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>由于某些原因，某博士的KX上网快要停止服务了，平时离不开Google，离不开……，为了自己能够更方便的工作和娱乐，也不再求人，于是研究了下如何自己搭建KX上网服务。下边就说一下如何利用Shadowsocks来搭建KX上网服务。</p>
+
+<h2>1. 为什么选择Shadowsocks</h2>
+
+<p>这里主要比较下Shadowsocks和VPN，Shadowsocks有以下两个好处：</p>
+
+<p>（1）精细化的配置<br/>
+VPN是全局的网络代理，如果连上VPN后，所有的网络流量都会经过VPN。Shadowsocks是通过客户端的配置文件来决定哪些域名经过代理，是针对http来区分的，可以做到精细的控制。比如，如果我用VPN访问国内的网站，例如优酷看视频，这样就不是很划算，速度可能比直接访问更慢。这种情况下就更适合用Shadowsocks，配置以下，访问Google走Shadowsocks代理，访问优酷就正常访问。但是，如果你在手机上需要用Facebook这种APP，那么全局的VPN代理更加合适。</p>
+
+<p>（2）客户端支持多终端<br/>
+Shadowsocks还有一个好处是客户端是多终端的，Mac，Windows，iOS，Android都有对应的客户端软件，配置起来都比较方便。</p>
+
+<h2>2. 申请VPS</h2>
+
+<p>我第一次用国外的VPS，选了DigitalOcean，原因是便宜，最低配置的5美元一个月，并且注册就会送10美元，相对于免费使用2个月。大家可以根据自己的需要选择合适的机器。</p>
+
+<p><img src="http://a3.qpic.cn/psb?/V14KMI9a1eqqvc/*8ZHruGPMjxmI.bn2mb7itzKRAeRmJLNifCHzzH0QO0!/b/dGEBAAAAAAAA&amp;bo=6QSAAgAAAAADAEo!&amp;rf=viewer_4&amp;t=5" alt="" /></p>
+
+<p>可以通过这个邀请链接申请主机<br/>
+<a href="https://www.digitalocean.com/?refcode=9e02e540da9b">https://www.digitalocean.com/?refcode=9e02e540da9b</a><br/>
+如果通过这个邀请注册成功，你每花25美元，我也能得到25美元的奖励。</p>
+
+<h2>3. 在服务器端使用Shadowsocks</h2>
+
+<p>以CentOS操作系统为例。</p>
+
+<p>（1）安装Shadowsocks</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">yum</span> <span class="nx">install</span> <span class="nx">python</span><span class="o">-</span><span class="nx">setuptools</span> <span class="o">&amp;&amp;</span> <span class="nx">easy_install</span> <span class="nx">pip</span>
+</span><span class='line'><span class="nx">pip</span> <span class="nx">install</span> <span class="nx">shadowsocks</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>（2）生成配置文件config.json
+新建配置文件/etc/shadowsocks/config.json，内容如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;server&quot;</span><span class="o">:</span><span class="s2">&quot;my_server_ip&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;server_port&quot;</span><span class="o">:</span><span class="mi">8080</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;local_port&quot;</span><span class="o">:</span><span class="mi">1080</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;password&quot;</span><span class="o">:</span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;timeout&quot;</span><span class="o">:</span><span class="mi">1000</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;method&quot;</span><span class="o">:</span><span class="s2">&quot;bf-cfb&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>各字段含义如下<br/>
+server          服务器 IP (IPv4/IPv6)，注意这也将是服务端监听的 IP 地址<br/>
+server_port     服务器端口<br/>
+local_port      本地端端口<br/>
+password        用来加密的密码<br/>
+timeout         超时时间（秒）<br/>
+method          加密方法，可选择 &ldquo;bf-cfb&rdquo;, &ldquo;aes-256-cfb&rdquo;, &ldquo;des-cfb&rdquo;, &ldquo;rc4&rdquo;, 等等。默认是一种不安全的加密，推荐用 &ldquo;aes-256-cfb"。这里我用的是bf-cfb，因为aes-256-cfb默认不支持</p>
+
+<p>（3）启动Shadowsocks</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">nohup</span> <span class="nx">ssserver</span> <span class="o">-</span><span class="nx">c</span> <span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">shadowsocks</span><span class="o">/</span><span class="nx">config</span><span class="p">.</span><span class="nx">json</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="nx">log</span> <span class="o">&amp;</span><span class="nx">amp</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>4. 在客户端使用Shadowsocks</h2>
+
+<p>以iMac为例，下载Shadowsocks，运行后点击小飞机的图标，然后点击“打开服务器设定”，按照服务器配置就好了
+<img src="http://a1.qpic.cn/psb?/V14KMI9a1eqqvc/Kqx7nP49xUaLBrCy*y2wzOA0JvEGMfIX9LMcTSbMMOQ!/b/dA8AAAAAAAAA&amp;bo=kgISAgAAAAAFB6Q!&amp;rf=viewer_4" alt="" /></p>
+
+<p>到这里KX上网搭建工作完成，开始愉快的享受吧！</p>
+
+<hr />
+
+<p>参考资料：<br/>
+<a href="http://hceasy.com/2013/12/shadowsocks-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2/">shadowsocks 服务端部署</a><br/>
+<a href="https://wiki.archlinux.org/index.php/Shadowsocks_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87">Shadowsocks wiki</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -590,7 +700,7 @@ un<em>frigging</em>believable</p>
   <h1>分类</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (1)</a></li>
-<li class='category'><a href='/blog/categories/other/'>other (1)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (2)</a></li>
 <li class='category'><a href='/blog/categories/test/'>test (1)</a></li>
 
   </ul>
@@ -598,6 +708,10 @@ un<em>frigging</em>believable</p>
 <section>
   <h1>最新文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/shadowsocksshang-wang-gong-lue.html">Shadowsocks上网攻略</a>
+      </li>
     
       <li class="post">
         <a href="/blog/greendaoshi-yong-ru-men.html">greenDAO使用入门</a>
