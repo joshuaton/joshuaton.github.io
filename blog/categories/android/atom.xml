@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://joshuaton.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-02T17:27:29+08:00</updated>
+  <updated>2015-08-02T17:31:00+08:00</updated>
   <id>http://joshuaton.github.io/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -29,7 +29,7 @@
 
 <p>当这些库都没有用过的时候，如何进行技术选型呢，我用了个很简单的办法，看下Github上的star数就好了，greenDAO是其中最多的，并且初步横向比较了下，greenDAO的性能不错，下边是网上一张greeDAO和ORMLite的性能对比图</p>
 
-<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-performance.png" alt="" /></p>
+<p><img src="http://a1.qpic.cn/psb?/V14KMI9a1eqqvc/Ep*vkmSIojiazWC6hVEhLRVsDdczuuKsjT.EBmDTtV0!/b/dF8BAAAAAAAA&amp;bo=zwOAAgAAAAADB2w!&amp;rf=viewer_4" alt="" /></p>
 
 <p>greenDAO的使用比较简单，下边就开始介绍下如何使用greenDAO吧。</p>
 
@@ -38,7 +38,7 @@
 
 <h2>1. DAOGenerator工程和Android App工程</h2>
 
-<p><img src="http://greendao-orm.com/wordpress/wp-content/uploads/greenDAO-orm-320.png" alt="" /></p>
+<p><img src="http://a1.qpic.cn/psb?/V14KMI9a1eqqvc/FlrGDUz8YxAtrG3x53XaWXJg3leeCyf8x8hYmWGO.VI!/b/dF8BAAAAAAAA&amp;bo=gAK2AAAAAAADABE!&amp;rf=viewer_4" alt="" /></p>
 
 <p>上边这张图说明了greenDAO的作用，greenDAO用来帮助我们的工程生成Java Objects和访问数据库的DAO类，其中Java Objects中的属性字段和SQLite Database里的表的列属性一一对应。生成Java Objects和DAO类后，应用程序Android App可以通过使用DAO类来进行增删查改的数据库操作，操作方法全都是基于Java Objects的，不用写sql语句。</p>
 
