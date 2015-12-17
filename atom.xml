@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2015-12-17T19:51:48+08:00</updated>
+  <updated>2015-12-17T20:52:04+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,213 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用c++编写PHP扩展]]></title>
+    <link href="http://jason5.cn/blog/yong-c-plus-plus-bian-xie-phpkuo-zhan.html"/>
+    <updated>2015-12-17T19:56:01+08:00</updated>
+    <id>http://jason5.cn/blog/yong-c-plus-plus-bian-xie-phpkuo-zhan</id>
+    <content type="html"><![CDATA[<h1>背景</h1>
+
+<p>有时候老业务用的是C++接口，但是为了快速开发，Web类业务已经转移到PHP上，所以如何用PHP封装老业务的C++接口进行调用，就是这篇文章所要解决的问题。</p>
+
+<!--more-->
+
+
+<h1>编写扩展的步骤</h1>
+
+<p>1.创建扩展目录，目录名叫store_pic</p>
+
+<pre><code>cd /usr/local/php-5.3.6/ext
+./ext_skel --extname=store_pic
+</code></pre>
+
+<p>2.修改扩展目录里的config.m4</p>
+
+<p>去掉下列语句前的<code>dnl</code>注释</p>
+
+<pre><code>PHP_ARG_ENABLE(store_pic, whether to enable store_pic support,  Make sure that the comment is aligned:  [  --enable-store_pic           Enable store_pic support])
+</code></pre>
+
+<p>在倒数第二行增加<code>PHP_REQUIRE_CXX()</code>,将.c后缀改为.cpp，代码如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">PHP_REQUIRE_CXX</span><span class="o">()</span>
+</span><span class='line'><span class="n">PHP_NEW_EXTENSION</span><span class="o">(</span><span class="n">store_pic</span><span class="o">,</span> <span class="n">store_pic</span><span class="o">.</span><span class="na">cpp</span><span class="o">,</span> <span class="n">$ext_shared</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3.修改模块头文件php_store_pic.h<br/>
+增加extern标签</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">extern</span> <span class="s">&quot;C&quot;</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'><span class="err">#</span><span class="n">ifdef</span> <span class="n">ZTS</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;TSRM.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">endif</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>增加方法upload_tfs_pic</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">PHP_FUNCTION</span><span class="o">(</span><span class="n">confirm_store_pic_compiled</span><span class="o">);</span>       <span class="cm">/* For testing, remove later. */</span>
+</span><span class='line'><span class="n">PHP_FUNCTION</span><span class="o">(</span><span class="n">upload_tfs_pic</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4.修改store_pic.c文件后缀为store_pic.cpp，并修改文件内容</p>
+
+<p>增加extern标签，注意不要包含php_store_pic.h，引入扩展需要的.h文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">extern</span> <span class="s">&quot;C&quot;</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'><span class="err">#</span><span class="n">ifdef</span> <span class="n">HAVE_CONFIG_H</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;config.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">endif</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;php.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;php_ini.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;ext/standard/info.h&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;php_store_pic.h&quot;</span>
+</span><span class='line'><span class="c1">//引入扩展需要的.h文件</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;store_define.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;store_pic.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;secret_url.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;store_decrypt_url.h&quot;</span>
+</span><span class='line'><span class="err">#</span><span class="n">include</span> <span class="s">&quot;oi_tea.h&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>增加方法申明</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">const</span> <span class="n">zend_function_entry</span> <span class="n">store_pic_functions</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">PHP_FE</span><span class="o">(</span><span class="n">confirm_store_pic_compiled</span><span class="o">,</span>      <span class="n">NULL</span><span class="o">)</span>           <span class="cm">/* For testing, remove later. */</span>
+</span><span class='line'>        <span class="n">PHP_FE</span><span class="o">(</span><span class="n">upload_tfs_pic</span><span class="o">,</span>  <span class="n">NULL</span><span class="o">)</span>  <span class="cm">/*增加方法申明*/</span>
+</span><span class='line'>        <span class="o">{</span><span class="n">NULL</span><span class="o">,</span> <span class="n">NULL</span><span class="o">,</span> <span class="n">NULL</span><span class="o">}</span>      <span class="cm">/* Must be the last line in store_pic_functions[] */</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>增加BEGIN_EXTERN_C()和END_EXTERN_C()</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">#</span><span class="n">ifdef</span> <span class="n">COMPILE_DL_STORE_PIC</span>
+</span><span class='line'><span class="nf">BEGIN_EXTERN_C</span><span class="o">()</span>
+</span><span class='line'><span class="n">ZEND_GET_MODULE</span><span class="o">(</span><span class="n">store_pic</span><span class="o">)</span>
+</span><span class='line'><span class="n">END_EXTERN_C</span><span class="o">()</span>
+</span><span class='line'><span class="err">#</span><span class="n">endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在文件最后增加方法的实现</p>
+
+<figure class='code'><figcaption><span>PHP_FUNCTION(upload_tfs_pic)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="cm">/*省略若干逻辑代码*/</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>5.执行预处理，生成configure文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">phpize</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>6.执行编译配置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">store_pic</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">apxs</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">apxs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>7.将第4部中的.h文件拷贝到本目录</p>
+
+<p>8.修改Makefile，引入需要的静态库</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">LDFLAGS</span> <span class="o">=</span> <span class="o">-</span><span class="n">lstdc</span><span class="o">++</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">store_sdk</span><span class="o">/</span><span class="n">libopenapi</span><span class="o">.</span><span class="na">a</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">store_sdk</span><span class="o">/</span><span class="n">libprotobuf</span><span class="o">.</span><span class="na">a</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">tfs_encode</span><span class="o">/</span><span class="n">oi_</span>
+</span><span class='line'><span class="n">tea</span><span class="o">.</span><span class="na">o</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">tfs_encode</span><span class="o">/</span><span class="n">secret_url</span><span class="o">.</span><span class="na">o</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>9.编译安装</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">make</span>
+</span><span class='line'><span class="n">make</span> <span class="n">test</span>
+</span><span class='line'><span class="n">make</span> <span class="n">install</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意make test的时候有没有报错，passed就ok了，否则需要注意，根据出错信息进行修改。</p>
+
+<p>10.将生成的store_pic.so拷贝到相关目录，修改php.ini文件引入这个so文件，重启apache即可。</p>
+
+<h1>可能遇到的问题</h1>
+
+<p>1.不同so库的libprotobuf.a版本不一致，会导致apache不能拉起</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">[</span><span class="n">libprotobuf</span> <span class="n">FATAL</span> <span class="n">google</span><span class="o">/</span><span class="n">protobuf</span><span class="o">/</span><span class="n">stubs</span><span class="o">/</span><span class="n">common</span><span class="o">.</span><span class="na">cc</span><span class="o">:</span><span class="mi">72</span><span class="o">]</span> <span class="n">This</span> <span class="n">program</span> <span class="n">was</span> <span class="n">compiled</span> <span class="n">against</span> <span class="n">version</span> <span class="mf">2.4</span><span class="o">.</span><span class="mi">1</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Protocol</span> <span class="n">Buffer</span> <span class="n">runtime</span> <span class="n">library</span><span class="o">,</span> <span class="n">which</span> <span class="n">is</span> <span class="n">not</span> <span class="n">compatible</span> <span class="n">with</span> <span class="n">the</span> <span class="n">installed</span> <span class="nf">version</span> <span class="o">(</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">0</span><span class="o">).</span>  <span class="n">Contact</span> <span class="n">the</span> <span class="n">program</span> <span class="n">author</span> <span class="k">for</span> <span class="n">an</span> <span class="n">update</span><span class="o">.</span>  <span class="n">If</span> <span class="n">you</span> <span class="n">compiled</span> <span class="n">the</span> <span class="n">program</span> <span class="n">yourself</span><span class="o">,</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">your</span> <span class="n">headers</span> <span class="n">are</span> <span class="n">from</span> <span class="n">the</span> <span class="n">same</span> <span class="n">version</span> <span class="n">of</span> <span class="n">Protocol</span> <span class="n">Buffers</span> <span class="n">as</span> <span class="n">your</span> <span class="n">link</span><span class="o">-</span><span class="n">time</span> <span class="n">library</span><span class="o">.</span>  <span class="o">(</span><span class="n">Version</span> <span class="n">verification</span> <span class="n">failed</span> <span class="n">in</span> <span class="s">&quot;/data/zorroyliu/tinybusiness/sdk/sdk_newest/protocol/store_cloud_all.pb.cc&quot;</span><span class="o">.)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决办法是去掉冲突的so，或者两个so用同一版本的动态库进行编译。</p>
+
+<p>2.make test的时候报错</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">undefined</span> <span class="nl">symbol:</span> <span class="n">_ZN6google8protobuf11MessageLite15ParseFromStringERKSs</span> <span class="n">in</span> <span class="n">Unknow</span> <span class="n">on</span> <span class="n">Line</span> <span class="mi">0</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个是Makefile中的LDFLAGS参数指定的相关动态库没有加载进来，重新指定路径到正确的.a或.o文件即可</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SSRF漏洞及解决方案]]></title>
