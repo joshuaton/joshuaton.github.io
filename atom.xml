@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Jason's Blog]]></title>
-  <link href="http://joshuaton.github.io/atom.xml" rel="self"/>
-  <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-03T21:41:16+08:00</updated>
-  <id>http://joshuaton.github.io/</id>
+  <link href="http://jason5.cn/atom.xml" rel="self"/>
+  <link href="http://jason5.cn/"/>
+  <updated>2015-12-17T19:51:07+08:00</updated>
+  <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
     
@@ -14,10 +14,21 @@
 
   
   <entry>
+    <title type="html"><![CDATA[SSRF漏洞及解决方案]]></title>
+    <link href="http://jason5.cn/blog/ssrflou-dong-ji-jie-jue-fang-an.html"/>
+    <updated>2015-11-28T21:44:07+08:00</updated>
+    <id>http://jason5.cn/blog/ssrflou-dong-ji-jie-jue-fang-an</id>
+    <content type="html"><![CDATA[<p>今天想说一下SSRF漏洞及解决方案</p>
+
+<p>待补充</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Shadowsocks上网攻略]]></title>
-    <link href="http://joshuaton.github.io/blog/shadowsocksshang-wang-gong-lue.html"/>
+    <link href="http://jason5.cn/blog/shadowsocksshang-wang-gong-lue.html"/>
     <updated>2015-08-02T16:27:32+08:00</updated>
-    <id>http://joshuaton.github.io/blog/shadowsocksshang-wang-gong-lue</id>
+    <id>http://jason5.cn/blog/shadowsocksshang-wang-gong-lue</id>
     <content type="html"><![CDATA[<p>由于某些原因，某博士的KX上网快要停止服务了，平时离不开Google，离不开……，为了自己能够更方便的工作和娱乐，也不再求人，于是研究了下如何自己搭建KX上网服务。下边就说一下如何利用Shadowsocks来搭建KX上网服务。</p>
 
 <!--more-->
@@ -110,9 +121,9 @@ method          加密方法，可选择 &ldquo;bf-cfb&rdquo;, &ldquo;aes-256-cf
   
   <entry>
     <title type="html"><![CDATA[greenDAO使用入门]]></title>
-    <link href="http://joshuaton.github.io/blog/greendaoshi-yong-ru-men.html"/>
+    <link href="http://jason5.cn/blog/greendaoshi-yong-ru-men.html"/>
     <updated>2015-07-26T11:25:29+08:00</updated>
-    <id>http://joshuaton.github.io/blog/greendaoshi-yong-ru-men</id>
+    <id>http://jason5.cn/blog/greendaoshi-yong-ru-men</id>
     <content type="html"><![CDATA[<p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
 
 <p>之前上网查了一下目前主流的Android ORM，有如下几种：<br/>
@@ -451,9 +462,9 @@ method          加密方法，可选择 &ldquo;bf-cfb&rdquo;, &ldquo;aes-256-cf
   
   <entry>
     <title type="html"><![CDATA[Markdown学习]]></title>
-    <link href="http://joshuaton.github.io/blog/markdownxue-xi.html"/>
+    <link href="http://jason5.cn/blog/markdownxue-xi.html"/>
     <updated>2015-07-21T22:14:36+08:00</updated>
-    <id>http://joshuaton.github.io/blog/markdownxue-xi</id>
+    <id>http://jason5.cn/blog/markdownxue-xi</id>
     <content type="html"><![CDATA[<h1>这是H1</h1>
 
 <h2>这是H2</h2>
@@ -541,9 +552,9 @@ un<em>frigging</em>believable</p>
   
   <entry>
     <title type="html"><![CDATA[Hello World第一篇]]></title>
-    <link href="http://joshuaton.github.io/blog/hello-world.html"/>
+    <link href="http://jason5.cn/blog/hello-world.html"/>
     <updated>2015-07-21T12:26:37+08:00</updated>
-    <id>http://joshuaton.github.io/blog/hello-world</id>
+    <id>http://jason5.cn/blog/hello-world</id>
     <content type="html"><![CDATA[<p>哈哈，我的“你好，世界”<br/>
 终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
 注：用 Octopress + Github Pages构建博客是不需要自己准备服务器的哦，这点就完爆WordPress了。

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[分类：android | Jason's Blog]]></title>
-  <link href="http://joshuaton.github.io/blog/categories/android/atom.xml" rel="self"/>
-  <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-03T21:41:16+08:00</updated>
-  <id>http://joshuaton.github.io/</id>
+  <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
+  <link href="http://jason5.cn/"/>
+  <updated>2015-12-17T19:51:07+08:00</updated>
+  <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[greenDAO使用入门]]></title>
-    <link href="http://joshuaton.github.io/blog/greendaoshi-yong-ru-men.html"/>
+    <link href="http://jason5.cn/blog/greendaoshi-yong-ru-men.html"/>
     <updated>2015-07-26T11:25:29+08:00</updated>
-    <id>http://joshuaton.github.io/blog/greendaoshi-yong-ru-men</id>
+    <id>http://jason5.cn/blog/greendaoshi-yong-ru-men</id>
     <content type="html"><![CDATA[<p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
 
 <p>之前上网查了一下目前主流的Android ORM，有如下几种：<br/>

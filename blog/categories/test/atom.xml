@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[分类：test | Jason's Blog]]></title>
-  <link href="http://joshuaton.github.io/blog/categories/test/atom.xml" rel="self"/>
-  <link href="http://joshuaton.github.io/"/>
-  <updated>2015-08-03T21:41:16+08:00</updated>
-  <id>http://joshuaton.github.io/</id>
+  <link href="http://jason5.cn/blog/categories/test/atom.xml" rel="self"/>
+  <link href="http://jason5.cn/"/>
+  <updated>2015-12-17T19:51:07+08:00</updated>
+  <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Hello World第一篇]]></title>
-    <link href="http://joshuaton.github.io/blog/hello-world.html"/>
+    <link href="http://jason5.cn/blog/hello-world.html"/>
     <updated>2015-07-21T12:26:37+08:00</updated>
-    <id>http://joshuaton.github.io/blog/hello-world</id>
+    <id>http://jason5.cn/blog/hello-world</id>
     <content type="html"><![CDATA[<p>哈哈，我的“你好，世界”<br/>
 终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
 注：用 Octopress + Github Pages构建博客是不需要自己准备服务器的哦，这点就完爆WordPress了。

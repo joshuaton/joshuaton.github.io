@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://joshuaton.github.io/blog/shadowsocksshang-wang-gong-lue.html</loc>
+    <loc>http://jason5.cn/blog/ssrflou-dong-ji-jie-jue-fang-an.html</loc>
+    <lastmod>2015-11-28T21:44:07+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://jason5.cn/blog/shadowsocksshang-wang-gong-lue.html</loc>
     <lastmod>2015-08-02T16:27:32+08:00</lastmod>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/greendaoshi-yong-ru-men.html</loc>
+    <loc>http://jason5.cn/blog/greendaoshi-yong-ru-men.html</loc>
     <lastmod>2015-07-26T11:25:29+08:00</lastmod>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/markdownxue-xi.html</loc>
+    <loc>http://jason5.cn/blog/markdownxue-xi.html</loc>
     <lastmod>2015-07-21T22:14:36+08:00</lastmod>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/hello-world.html</loc>
+    <loc>http://jason5.cn/blog/hello-world.html</loc>
     <lastmod>2015-07-21T12:26:37+08:00</lastmod>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/archives/</loc>
+    <loc>http://jason5.cn/blog/archives/</loc>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/</loc>
+    <loc>http://jason5.cn/</loc>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/categories/test/</loc>
+    <loc>http://jason5.cn/blog/categories/test/</loc>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/categories/other/</loc>
+    <loc>http://jason5.cn/blog/categories/other/</loc>
   </url>
   <url>
-    <loc>http://joshuaton.github.io/blog/categories/android/</loc>
+    <loc>http://jason5.cn/blog/categories/android/</loc>
+  </url>
+  <url>
+    <loc>http://jason5.cn/blog/categories/webkai-fa/</loc>
   </url>
 </urlset>

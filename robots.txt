@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://joshuaton.github.io/sitemap.xml 
+Sitemap: http://jason5.cn/sitemap.xml 
