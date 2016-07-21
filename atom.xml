@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T20:09:47+08:00</updated>
+  <updated>2016-07-21T20:15:19+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -494,17 +494,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 
 <p>这个是Makefile中的LDFLAGS参数指定的相关动态库没有加载进来，重新指定路径到正确的.a或.o文件即可</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[SSRF漏洞及解决方案]]></title>
-    <link href="http://jason5.cn/blog/ssrflou-dong-ji-jie-jue-fang-an.html"/>
-    <updated>2015-11-28T21:44:07+08:00</updated>
-    <id>http://jason5.cn/blog/ssrflou-dong-ji-jie-jue-fang-an</id>
-    <content type="html"><![CDATA[<p>今天想说一下SSRF漏洞及解决方案</p>
-
-<p>待补充</p>
 ]]></content>
   </entry>
   
