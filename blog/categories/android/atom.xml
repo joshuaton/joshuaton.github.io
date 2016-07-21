@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T20:00:19+08:00</updated>
+  <updated>2016-07-21T20:00:56+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -20,8 +20,9 @@
     <id>http://jason5.cn/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li</id>
     <content type="html"><![CDATA[<p>CardView是Android5.0（API 21）加入的新控件，当然，在API 21以下也能用，在build.gradle的依赖里加入下边一行就可以用了</p>
 
-<pre><code>compile 'com.android.support:cardview-v7:23.1.1'
-</code></pre>
+<p><code>
+compile 'com.android.support:cardview-v7:23.1.1'
+</code></p>
 
 <p>项目中要做一个卡片浏览的程序，卡片需要有5dp的圆角，圆角效果CardView自带属性就可以支持，加上app:cardCornerRadius属性就好了，如下：</p>
 
