@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="背景 有时候老业务用的是C++接口，但是为了快速开发，Web类业务已经转移到PHP上，所以如何用PHP封装老业务的C++接口进行调用，就是这篇文章所要解决的问题。 ">
+  <meta name="description" content="项目由http转成了https，遇到个问题是用charles不能抓包的问题。按照抓取http包的方式搭好了环境后，在浏览器里出现了这样的提示。 charles截包的信息如下 为什么会出现这样的情况呢？原因是charles相当于一个中间人代理，用户的浏览器如果直接访问目标服务器，验证CA证书有效， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,68 @@ $(document).bind('DOMNodeInserted', function(event) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">如何用charles进行https抓包</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-21T19:20:44+08:00'><span class='date'>2016 年7 月21 日</span> <span class='time'>7:20 pm</span></time>
+        
+           | <a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html#disqus_thread"
+             data-disqus-identifier="http://jason5.cn/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>项目由http转成了https，遇到个问题是用charles不能抓包的问题。按照抓取http包的方式搭好了环境后，在浏览器里出现了这样的提示。</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>charles截包的信息如下</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1841176-d9e7ecd4c8ea7d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>为什么会出现这样的情况呢？原因是charles相当于一个中间人代理，用户的浏览器如果直接访问目标服务器，验证CA证书有效，所以不会出这种提示，但是在中间加入charles代理后，实际上用户浏览器就会验证Charles提供的证书，这里显然是验证不过的，所以就会出现这种提示。我们必须手动在客户端导入charles的证书，才能不出现这个信任提示，下边介绍下如何去除这种提示的方法。</p>
+
+<p>1.以小米note MIUI 7，mac版本Charles 3.11.1为例，首先在mac上生成charles的root certification</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1841176-7b848c56225c08ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>2.将导出的crt文件上传到手机上，并且进行安装。小米note不能通过文件管理器点击crt文件进行安装，需要进入设置->安全和隐私->从存储设备安装</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1841176-0d6144017d4c40e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>3.正常通过验证，可以截取到https的明文数据了</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>4.更多端的设置证书方法可以参考这篇官方文档
+<a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/</a></p>
+
+<p>参考资料
+1.mac下的抓包工具Charles <a href="http://www.neatstudio.com/show-2454-1.shtml">http://www.neatstudio.com/show-2454-1.shtml</a>
+2.Charles抓取HTTPS数据包 <a href="http://legendtkl.com/2015/11/30/charles-https/">http://legendtkl.com/2015/11/30/charles-https/</a>
+3.手机上安装证书的方法 <a href="http://club.huawei.com/thread-3433050-1-1.html">http://club.huawei.com/thread-3433050-1-1.html</a>
+4.Charles SSL PROXYING <a href="http://www.charlesproxy.com/documentation/proxying/ssl-proxying/">http://www.charlesproxy.com/documentation/proxying/ssl-proxying/</a>
+5.Charles SSL CERTIFICATES <a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -338,6 +400,10 @@ $(document).bind('DOMNodeInserted', function(event) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">如何用charles进行https抓包</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/yong-c-plus-plus-bian-xie-phpkuo-zhan.html">用c++编写PHP扩展</a>
       </li>
     
@@ -353,10 +419,6 @@ $(document).bind('DOMNodeInserted', function(event) {
         <a href="/blog/greendaoshi-yong-ru-men.html">greenDAO使用入门</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/markdownxue-xi.html">Markdown学习</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -370,7 +432,7 @@ $(document).bind('DOMNodeInserted', function(event) {
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - jason -
+  Copyright &copy; 2016 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
