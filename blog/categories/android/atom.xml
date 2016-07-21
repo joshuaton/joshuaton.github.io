@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T20:07:02+08:00</updated>
+  <updated>2016-07-21T20:09:47+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -36,6 +36,9 @@ compile 'com.android.support:cardview-v7:23.1.1'
   ...
 &lt;/android.support.v7.widget.CardView&gt;
 </code></pre>
+
+<!--more-->
+
 
 <p>在API 21以上（包括）的机器实现了很完美的圆角效果，效果如下：</p>
 

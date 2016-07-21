@@ -4,7 +4,7 @@
   <title><![CDATA[Jason's Blog]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T20:07:02+08:00</updated>
+  <updated>2016-07-21T20:09:47+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -44,6 +44,11 @@ compile 'com.android.support:cardview-v7:23.1.1'
 </span><span class='line'>  app:cardCornerRadius="5dp"&gt;
 </span><span class='line'>  ...
 </span><span class='line'>&lt;/android.support.v7.widget.CardView&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
 
 
 <p>在API 21以上（包括）的机器实现了很完美的圆角效果，效果如下：</p>
@@ -249,6 +254,9 @@ compile 'com.android.support:cardview-v7:23.1.1'
     <updated>2016-07-21T19:20:44+08:00</updated>
     <id>http://jason5.cn/blog/ru-he-yong-charlesjin-xing-httpszhua-bao</id>
     <content type="html"><![CDATA[<p>项目由http转成了https，遇到个问题是用charles不能抓包的问题。按照抓取http包的方式搭好了环境后，在浏览器里出现了这样的提示。</p>
+
+<!--more-->
+
 
 <p><img src="http://upload-images.jianshu.io/upload_images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
