@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | Jason's Blog]]></title>
   <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T19:58:29+08:00</updated>
+  <updated>2016-07-21T20:00:19+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -109,7 +109,8 @@
 <p>图片还需要单独做圆角处理，这里需要的效果是，图片的上边两个角需要圆角，下边两个角需要直角。
 自定义UpRoundImageView类，继承自ImageView，专门做圆角的绘制，代码如下：</p>
 
-<pre><code>public class UpRoundImageView extends ImageView {
+<pre><code>
+public class UpRoundImageView extends ImageView {
 
     private float mRadus = 5 * SystemUtils.getDensity(CampusApplication.getCampusApplicationContext());
 
