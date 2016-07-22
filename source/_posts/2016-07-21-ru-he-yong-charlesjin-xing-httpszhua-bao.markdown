@@ -10,25 +10,25 @@ categories: web
 
 <!--more-->
 
-![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Paste_Image.png](http://jason5.cn/images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 charles截包的信息如下
 
-![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-d9e7ecd4c8ea7d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Paste_Image.png](http://jason5.cn/images/1841176-d9e7ecd4c8ea7d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 为什么会出现这样的情况呢？原因是charles相当于一个中间人代理，用户的浏览器如果直接访问目标服务器，验证CA证书有效，所以不会出这种提示，但是在中间加入charles代理后，实际上用户浏览器就会验证Charles提供的证书，这里显然是验证不过的，所以就会出现这种提示。我们必须手动在客户端导入charles的证书，才能不出现这个信任提示，下边介绍下如何去除这种提示的方法。
 
 1.以小米note MIUI 7，mac版本Charles 3.11.1为例，首先在mac上生成charles的root certification
 
-![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-7b848c56225c08ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Paste_Image.png](http://jason5.cn/images/1841176-7b848c56225c08ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 2.将导出的crt文件上传到手机上，并且进行安装。小米note不能通过文件管理器点击crt文件进行安装，需要进入设置->安全和隐私->从存储设备安装
 
-![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-0d6144017d4c40e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Paste_Image.png](http://jason5.cn/images/1841176-0d6144017d4c40e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 3.正常通过验证，可以截取到https的明文数据了
 
-![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Paste_Image.png](http://jason5.cn/images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 4.更多端的设置证书方法可以参考这篇官方文档
 [https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/](https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/)
