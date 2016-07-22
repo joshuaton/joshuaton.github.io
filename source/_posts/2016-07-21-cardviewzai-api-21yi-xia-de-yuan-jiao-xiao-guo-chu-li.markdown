@@ -29,17 +29,17 @@ compile 'com.android.support:cardview-v7:23.1.1'
 <!--more-->
 在API 21以上（包括）的机器实现了很完美的圆角效果，效果如下：
 
-![](http://upload-images.jianshu.io/upload_images/1841176-cc3c3a00ecd691e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-cc3c3a00ecd691e4.png)
 
 但是在API 21以下的机器出现了问题，以下是API 19的实现效果：
 
-![](http://upload-images.jianshu.io/upload_images/1841176-edef0454295c6e12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-edef0454295c6e12.png)
 
 初步一看，虽然加上了圆角属性，但是图片边上是方的。将左下角和左上角放大仔细看下：
 
-![](http://upload-images.jianshu.io/upload_images/1841176-c40edd84f7c1e6cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-c40edd84f7c1e6cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](http://upload-images.jianshu.io/upload_images/1841176-d504c2a1be51063b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-d504c2a1be51063b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 可以看到，CardView本身是圆角效果了，但是里边的内容却还是方的，并且出现了多余的白边。
 再仔细查看CardView的文档，发现其有一个属性cardPreventCornerOverlap
@@ -54,9 +54,9 @@ Add padding to CardView on v20 and before to prevent intersections between the C
 
 cardPreventCornerOverlap默认为true，意思是阻止API 20或者之前的CardView的corner和内部元素重叠。没有重叠就产生了上边的效果，多了一条白边。于是在xml布局文件里增加CardView的属性app:cardPreventCornerOverlap="false"，左下角和左上角效果如下：
 
-![](http://upload-images.jianshu.io/upload_images/1841176-2690d1d4c4535311.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-2690d1d4c4535311.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](http://upload-images.jianshu.io/upload_images/1841176-60dd4cef0a629cc5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-60dd4cef0a629cc5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 可以看到，CardView里的元素已经和CardView重叠了，但是元素本身没有圆角，所以顶点伸出去了。到这里思路就很简单了，将里边的元素单独做圆角处理。
 
@@ -91,9 +91,9 @@ drawable下新建shape_radius.xml文件，代码如下：
 
 左下角正常，左上角依然
 
-![](http://upload-images.jianshu.io/upload_images/1841176-cf5c737487884d83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-cf5c737487884d83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](http://upload-images.jianshu.io/upload_images/1841176-a6f1a4ab15d9850c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](http://jason5.cn/images/1841176-a6f1a4ab15d9850c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 图片还需要单独做圆角处理，这里需要的效果是，图片的上边两个角需要圆角，下边两个角需要直角。
 自定义UpRoundImageView类，继承自ImageView，专门做圆角的绘制，代码如下：
@@ -158,8 +158,8 @@ public class UpRoundImageView extends ImageView {
 最后实现效果在各个平台一致：
 
 api 19实现效果
-![api 19实现效果](http://upload-images.jianshu.io/upload_images/1841176-0c3a2248165f44f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![api 19实现效果](http://jason5.cn/images/1841176-0c3a2248165f44f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 api 22实现效果
-![api 22实现效果](http://upload-images.jianshu.io/upload_images/1841176-9be814e5334aaf83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![api 22实现效果](http://jason5.cn/images/1841176-9be814e5334aaf83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
