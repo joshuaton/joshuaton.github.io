@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Jason's Blog]]></title>
+  <title><![CDATA[移动端开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-21T20:19:54+08:00</updated>
+  <updated>2016-07-22T13:20:42+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -281,12 +281,17 @@ compile 'com.android.support:cardview-v7:23.1.1'
 <p>4.更多端的设置证书方法可以参考这篇官方文档
 <a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/</a></p>
 
-<p>参考资料
-1.mac下的抓包工具Charles <a href="http://www.neatstudio.com/show-2454-1.shtml">http://www.neatstudio.com/show-2454-1.shtml</a>
-2.Charles抓取HTTPS数据包 <a href="http://legendtkl.com/2015/11/30/charles-https/">http://legendtkl.com/2015/11/30/charles-https/</a>
-3.手机上安装证书的方法 <a href="http://club.huawei.com/thread-3433050-1-1.html">http://club.huawei.com/thread-3433050-1-1.html</a>
-4.Charles SSL PROXYING <a href="http://www.charlesproxy.com/documentation/proxying/ssl-proxying/">http://www.charlesproxy.com/documentation/proxying/ssl-proxying/</a>
-5.Charles SSL CERTIFICATES <a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/</a></p>
+<h3>参考资料</h3>
+
+<p>1.<a href="http://www.neatstudio.com/show-2454-1.shtml">mac下的抓包工具Charles</a></p>
+
+<p>2.<a href="http://legendtkl.com/2015/11/30/charles-https/">Charles抓取HTTPS数据包</a></p>
+
+<p>3.<a href="http://club.huawei.com/thread-3433050-1-1.html">手机上安装证书的方法</a></p>
+
+<p>4.<a href="http://www.charlesproxy.com/documentation/proxying/ssl-proxying/">Charles SSL PROXYING</a></p>
+
+<p>5.<a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">Charles SSL CERTIFICATES</a></p>
 ]]></content>
   </entry>
   
