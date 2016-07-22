@@ -4,7 +4,7 @@
   <title><![CDATA[移动端开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-07-22T13:29:18+08:00</updated>
+  <updated>2016-07-22T13:34:00+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -258,25 +258,25 @@ compile 'com.android.support:cardview-v7:23.1.1'
 <!--more-->
 
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+<p><img src="http://jason5.cn/images/1841176-6bec4485c88cf666.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
 <p>charles截包的信息如下</p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1841176-d9e7ecd4c8ea7d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+<p><img src="http://jason5.cn/images/1841176-d9e7ecd4c8ea7d00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
 <p>为什么会出现这样的情况呢？原因是charles相当于一个中间人代理，用户的浏览器如果直接访问目标服务器，验证CA证书有效，所以不会出这种提示，但是在中间加入charles代理后，实际上用户浏览器就会验证Charles提供的证书，这里显然是验证不过的，所以就会出现这种提示。我们必须手动在客户端导入charles的证书，才能不出现这个信任提示，下边介绍下如何去除这种提示的方法。</p>
 
 <p>1.以小米note MIUI 7，mac版本Charles 3.11.1为例，首先在mac上生成charles的root certification</p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1841176-7b848c56225c08ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+<p><img src="http://jason5.cn/images/1841176-7b848c56225c08ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
 <p>2.将导出的crt文件上传到手机上，并且进行安装。小米note不能通过文件管理器点击crt文件进行安装，需要进入设置->安全和隐私->从存储设备安装</p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1841176-0d6144017d4c40e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+<p><img src="http://jason5.cn/images/1841176-0d6144017d4c40e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
 <p>3.正常通过验证，可以截取到https的明文数据了</p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+<p><img src="http://jason5.cn/images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
 
 <p>4.更多端的设置证书方法可以参考这篇官方文档
 <a href="https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/">https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/</a></p>
