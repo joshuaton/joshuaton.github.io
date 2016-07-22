@@ -31,11 +31,17 @@ charles截包的信息如下
 ![Paste_Image.png](http://upload-images.jianshu.io/upload_images/1841176-4574049447c6faf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 4.更多端的设置证书方法可以参考这篇官方文档
-https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/
+[https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/](https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/)
 
-参考资料
-1.mac下的抓包工具Charles [http://www.neatstudio.com/show-2454-1.shtml](http://www.neatstudio.com/show-2454-1.shtml)
-2.Charles抓取HTTPS数据包 [http://legendtkl.com/2015/11/30/charles-https/](http://legendtkl.com/2015/11/30/charles-https/)
-3.手机上安装证书的方法 [http://club.huawei.com/thread-3433050-1-1.html](http://club.huawei.com/thread-3433050-1-1.html)
-4.Charles SSL PROXYING http://www.charlesproxy.com/documentation/proxying/ssl-proxying/
-5.Charles SSL CERTIFICATES https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/
+
+###参考资料
+
+1.[mac下的抓包工具Charles](http://www.neatstudio.com/show-2454-1.shtml)
+
+2.[Charles抓取HTTPS数据包](http://legendtkl.com/2015/11/30/charles-https/)
+
+3.[手机上安装证书的方法](http://club.huawei.com/thread-3433050-1-1.html)
+
+4.[Charles SSL PROXYING](http://www.charlesproxy.com/documentation/proxying/ssl-proxying/)
+
+5.[Charles SSL CERTIFICATES](https://www.charlesproxy.com/documentation/using-charles/ssl-certificates/)
