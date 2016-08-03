@@ -4,7 +4,7 @@
   <title><![CDATA[移动端开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T09:52:24+08:00</updated>
+  <updated>2016-08-03T09:58:03+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[反射型XSS]]></title>
+    <link href="http://jason5.cn/blog/fan-she-xing-xss.html"/>
+    <updated>2016-08-01T20:18:08+08:00</updated>
+    <id>http://jason5.cn/blog/fan-she-xing-xss</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CardView在API 21以下的圆角效果处理]]></title>
