@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T13:02:34+08:00</updated>
+  <updated>2016-08-03T13:04:44+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[XSS应用-微博刷粉]]></title>
+    <title type="html"><![CDATA[存储型XSS应用-微博刷粉]]></title>
     <link href="http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen.html"/>
     <updated>2016-08-03T11:34:13+08:00</updated>
     <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
