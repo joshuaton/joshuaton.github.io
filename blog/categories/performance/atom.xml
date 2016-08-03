@@ -4,7 +4,7 @@
   <title><![CDATA[分类：performance | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T19:34:58+08:00</updated>
+  <updated>2016-08-03T19:41:12+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p>众所周知，屏幕刷新频率必须要达到60Hz，人眼才能感觉不到界面的卡顿。60Hz意味着界面每一帧的计算加渲染时间不能超过16ms，当某些业务逻辑比较耗时的时候，执行时间可能超过16ms的阈值，这时候给用户直观的感受就是界面卡顿。</p>
 
 <p>traceview是安卓sdk提供的一个性能分析工具，能够收集函数的执行时间，以精确的分析系统的瓶颈所在。当我们遇到系统卡顿问题的时候，可以利用这个工具来进行分析。下边的篇幅就项目中一个真实的卡顿问题，来介绍traceview工具的使用。</p>
+
+<!--more-->
+
 
 <p>在项目中遇到一个问题，滑动卡片的时候界面会出现卡顿，效果如下：</p>
 
