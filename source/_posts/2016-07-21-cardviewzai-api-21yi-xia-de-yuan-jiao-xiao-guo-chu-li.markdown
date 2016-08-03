@@ -14,7 +14,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
 项目中要做一个卡片浏览的程序，卡片需要有5dp的圆角，圆角效果CardView自带属性就可以支持，加上app:cardCornerRadius属性就好了，如下：
 
 
-```
+```xml
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"  
   xmlns:app="http://schemas.android.com/apk/res-auto"    
@@ -45,7 +45,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
 再仔细查看CardView的文档，发现其有一个属性cardPreventCornerOverlap
 
 
-```
+```xml
 Add padding to CardView on v20 and before to prevent intersections between the Card content and rounded corners.
 在v20和之前的版本中添加内边距，这个属性是为了防止卡片内容和边角的重叠
 <attr name="cardPreventCornerOverlap" format="boolean" />
@@ -62,7 +62,7 @@ cardPreventCornerOverlap默认为true，意思是阻止API 20或者之前的Card
 
 drawable下新建shape_radius.xml文件，代码如下：
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners android:radius="5dp" />
@@ -73,7 +73,7 @@ drawable下新建shape_radius.xml文件，代码如下：
 在CardView里的元素LinearLayout加上backgroud属性
 
 
-```
+```xml
 <LinearLayout android:layout_width="match_parent" 
     android:layout_height="match_parent"
     android:orientation="vertical" 
@@ -100,7 +100,7 @@ drawable下新建shape_radius.xml文件，代码如下：
 
 
 
-```
+```java
 
 public class UpRoundImageView extends ImageView {
 
@@ -141,7 +141,7 @@ public class UpRoundImageView extends ImageView {
 将ImageView替换成UpRoundImageView， 这样就实现了全部圆角效果。
 另外，可以在CardView加上app:cardElevation="3dp"属性，这个属性加上后可以在CardView后形成一个阴影，有卡片浮上来的感觉，更符合Material Design风格。 xml中CardView的属性设置为
 
-```
+```xml
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
