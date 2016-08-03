@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T11:08:32+08:00</updated>
+  <updated>2016-08-03T11:14:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -209,67 +209,38 @@ public class UpRoundImageView extends ImageView {
 <p>PmdCampusDAOGenerator是生成DAO类的独立Java工程，PmdCampus是应用开发者的Android App工程。</p>
 
 <p>如果是用gradle来编译的话，PmdCampusDAOGenerator工程的build.gradle文件如下
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">java</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;</span>
-</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">application</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nf">fileTree</span><span class="o">(</span><span class="nl">dir:</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">libs</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;,</span> <span class="nl">include:</span> <span class="o">[&amp;</span><span class="n">lsquo</span><span class="o">;*.</span><span class="na">jar</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;])</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">de</span><span class="o">.</span><span class="na">greenrobot</span><span class="o">:</span><span class="n">greendao</span><span class="o">-</span><span class="nl">generator:</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">1</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="err">``</span>
-</span><span class='line'><span class="n">其中</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span><span class="n">compile</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="o">;</span><span class="n">de</span><span class="o">.</span><span class="na">greenrobot</span><span class="o">:</span><span class="n">greendao</span><span class="o">-</span><span class="nl">generator:</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">1</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="o">;</span><span class="err">`</span><span class="n">这行是引入greenDAO的库</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">再来看下PmdCampus工程的build</span><span class="o">.</span><span class="na">gradle</span><span class="err">，</span><span class="n">由于太多其它内容</span><span class="err">，</span><span class="n">这里只贴出关键的部分</span><span class="err">。</span><span class="n">需要引入以下库</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">java</span>
-</span><span class='line'><span class="n">compile</span> <span class="err">&#39;</span><span class="n">de</span><span class="o">.</span><span class="na">greenrobot</span><span class="o">:</span><span class="nl">greendao:</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">7</span><span class="err">&#39;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">大家注意PmdCampus下除了常规的src目录外</span><span class="err">，</span><span class="n">还有一个手工创建的src</span><span class="o">-</span><span class="n">gen目录</span><span class="err">，</span><span class="n">这个目录就是存放PmdCampusDAOGenerator工程生成的Java</span> <span class="n">Objects和DAO类的</span><span class="err">。</span><span class="n">所以</span><span class="err">，</span><span class="n">PmdCampus的build</span><span class="o">.</span><span class="na">gradle文件配置一下</span><span class="err">，</span><span class="n">编译src</span><span class="o">-</span><span class="n">gen里的java文件</span><span class="err">，</span><span class="n">需要加入以下的配置</span><span class="err">：</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">java</span>
-</span><span class='line'><span class="n">sourceSets</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">main</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">java</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">srcDir</span> <span class="err">&#39;</span><span class="n">src</span><span class="err">&#39;</span>
-</span><span class='line'>            <span class="n">srcDir</span> <span class="err">&#39;</span><span class="n">src</span><span class="o">-</span><span class="n">gen</span><span class="err">&#39;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">.</span> <span class="n">在DAOGenerate工程创建DAOGenerator类</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">DAOGenerate工程是一个普通的Java工程</span><span class="err">，</span><span class="n">DAOGenerator类是用来生成DAO文件的类</span><span class="err">，</span><span class="n">有main函数入口</span><span class="err">，</span><span class="n">直接从main函数运行就可以了</span><span class="err">。</span><span class="n">DAOGenerator类的代码如下</span><span class="err">：</span>
-</span></code></pre></td></tr></table></div></figure>java
+```java
+apply plugin: &lsquo;java&rsquo;
+apply plugin: &lsquo;application&rsquo;</p>
+
+<p>dependencies {
+    compile fileTree(dir: &lsquo;libs&rsquo;, include: [&lsquo;*.jar&rsquo;])
+    compile &lsquo;de.greenrobot:greendao-generator:1.3.1&rsquo;
+}
+<code>``
+其中</code>compile &lsquo;de.greenrobot:greendao-generator:1.3.1&rsquo;`这行是引入greenDAO的库。</p>
+
+<p>再来看下PmdCampus工程的build.gradle，由于太多其它内容，这里只贴出关键的部分。需要引入以下库
+<code>java
+compile 'de.greenrobot:greendao:1.3.7'
+</code></p>
+
+<p>大家注意PmdCampus下除了常规的src目录外，还有一个手工创建的src-gen目录，这个目录就是存放PmdCampusDAOGenerator工程生成的Java Objects和DAO类的。所以，PmdCampus的build.gradle文件配置一下，编译src-gen里的java文件，需要加入以下的配置：
+<code>java
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+            srcDir 'src-gen'
+        }
+    }
+}
+</code></p>
+
+<h2>2. 在DAOGenerate工程创建DAOGenerator类</h2>
+
+<p>DAOGenerate工程是一个普通的Java工程，DAOGenerator类是用来生成DAO文件的类，有main函数入口，直接从main函数运行就可以了。DAOGenerator类的代码如下：
+```java
 package com.example;</p>
 
 <p>import de.greenrobot.daogenerator.DaoGenerator;
@@ -309,23 +280,16 @@ import de.greenrobot.daogenerator.Schema;</p>
 </code>java
 addChat(schema);
 new DaoGenerator().generateAll(schema, &ldquo;./PmdCampus/src-gen&rdquo;);
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">进行建表和设置要生成DAO文件的目标工程的项目路径</span><span class="err">。</span><span class="n">addChat方法里定义了Chat对象的属性</span><span class="err">，</span><span class="n">数据库中的字段也会一一对应</span><span class="err">。</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">之后运行main函数</span><span class="err">，</span><span class="n">就会在PmdCampus</span><span class="o">/</span><span class="n">src</span><span class="o">-</span><span class="n">gen目录下生成Java</span> <span class="n">Objects和DAO类了</span><span class="err">。</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://i3.tietuku.com/d85c5423440290ca.png&quot;</span> <span class="n">alt</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="o">/&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h2</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">.</span> <span class="n">在Android</span> <span class="n">App工程里创建DBHelper类</span><span class="o">&lt;/</span><span class="n">h2</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">生成了DAO类之后</span><span class="err">，</span><span class="n">在自己的Android</span> <span class="n">App工程就可以使用了</span><span class="err">，</span><span class="n">为了更加方便</span><span class="err">，</span><span class="n">这里封装了一个DBHelper类</span><span class="err">，</span><span class="n">代码如下</span>
-</span></code></pre></td></tr></table></div></figure>java
+```
+进行建表和设置要生成DAO文件的目标工程的项目路径。addChat方法里定义了Chat对象的属性，数据库中的字段也会一一对应。</p>
+
+<p>之后运行main函数，就会在PmdCampus/src-gen目录下生成Java Objects和DAO类了。
+<img src="http://i3.tietuku.com/d85c5423440290ca.png" alt="" /></p>
+
+<h2>3. 在Android App工程里创建DBHelper类</h2>
+
+<p>生成了DAO类之后，在自己的Android App工程就可以使用了，为了更加方便，这里封装了一个DBHelper类，代码如下
+```java
 package com.tencent.PmdCampus.module.message.storage.db;</p>
 
 <p>import android.content.Context;
