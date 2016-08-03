@@ -7,7 +7,7 @@ categories: security
 ---
 目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果
 
-被插入代码截图如下（每个页面都有，应该是框架被修改）
+被插入代码截图如下（每个页面都有，框架被修改）
 
 ![](http://jason5.cn/images/xss-weibo1.png)
 
