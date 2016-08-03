@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T19:41:12+08:00</updated>
+  <updated>2016-08-03T19:46:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -27,13 +27,13 @@
 
 <p>在项目中遇到一个问题，滑动卡片的时候界面会出现卡顿，效果如下：</p>
 
-<p><img src="http://jason5.cn/images/traceview_performance_before.gif" alt="" /></p>
+<p><img src="http://jason5.cn/images/traceview_performance_before.gif" alt="http://jason5.cn/images/traceview_performance_before.gif" /></p>
 
 <p>可以明显看到，卡片滑动的最后是有卡顿的，突然一下新的卡片就划进来了，中间的动画过程有缺失。</p>
 
 <p>利用Android手机的自带工具，可以有更清楚的认识。开发者选项->GPU呈现模式分析，打开后，可以在屏幕上看到每一帧动画的耗时。</p>
 
-<p><img src="http://jason5.cn/images/EA295EE4-3A8A-42DF-9D4A-09498FE9F120.png" alt="" /></p>
+<p><img src="http://jason5.cn/images/EA295EE4-3A8A-42DF-9D4A-09498FE9F120.png" alt="http://jason5.cn/images/EA295EE4-3A8A-42DF-9D4A-09498FE9F120.png" /></p>
 
 <p>打开这个选项后，再操作手机，手机屏幕底下会出现一些柱形的图块，横坐标代表动画的每一帧，纵坐标代表这一帧的耗时，柱子的高度超过了绿色线就代表这一帧的耗时超过了16ms，会造成卡顿。我们没滑动一次卡片，就会发现一个远高于绿色线的柱状图形出现，也就是造成了卡顿。</p>
 
@@ -41,25 +41,25 @@
 
 <p>点击Android Studio上边的机器人小图标“Android Device Monitor”，再切换到DDMS，左边的面板上选择需要调试的进程，然后点击Start Method Profiling按钮，这时候工具开始对方法耗时进行记录。操作手机，滑动卡片后，再点击Stop Method Profiling按钮，这时候面板会呈现出记录期间每个函数执行的耗时。</p>
 
-<p><img src="http://jason5.cn/images/traceview-performace-example.png" alt="" /></p>
+<p><img src="http://jason5.cn/images/traceview-performace-example.png" alt="http://jason5.cn/images/traceview-performace-example.png" /></p>
 
 <p>最需要关注的数据是下边这张图</p>
 
-<p><img src="http://jason5.cn/images/A9F7C9CF-3B77-4B90-9B27-D679346AA0C5.png" alt="" /></p>
+<p><img src="http://jason5.cn/images/A9F7C9CF-3B77-4B90-9B27-D679346AA0C5.png" alt="http://jason5.cn/images/A9F7C9CF-3B77-4B90-9B27-D679346AA0C5.png" /></p>
 
 <p>每一列的含义如下图</p>
 
-<p><img src="http://jason5.cn/images/A0239545-85FA-459E-BD42-30D0B946453B.png" alt="" /></p>
+<p><img src="http://jason5.cn/images/A0239545-85FA-459E-BD42-30D0B946453B.png" alt="http://jason5.cn/images/A0239545-85FA-459E-BD42-30D0B946453B.png" /></p>
 
 <p>经过分析可以发现，notifyDataSetChanged这个函数执行时间为53.141ms，超过了要求的16ms阈值，所以问题就定位到这里了。解决方法的话，就比较简单了，想办法在切换卡片的时候去掉调用Adapter的notifyDataSetChanged调用，这里其实只是业务逻辑的修改优化。</p>
 
 <p>优化后的效果，可以看到，再次切换的时候，已经几乎都在16ms以下。</p>
 
-<p><img src="http://jason5.cn/images/9D18BF07-7CAE-40C4-B585-08392D41BF64.png" alt="" /></p>
+<p><img src="http://jason5.cn/images/9D18BF07-7CAE-40C4-B585-08392D41BF64.png" alt="http://jason5.cn/images/9D18BF07-7CAE-40C4-B585-08392D41BF64.png" /></p>
 
 <p>优化后的动态效果图</p>
 
-<p><img src="http://jason5.cn/images/traceview_performance_after.gif" alt="" /></p>
+<p><img src="http://jason5.cn/images/traceview_performance_after.gif" alt="http://jason5.cn/images/traceview_performance_after.gif" /></p>
 ]]></content>
   </entry>
   
