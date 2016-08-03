@@ -9,8 +9,8 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="早时候出现的一个反射型XSS漏洞 漏洞URL 1
+http://www.icbc.com.cn/news/hotspot.jsp?column=%3Cfont%20size=10%3E%BD%F7%B4%CB%D4%AA%B5%A9%BC%D1%BD%DA%D6%AE%BC%CA%A3%AC%B9 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -101,7 +101,22 @@ $(document).bind('DOMNodeInserted', function(event) {
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><p>早时候出现的一个反射型XSS漏洞</p>
+
+<p>漏洞URL</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>http://www.icbc.com.cn/news/hotspot.jsp?column=%3Cfont%20size=10%3E%BD%F7%B4%CB%D4%AA%B5%A9%BC%D1%BD%DA%D6%AE%BC%CA%A3%AC%B9%A4%C9%CC%D2%F8%D0%D0%B8%F8%C3%BF%B8%F6%B4%A2%BB%A7%C3%E2%B7%D1%B7%A2%B7%C51000%CD%F2%C3%C0%BD%F0%3C/font%3E</span></code></pre></td></tr></table></div></figure>
+
+
+<p>URL decode之后</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>http://www.icbc.com.cn/news/hotspot.jsp?column=&lt;font size=10&gt;谨此元旦佳节之际，工商银行给每个储户免费发放1000万美金&lt;/font&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>效果
+<img src="http://jason5.cn/images/o_ICBC1.gif" alt="" /></p>
 </div>
 
 
@@ -119,6 +134,12 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 <time class='entry-date' datetime='2016-08-01T20:18:08+08:00'><span class='date'>2016 年8 月1 日</span> <span class='time'>8:18 pm</span></time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/weban-quan/'>web安全</a>
+  
+</span>
 
 
     </p>
@@ -153,8 +174,9 @@ $(document).bind('DOMNodeInserted', function(event) {
   <h1>分类</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/other/'>other (2)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+<li class='category'><a href='/blog/categories/web安全/'>web安全 (1)</a></li>
 
   </ul>
 </section>
