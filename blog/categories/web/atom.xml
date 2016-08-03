@@ -4,7 +4,7 @@
   <title><![CDATA[分类：web | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T10:57:40+08:00</updated>
+  <updated>2016-08-03T11:07:45+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,28 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[反射型XSS]]></title>
-    <link href="http://jason5.cn/blog/fan-she-xing-xss.html"/>
-    <updated>2016-08-01T20:18:08+08:00</updated>
-    <id>http://jason5.cn/blog/fan-she-xing-xss</id>
-    <content type="html"><![CDATA[<p>早时候出现的一个反射型XSS漏洞</p>
-
-<p>漏洞URL
-<code>
-http://www.icbc.com.cn/news/hotspot.jsp?column=%3Cfont%20size=10%3E%BD%F7%B4%CB%D4%AA%B5%A9%BC%D1%BD%DA%D6%AE%BC%CA%A3%AC%B9%A4%C9%CC%D2%F8%D0%D0%B8%F8%C3%BF%B8%F6%B4%A2%BB%A7%C3%E2%B7%D1%B7%A2%B7%C51000%CD%F2%C3%C0%BD%F0%3C/font%3E
-</code></p>
-
-<p>URL decode之后
-<code>
-http://www.icbc.com.cn/news/hotspot.jsp?column=&lt;font size=10&gt;谨此元旦佳节之际，工商银行给每个储户免费发放1000万美金&lt;/font&gt;
-</code></p>
-
-<p>效果
-<img src="http://jason5.cn/images/o_ICBC1.gif" alt="" /></p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[如何用charles进行https抓包]]></title>
