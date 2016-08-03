@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "XSS应用-微博刷粉"
+title: "存储型XSS应用-微博刷粉"
 date: 2016-08-03 11:34:13 +0800
 comments: true
 categories: security
