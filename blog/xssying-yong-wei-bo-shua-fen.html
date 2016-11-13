@@ -30,25 +30,12 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="http://libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<!--
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
--->
-<script>
-function addBlankTargetForLinks () {
-  $('a[href^="http"]').each(function(){
-      $(this).attr('target', '_blank');
-  });
-}
-
-$(document).bind('DOMNodeInserted', function(event) {
-  addBlankTargetForLinks();
-});
-</script>
 
   
 
@@ -64,20 +51,20 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 </header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="订阅 RSS">RSS</a></li>
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
 </ul>
   
 <form action="https://www.google.com/search" method="get">
   <fieldset role="search">
     <input type="hidden" name="sitesearch" value="jason5.cn">
-    <input class="search" type="text" name="q" results="0" placeholder="搜索"/>
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
   
 <ul class="main-navigation">
-  <li><a href="/">首页</a></li>
-  <li><a href="/blog/archives">文章列表</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
 </nav>
@@ -105,6 +92,9 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 <div class="entry-content"><p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果</p>
+
+<!--more-->
+
 
 <p>被插入代码截图如下（每个页面都有，框架被修改）</p>
 
@@ -194,6 +184,8 @@ $(document).bind('DOMNodeInserted', function(event) {
         <a class="basic-alignment left" href="/blog/dom-xss.html" title="Previous Post: DOM XSS">&laquo; DOM XSS</a>
       
       
+        <a class="basic-alignment right" href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html" title="Next Post: 利用traceview优化Android应用流畅度">利用traceview优化Android应用流畅度 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -206,15 +198,24 @@ $(document).bind('DOMNodeInserted', function(event) {
   <h1>分类</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/other/'>other (3)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (4)</a></li>
+<li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
   </ul>
 </section>
 <section>
-  <h1>最新文章</h1>
+  <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/mobiketi-yan.html">Mobike体验</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">利用traceview优化Android应用流畅度</a>
+      </li>
     
       <li class="post">
         <a href="/blog/xssying-yong-wei-bo-shua-fen.html">存储型XSS应用-微博刷粉</a>
@@ -226,14 +227,6 @@ $(document).bind('DOMNodeInserted', function(event) {
     
       <li class="post">
         <a href="/blog/fan-she-xing-xss.html">反射型XSS</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">CardView在API 21以下的圆角效果处理</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">如何用charles进行https抓包</a>
       </li>
     
   </ul>
@@ -262,8 +255,8 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 
-<!--
--->
+
+
 
 
 

