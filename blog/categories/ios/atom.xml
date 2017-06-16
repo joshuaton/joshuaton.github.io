@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2017-06-16T15:39:13+08:00</updated>
+  <updated>2017-06-16T15:45:15+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -23,7 +23,7 @@
 <!--more-->
 
 
-<h2>解决 retain circle</h2>
+<h2>解决 retain circle1</h2>
 
 <p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
 
