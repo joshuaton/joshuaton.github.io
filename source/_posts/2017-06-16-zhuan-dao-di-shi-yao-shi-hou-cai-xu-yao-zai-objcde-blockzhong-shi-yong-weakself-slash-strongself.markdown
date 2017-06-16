@@ -8,6 +8,8 @@ categories: iOS
 
 Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。
 
+<!--more-->
+
 ##解决 retain circle
 Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。
 
