@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="众所周知，屏幕刷新频率必须要达到60Hz，人眼才能感觉不到界面的卡顿。60Hz意味着界面每一帧的计算加渲染时间不能超过16ms，当某些业务逻辑比较耗时的时候，执行时间可能超过16ms的阈值，这时候给用户直观的感受就是界面卡顿。 traceview是安卓sdk提供的一个性能分析工具， &hellip;">
+  <meta name="description" content="Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,101 @@ $(document).bind('DOMNodeInserted', function(event) {
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-06-16T15:01:32+08:00'><span class='date'>2017 年6 月16 日</span> <span class='time'>3:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
+
+<h2>解决 retain circle</h2>
+
+<p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
+
+<p>示例代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>clang 的文档表示，在 doSomething 内，weakSelf 不会被释放。但，下面的情况除外：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>    [weakSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 doSomething 中，weakSelf 不会变成 nil，不过在 doSomething 执行完成，调用第二个方法 doOtherThing 的时候，weakSelf 有可能被释放，于是，strongSelf 就派上用场了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    __strong __typeof(self) strongSelf = weakSelf;
+</span><span class='line'>    [strongSelf doSomething];
+</span><span class='line'>    [strongSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>__strong 确保在 Block 内，strongSelf 不会被释放。</p>
+
+<h2>总结</h2>
+
+<ul>
+<li>在 Block 内如果需要访问 self 的方法、变量，建议使用 weakSelf。</li>
+<li>如果在 Block 内需要多次 访问 self，则需要使用 strongSelf。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself">I finally figured out weakSelf and strongSelf</a></li>
+<li><a href="https://stackoverflow.com/questions/21113963/is-the-weakself-strongself-dance-really-necessary-when-referencing-self-inside-a?rq=1">Is the weakSelf/strongSelf dance really necessary when referencing self inside a non-retained completion called from a UIViewController?</a></li>
+</ul>
+
+
+<blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -431,44 +526,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/markdownxue-xi.html">Markdown学习</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-21T22:14:36+08:00'><span class='date'>2015 年7 月21 日</span> <span class='time'>10:14 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>这是H1</h1>
-
-<h2>这是H2</h2>
-
-<h3>这是H3</h3>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/markdownxue-xi.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -483,6 +540,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
   <h1>分类</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (1)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (3)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
@@ -493,6 +551,10 @@ compile 'com.android.support:cardview-v7:23.1.1'
 <section>
   <h1>最新文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf</a>
+      </li>
     
       <li class="post">
         <a href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">利用traceview优化Android应用流畅度</a>
@@ -510,10 +572,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
         <a href="/blog/fan-she-xing-xss.html">反射型XSS</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">CardView在API 21以下的圆角效果处理</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -527,7 +585,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - jason -
+  Copyright &copy; 2017 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

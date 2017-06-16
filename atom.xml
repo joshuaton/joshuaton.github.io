@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2016-08-03T20:12:19+08:00</updated>
+  <updated>2017-06-16T15:17:03+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,81 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf]]></title>
+    <link href="http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html"/>
+    <updated>2017-06-16T15:01:32+08:00</updated>
+    <id>http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself</id>
+    <content type="html"><![CDATA[<p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
+
+<h2>解决 retain circle</h2>
+
+<p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
+
+<p>示例代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>clang 的文档表示，在 doSomething 内，weakSelf 不会被释放。但，下面的情况除外：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>    [weakSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 doSomething 中，weakSelf 不会变成 nil，不过在 doSomething 执行完成，调用第二个方法 doOtherThing 的时候，weakSelf 有可能被释放，于是，strongSelf 就派上用场了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    __strong __typeof(self) strongSelf = weakSelf;
+</span><span class='line'>    [strongSelf doSomething];
+</span><span class='line'>    [strongSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>__strong 确保在 Block 内，strongSelf 不会被释放。</p>
+
+<h2>总结</h2>
+
+<ul>
+<li>在 Block 内如果需要访问 self 的方法、变量，建议使用 weakSelf。</li>
+<li>如果在 Block 内需要多次 访问 self，则需要使用 strongSelf。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself">I finally figured out weakSelf and strongSelf</a></li>
+<li><a href="https://stackoverflow.com/questions/21113963/is-the-weakself-strongself-dance-really-necessary-when-referencing-self-inside-a?rq=1">Is the weakSelf/strongSelf dance really necessary when referencing self inside a non-retained completion called from a UIViewController?</a></li>
+</ul>
+
+
+<blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[利用traceview优化Android应用流畅度]]></title>
