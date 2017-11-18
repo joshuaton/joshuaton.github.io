@@ -57,7 +57,13 @@
     <lastmod>2015-07-21T12:26:37+08:00</lastmod>
   </url>
   <url>
+    <loc>http://jason5.cn/archives/</loc>
+  </url>
+  <url>
     <loc>http://jason5.cn/blog/archives/</loc>
+  </url>
+  <url>
+    <loc>http://jason5.cn/blog/</loc>
   </url>
   <url>
     <loc>http://jason5.cn/</loc>
@@ -79,5 +85,8 @@
   </url>
   <url>
     <loc>http://jason5.cn/blog/categories/ios/</loc>
+  </url>
+  <url>
+    <loc>http://jason5.cn/posts/2/</loc>
   </url>
 </urlset>
