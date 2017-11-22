@@ -5,11 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>mobike体验 - 移动开发技术</title>
+  <title>升级到macOS High Sierra pod不能执行的解决办法 - 移动开发技术</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="今天到上海出差，第一次来，想到处随意逛逛，单车是个很不错的选择，所以注册了mobike。 今天骑了三段： 第一段2km，耗时19m。这一段主要是在上海交大校园里，人少路况好，体验非常不错。 第二段3km，耗时22m。这一段是从酒店去外滩，在半路上被交警拦下，有一段路不准骑车，于是改乘地铁。 &hellip;">
+  <meta name="description" content="macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下： 1
+2
+JUNSHAO-MC0:~ junshao$ pod
+-bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jason5.cn/blog/mobiketi-yan.html">
+  <link rel="canonical" href="http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
@@ -65,7 +68,7 @@
   <header>
   
     
-      <h1 class="entry-title">Mobike体验</h1>
+      <h1 class="entry-title">升级到macOS High Sierra Pod不能执行的解决办法</h1>
     
   
     
@@ -82,31 +85,28 @@
   
 
 
-<time datetime="2016-11-13T21:25:26+08:00" pubdate data-updated="true"></time>
+<time datetime="2017-11-22T10:42:20+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>今天到上海出差，第一次来，想到处随意逛逛，单车是个很不错的选择，所以注册了mobike。</p>
+<div class="entry-content"><p>macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下：</p>
 
-<p>今天骑了三段：</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>JUNSHAO-MC0:~ junshao$ pod
+</span><span class='line'>-bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby: bad interpreter: No such file or directory</span></code></pre></td></tr></table></div></figure>
 
-<p>第一段2km，耗时19m。这一段主要是在上海交大校园里，人少路况好，体验非常不错。</p>
 
-<p>第二段3km，耗时22m。这一段是从酒店去外滩，在半路上被交警拦下，有一段路不准骑车，于是改乘地铁。这一段由于是在马路上，没有专门的自行车道，骑行感受一般。不过最难忍受的是这个车骑久了不舒服，座位对我来说比较偏矮，发不上力，且久了容易酸，下地铁台阶的时候感觉都快跪下去了。</p>
+<p>解决办法是重装cocoapods</p>
 
-<p>第三段7km，耗时49m。从南京路步行街到酒店。跟第二段类似，没有专用自行车道，不停在人行道和马路边缘穿行，影响骑行速度。这次我骑得比较慢，也可能更适应了，腿酸的感受稍微弱一点。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gem uninstall cocoapods
+</span><span class='line'>sudo gem install -n /usr/local/bin cocoapods</span></code></pre></td></tr></table></div></figure>
 
-<p>总体感受：
-1. 方便，随停真的是太方便了，完全不操心。
-2. 用的人挺多的，上海和深圳都是这样。
-3. lite版单车还比较少，一般附近难以找到，看起来可能会好骑一点，因为更轻，还没有体验过。
-4. app做得不错，功能简洁易用，单车定位比较准。
-5. 在北京这种有专用自行车道的城市，发展会更好，而对于没有骑行环境的城市，例如重庆，基本就搞不起来了。</p>
-
-<p>经过今天的体验，总体来讲感觉不错，从最以前的完全不看好，到现在觉得稍微觉得有戏。以后有需要会继续用。</p>
 </div>
 
 
@@ -129,7 +129,7 @@
   
 
 
-<time datetime="2016-11-13T21:25:26+08:00" pubdate data-updated="true"></time>
+<time datetime="2017-11-22T10:42:20+08:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
@@ -150,10 +150,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html" title="Previous Post: 利用traceview优化Android应用流畅度">&laquo; 利用traceview优化Android应用流畅度</a>
+        <a class="basic-alignment left" href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html" title="Previous Post: [转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf">&laquo; [转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf</a>
       
-      
-        <a class="basic-alignment right" href="/blog/mobiketi-yan-xu.html" title="Next Post: mobike体验续">mobike体验续 &raquo;</a>
       
     </p>
   </footer>
