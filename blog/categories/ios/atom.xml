@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2017-11-22T10:45:35+08:00</updated>
+  <updated>2017-12-16T14:38:42+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[如何查看p12文件的信息]]></title>
+    <link href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html"/>
+    <updated>2017-12-16T14:37:21+08:00</updated>
+    <id>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi</id>
+    <content type="html"><![CDATA[<pre><code>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes
+</code></pre>
+
+<p>pem文件可以直接用文本工具打开</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf]]></title>
