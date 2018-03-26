@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-03-26T12:15:16+08:00</updated>
+  <updated>2018-03-26T14:38:18+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -27,14 +27,14 @@
 
 <h3>1. 用cocopods引入WeexSDK</h3>
 
-<pre><code>pod 'WeexSDK', ‘0.18.0'
+<pre><code class="bash">pod 'WeexSDK', '0.18.0'
 </code></pre>
 
 <h3>2. 在iOS APP里初始化Weex</h3>
 
 <p>didFinishLaunchingWithOptions里添加代码</p>
 
-<pre><code>//business configuration
+<pre><code class="objc">//business configuration
 [WXAppConfiguration setAppGroup:@"TencentApp"];
 [WXAppConfiguration setAppName:@"TIP"];
 [WXAppConfiguration setAppVersion:@"1.0.0"];
@@ -56,7 +56,7 @@
 
 <h3>3. 在业务相关页面用weex渲染原生View</h3>
 
-<pre><code>@interface IGWeexDemoViewController()
+<pre><code class="objc">@interface IGWeexDemoViewController()
 
 @property (nonatomic, strong) WXSDKInstance *instance;
 @property (nonatomic, strong) UIView *weexView;
@@ -107,28 +107,28 @@
 
 <h3>1. 安装node</h3>
 
-<pre><code>brew install node
+<pre><code class="bash">brew install node
 </code></pre>
 
 <h3>2. 安装weex-toolkit</h3>
 
-<pre><code>npm install -g weex-toolkit
+<pre><code class="bash">npm install -g weex-toolkit
 </code></pre>
 
 <h3>3. 初始化weex工程</h3>
 
-<pre><code>weex create awesome-project
+<pre><code class="bash">weex create awesome-project
 </code></pre>
 
 <p>然后在项目根目录运行
-<code>
+<code>bash
 npm install
 </code>
 安装项目依赖</p>
 
 <h3>4. 生成原生用到的js文件</h3>
 
-<pre><code>npm run serve
+<pre><code class="bash">npm run serve
 </code></pre>
 
 <p>运行这个命令，会在本地启动一个http server，原生终端用到的js文件就可以通过url访问了。生成的js在dist目录下，找到之后就可以拼出js的url了，例如
@@ -140,14 +140,14 @@ npm install
 
 <h3>1.自定义图片下载协议WXImgLoaderProtocol</h3>
 
-<pre><code>@protocol WXImgLoaderProtocol &lt;WXModuleProtocol&gt;
+<pre><code class="objc">@protocol WXImgLoaderProtocol &lt;WXModuleProtocol&gt;
 -(id&lt;WXImageOperationProtocol&gt;)downloadImageWithURL:(NSString *)url imageFrame:(CGRect)imageFrame userInfo:(NSDictionary *)options completed:(void(^)(UIImage *image,  NSError *error, BOOL finished))completedBlock;
 @end
 </code></pre>
 
 <h3>2.协议的实现类WXImgLoaderDefaultImpl</h3>
 
-<pre><code>//WXImgLoaderDefaultImpl.h文件
+<pre><code class="objc">//WXImgLoaderDefaultImpl.h文件
 @interface WXImgLoaderDefaultImpl : NSObject
 @end
 
@@ -172,7 +172,7 @@ npm install
 
 <h3>3.在weex初始化的时候注册协议</h3>
 
-<pre><code>[WXSDKEngine registerHandler:[WXImgLoaderDefaultImpl new] withProtocol:@protocol(WXImgLoaderProtocol)];
+<pre><code class="objc">[WXSDKEngine registerHandler:[WXImgLoaderDefaultImpl new] withProtocol:@protocol(WXImgLoaderProtocol)];
 </code></pre>
 
 <h2>四. todo</h2>
