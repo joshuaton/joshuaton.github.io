@@ -11,14 +11,14 @@ categories: iOS
 
 ##一. 现有iOS应用的修改
 ###1. 用cocopods引入WeexSDK
-```
-pod 'WeexSDK', ‘0.18.0'
+```bash
+pod 'WeexSDK', '0.18.0'
 ```
 
 ###2. 在iOS APP里初始化Weex
 didFinishLaunchingWithOptions里添加代码
 
-```
+```objc
 //business configuration
 [WXAppConfiguration setAppGroup:@"TencentApp"];
 [WXAppConfiguration setAppName:@"TIP"];
@@ -40,7 +40,7 @@ didFinishLaunchingWithOptions里添加代码
 ```
 
 ###3. 在业务相关页面用weex渲染原生View
-```
+```objc
 @interface IGWeexDemoViewController()
 
 @property (nonatomic, strong) WXSDKInstance *instance;
@@ -88,25 +88,24 @@ didFinishLaunchingWithOptions里添加代码
 ##二. 生成js文件
 在第一张的第3节中，原生View通过加载一个js文件，然后用Weex SDK进行渲染。这一章介绍js文件的生成方法。
 ###1. 安装node
-```
+```bash
 brew install node
-
 ```
 ###2. 安装weex-toolkit
-```
+```bash
 npm install -g weex-toolkit
 ```
 ###3. 初始化weex工程
-```
+```bash
 weex create awesome-project
 ```
 然后在项目根目录运行
-```
+```bash
 npm install
 ```
 安装项目依赖
 ###4. 生成原生用到的js文件
-```
+```bash
 npm run serve
 ```
 运行这个命令，会在本地启动一个http server，原生终端用到的js文件就可以通过url访问了。生成的js在dist目录下，找到之后就可以拼出js的url了，例如
@@ -115,13 +114,13 @@ http://10.66.212.209:8081/dist/index.js。
 ##三. 如何显示网络图片
 运行demo后，会发现网络图片不能展示。原来weex初始并没有集成网络图片下载功能，需要自己去实现。方法如下
 ###1.自定义图片下载协议WXImgLoaderProtocol
-```
+```objc
 @protocol WXImgLoaderProtocol <WXModuleProtocol>
 -(id<WXImageOperationProtocol>)downloadImageWithURL:(NSString *)url imageFrame:(CGRect)imageFrame userInfo:(NSDictionary *)options completed:(void(^)(UIImage *image,  NSError *error, BOOL finished))completedBlock;
 @end
 ```
 ###2.协议的实现类WXImgLoaderDefaultImpl
-```
+```objc
 //WXImgLoaderDefaultImpl.h文件
 @interface WXImgLoaderDefaultImpl : NSObject
 @end
@@ -145,7 +144,7 @@ http://10.66.212.209:8081/dist/index.js。
 @end
 ```
 ###3.在weex初始化的时候注册协议
-```
+```objc
 [WXSDKEngine registerHandler:[WXImgLoaderDefaultImpl new] withProtocol:@protocol(WXImgLoaderProtocol)];
 ```
 ##四. todo
