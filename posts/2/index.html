@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="项目由http转成了https，遇到个问题是用charles不能抓包的问题。按照抓取http包的方式搭好了环境后，在浏览器里出现了这样的提示。 ">
+  <meta name="description" content="CardView是Android5.0（API 21）加入的新控件，当然，在API 21以下也能用，在build.gradle的依赖里加入下边一行就可以用了 compile 'com.android.support:cardview-v7:23.1.1' 项目中要做一个卡片浏览的程序， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -61,6 +61,78 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">CardView在API 21以下的圆角效果处理</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-07-21T19:48:15+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>CardView是Android5.0（API 21）加入的新控件，当然，在API 21以下也能用，在build.gradle的依赖里加入下边一行就可以用了</p>
+
+<p><code>
+compile 'com.android.support:cardview-v7:23.1.1'
+</code></p>
+
+<p>项目中要做一个卡片浏览的程序，卡片需要有5dp的圆角，圆角效果CardView自带属性就可以支持，加上app:cardCornerRadius属性就好了，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;android.support.v7.widget.CardView</span>
+</span><span class='line'>  <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+</span><span class='line'>  <span class="na">xmlns:app=</span><span class="s">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+</span><span class='line'>  <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+</span><span class='line'>  <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+</span><span class='line'>  <span class="na">app:cardUseCompatPadding=</span><span class="s">&quot;true&quot;</span>
+</span><span class='line'>  <span class="na">app:cardCornerRadius=</span><span class="s">&quot;5dp&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  ...
+</span><span class='line'><span class="nt">&lt;/android.support.v7.widget.CardView&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -351,7 +423,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (6)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
@@ -361,6 +433,10 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html">集成Weex到现有应用-iOS篇</a>
+      </li>
     
       <li class="post">
         <a href="/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html">如何查看p12文件的信息</a>
@@ -378,10 +454,6 @@
         <a href="/blog/mobiketi-yan-xu.html">mobike体验续</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/mobiketi-yan.html">mobike体验</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -395,7 +467,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - jason <br/>
+  Copyright &copy; 2018 - jason <br/>
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
 </p>
 
