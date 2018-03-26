@@ -323,6 +323,25 @@
   </footer>
 </article>
 
+<section>
+  <h1>Comments</h1>
+  <div id="container"></div>
+</section>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+    owner: 'joshuaton',
+    repo: 'https://github.com/joshuaton/joshuaton.github.io.git',
+    oauth: {
+        client_id: 'eec868eaacadc00f17c0',
+        client_secret: '9840ef585828127e5f235ff6d2b28141ae182f98',
+    },
+});
+gitment.render('container');
+</script>
+
+
 </div>
 
 <aside class="sidebar">
