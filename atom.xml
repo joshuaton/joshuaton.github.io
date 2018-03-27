@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-03-26T15:49:47+08:00</updated>
+  <updated>2018-03-27T11:24:58+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,227 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Weex中js和Native的交互-iOS篇]]></title>
+    <link href="http://jason5.cn/blog/weexzhong-jshe-nativede-jiao-hu-iospian.html"/>
+    <updated>2018-03-27T11:21:56+08:00</updated>
+    <id>http://jason5.cn/blog/weexzhong-jshe-nativede-jiao-hu-iospian</id>
+    <content type="html"><![CDATA[<p>终端集成Weex后，看了下js调用Native的方法，做了个展示列表的demo，做下记录。</p>
+
+<p><img src="http://jason5.cn/images/QQ20180327-105246.png" alt="" /></p>
+
+<!--more-->
+
+
+<h2>Native端</h2>
+
+<p>要实现Weex调用Native，需要实现自定义的module，暴露相应的方法，并且注册。完成这个过程后，js里可以直接注册过的module中的方法，并且通过callback拿到返回结果。下边以weex调用native的网络模块获取数据并进行展示的例子，进行介绍。</p>
+
+<h3>1. 实现WXModuleProtocol协议</h3>
+
+<p>自定义module，需要实现WXModuleProtocol协议</p>
+
+<p>WXCustomNetworkModule.h</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">WXCustomNetworkModule</span> : <span class="bp">NSObject</span><span class="o">&lt;</span><span class="n">WXModuleProtocol</span><span class="o">&gt;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. 实现网络请求数据的方法，并且暴露给js</h3>
+
+<p>WXCustomNetworkModule.m</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">WXCustomNetworkModule</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">merchants</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">pageIndex</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">WXCustomNetworkModule</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">WX_EXPORT_METHOD</span><span class="p">(</span><span class="k">@selector</span><span class="p">(</span><span class="nl">getMerchantList</span><span class="p">:))</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">getMerchantList</span><span class="p">:(</span><span class="n">WXModuleCallback</span><span class="p">)</span><span class="n">callback</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">TipCredit_QueryMerchantCreditListReq</span> <span class="o">*</span><span class="n">req</span> <span class="o">=</span> <span class="p">[[</span><span class="n">TipCredit_QueryMerchantCreditListReq</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">req</span><span class="p">.</span><span class="n">userLng</span> <span class="o">=</span> <span class="p">[</span><span class="n">CPLocationAPI</span> <span class="n">getLongitude</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">req</span><span class="p">.</span><span class="n">userLat</span> <span class="o">=</span> <span class="p">[</span><span class="n">CPLocationAPI</span> <span class="n">getLatitude</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">req</span><span class="p">.</span><span class="n">pageidx</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">pageIndex</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">req</span><span class="p">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">TipNetWorkManager</span> <span class="nl">requestWithReq</span><span class="p">:</span><span class="n">req</span> <span class="nl">withRspClass</span><span class="p">:[</span><span class="n">TipCredit_QueryMerchantCreditListRsp</span> <span class="k">class</span><span class="p">]</span> <span class="nl">withCmd</span><span class="p">:</span><span class="mi">90086</span> <span class="nl">successBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">respondObjc</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">TipCredit_QueryMerchantCreditListRsp</span> <span class="o">*</span><span class="n">rsp</span> <span class="o">=</span> <span class="p">(</span><span class="n">TipCredit_QueryMerchantCreditListRsp</span> <span class="o">*</span><span class="p">)</span><span class="n">respondObjc</span><span class="p">;</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">pageIndex</span> <span class="o">=</span> <span class="n">rsp</span><span class="p">.</span><span class="n">pageidx</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">merchants</span> <span class="nl">addObjectsFromArray</span><span class="p">:</span><span class="n">rsp</span><span class="p">.</span><span class="n">merchantcreditsArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">self</span><span class="p">.</span><span class="n">merchants</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">merchants</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">merchants</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="n">toJson</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">callback</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">merchants</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="nl">failedBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">failedMsg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">resultCode</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>getMerchantList是发送网络请求获取后台数据的方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">WX_EXPORT_METHOD</span><span class="p">(</span><span class="k">@selector</span><span class="p">(</span><span class="nl">getMerchantList</span><span class="p">:))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这行代码可以将此函数暴露给js调用。</p>
+
+<h3>3. 初始化的时候注册自定义module，并且指定module name</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="nl">registerModule</span><span class="p">:</span><span class="s">@&quot;network&quot;</span> <span class="nl">withClass</span><span class="p">:[</span><span class="n">WXCustomNetworkModule</span> <span class="k">class</span><span class="p">]];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>module name命名为network，表示网络模块。</p>
+
+<h3>4. js拿到回调数据</h3>
+
+<p>实现的方法，在最后可以加一个WXModuleCallback类型的callback参数</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">callback</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">merchants</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过这行代码将结果回调给js。回调的参数类型支持NSString, NSArray, NSDictionary。所以这里回调之前，将网络返回的自定义类转换成了NSDictionary，再进行回调。</p>
+
+<h2>js端</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">template</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">list</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">cell</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;cell&quot;</span> <span class="nx">v</span><span class="o">-</span><span class="k">for</span><span class="o">=</span><span class="s2">&quot;merchant in lists&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;panel&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="o">&lt;</span><span class="nx">text</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="o">&gt;</span><span class="p"></span><span class="o">&lt;</span><span class="err">/text&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/cell&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/list&gt; </span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/template&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">HelloWorld</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">data</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">logo</span> <span class="o">:</span> <span class="s1">&#39;https://gw.alicdn.com/tfs/TB1yopEdgoQMeJjy1XaXXcSsFXa-640-302.png&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">lists</span> <span class="o">:</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">created</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span>
+</span><span class='line'>    <span class="nx">weex</span><span class="p">.</span><span class="nx">requireModule</span><span class="p">(</span><span class="s1">&#39;network&#39;</span><span class="p">).</span><span class="nx">getMerchantList</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">rsp</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">lists</span> <span class="o">=</span> <span class="nx">rsp</span>
+</span><span class='line'>    <span class="p">})</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>index.vue的关键代码如上。created方法在页面创建时候会执行。通过</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">weex</span><span class="p">.</span><span class="nx">requireModule</span><span class="p">(</span><span class="s1">&#39;network&#39;</span><span class="p">).</span><span class="nx">getMerchantList</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这行代码，调用原生网络模块，并且拿到回调数据进行展示。</p>
+
+<h2>总结</h2>
+
+<p>本文介绍了Weex中js与Native的交互方式。通过此方法，界面部分完全可以在js里实现，iOS和Android双端只写一份，原生部分只需要提供负责网络请求的module就可以了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[集成Weex到现有应用-iOS篇]]></title>
