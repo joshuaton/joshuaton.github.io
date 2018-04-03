@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-03-27T18:31:47+08:00</updated>
+  <updated>2018-04-03T19:47:12+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,82 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[利用Weex DevTool调试Native应用-iOS篇]]></title>
+    <link href="http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html"/>
+    <updated>2018-04-03T17:48:04+08:00</updated>
+    <id>http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian</id>
+    <content type="html"><![CDATA[<p>官方的文档里说提供了一个工具，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。</p>
+
+<h3>1. 先在本机安装iOS的调试工具</h3>
+
+<p>工具地址是 <a href="https://github.com/weexteam/weex-devtool-iOS">https://github.com/weexteam/weex-devtool-iOS</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">weex</span><span class="o">-</span><span class="nx">devtool</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行调试工具weex-devtool，启动成功后，在终端命令行里会显示如下两行信息。
+<img src="http://jason5.cn/images/QQ20180403-181423.png" alt="" /></p>
+
+<p>Websocket Address For Native是调试工具暴露的一个websocket地址，用于和Native之间的双向通信，之后Native中的代码会用到。
+Debug Server是调试工具提供的一个web服务地址，开发者通过这个网页可以像调试web页面一样，来调试Native应用。</p>
+
+<h3>2. 将WXDevTool集成到项目工程中</h3>
+
+<p>增加podfile文件，只在Debug模式下集成WXDevtool</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">pod</span> <span class="s1">&#39;WXDevtool&#39;</span><span class="p">,</span>   <span class="s1">&#39;0.15.3&#39;</span><span class="p">,</span> <span class="o">:</span><span class="nx">configurations</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;Debug&#39;</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里遇到两个问题</p>
+
+<p>（1）集成后编不过，根据提示发现这个库和项目里用到的FLEX有冲突，所以暂时去掉了FLEX。希望后续升级版本能解决这两个库之间的冲突。</p>
+
+<p>（2）发现还编不过，是需要再集成一个依赖库SocketRocket</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">pod</span> <span class="s1">&#39;SocketRocket&#39;</span><span class="p">,</span> <span class="s1">&#39;0.4.2&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. 在App启动的时候加入如下代码</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">WXDevTool</span> <span class="nl">setDebug</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXDevTool</span> <span class="nl">launchDevToolDebugWithUrl</span><span class="p">:</span><span class="s">@&quot;ws://10.32.194.33:8088/debugProxy/native&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+这里launchDevToolDebugWithUrl函数需要传一个参数，就是在第一步中的websocket地址。</p>
+
+<h3>4. 开始调试</h3>
+
+<p>如果之前一切顺利的话，现在就可以调试了。网页打开调试地址<a href="http://10.32.194.33:8088%EF%BC%8C%E5%90%AF%E5%8A%A8Native">http://10.32.194.33:8088%EF%BC%8C%E5%90%AF%E5%8A%A8Native</a> App，然后会看到我们的App信息出现在网页中。
+<img src="http://jason5.cn/images/QQ20180403-182830.png" alt="" /></p>
+
+<p>可以看到下边两个黑色的大按钮，是调试工具提供的两个功能，Debugger和Inspector。
+Debugger用来调试js代码。在里边可以给代码设置断点，观察变量值，查看console.log的输出，跟Web开发一样的体验。
+<img src="http://jason5.cn/images/QQ20180403-193719.png" alt="" /></p>
+
+<p>Inspector用来调试UI界面。这里可以看到界面的树形结构，可以直接修改位置等属性，可以实时看到效果。这里如果在终端操作页面，浏览器里的页面也是会实时刷新的。
+<img src="http://jason5.cn/images/QQ20180403-193917.png" alt="" /></p>
+
+<p>这里遇到了一个问题，启动App后，必须首先进入Debugger页面打开调试工具，Native里的weex页面才能被正常渲染和执行，暂时还没搞清楚原因。</p>
+
+<h3>5.总结</h3>
+
+<p>调试工具可以让开发Native的时候，像Web开发一样去调试，一定程度上提高了效率，对熟悉Web开发的同学来讲，应该能很快上手。</p>
+
+<p>PS：下一篇文章会讲一下原生页面和weex页面之间的跳转以及在weex中如何自定义导航栏。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Weex中js和Native的交互-iOS篇]]></title>
