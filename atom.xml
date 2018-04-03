@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-04-03T19:47:12+08:00</updated>
+  <updated>2018-04-03T19:52:28+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html"/>
     <updated>2018-04-03T17:48:04+08:00</updated>
     <id>http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian</id>
-    <content type="html"><![CDATA[<p>官方的文档里说提供了一个工具，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。</p>
+    <content type="html"><![CDATA[<p>官方的文档里说提供了一个工具DevTool，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。</p>
 
 <h3>1. 先在本机安装iOS的调试工具</h3>
 
@@ -29,8 +29,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>运行调试工具weex-devtool，启动成功后，在终端命令行里会显示如下两行信息。
-<img src="http://jason5.cn/images/QQ20180403-181423.png" alt="" /></p>
+<p>运行调试工具weex-devtool，启动成功后，在终端命令行里会显示如下两行信息。</p>
+
+<p><a href="http://jason5.cn/images/QQ20180403-181423.png"><img src="http://jason5.cn/images/QQ20180403-181423.png" alt="" /></a></p>
 
 <p>Websocket Address For Native是调试工具暴露的一个websocket地址，用于和Native之间的双向通信，之后Native中的代码会用到。
 Debug Server是调试工具提供的一个web服务地址，开发者通过这个网页可以像调试web页面一样，来调试Native应用。</p>
@@ -69,15 +70,19 @@ Debug Server是调试工具提供的一个web服务地址，开发者通过这�
 
 <h3>4. 开始调试</h3>
 
-<p>如果之前一切顺利的话，现在就可以调试了。网页打开调试地址<a href="http://10.32.194.33:8088%EF%BC%8C%E5%90%AF%E5%8A%A8Native">http://10.32.194.33:8088%EF%BC%8C%E5%90%AF%E5%8A%A8Native</a> App，然后会看到我们的App信息出现在网页中。
-<img src="http://jason5.cn/images/QQ20180403-182830.png" alt="" /></p>
+<p>如果之前一切顺利的话，现在就可以调试了。网页打开调试地址<a href="http://10.32.194.33:8088">http://10.32.194.33:8088</a>  <br/>
+启动Native App，然后会看到我们的App信息出现在网页中。</p>
+
+<p><a href="http://jason5.cn/images/QQ20180403-182830.png"><img src="http://jason5.cn/images/QQ20180403-182830.png" alt="" /></a></p>
 
 <p>可以看到下边两个黑色的大按钮，是调试工具提供的两个功能，Debugger和Inspector。
-Debugger用来调试js代码。在里边可以给代码设置断点，观察变量值，查看console.log的输出，跟Web开发一样的体验。
-<img src="http://jason5.cn/images/QQ20180403-193719.png" alt="" /></p>
+Debugger用来调试js代码。在里边可以给代码设置断点，观察变量值，查看console.log的输出，跟Web开发一样的体验。</p>
 
-<p>Inspector用来调试UI界面。这里可以看到界面的树形结构，可以直接修改位置等属性，可以实时看到效果。这里如果在终端操作页面，浏览器里的页面也是会实时刷新的。
-<img src="http://jason5.cn/images/QQ20180403-193917.png" alt="" /></p>
+<p><a href="http://jason5.cn/images/QQ20180403-193719.png"><img src="http://jason5.cn/images/QQ20180403-193719.png" alt="" /></a></p>
+
+<p>Inspector用来调试UI界面。这里可以看到界面的树形结构，可以直接修改位置等属性，可以实时看到效果。这里如果在终端操作页面，浏览器里的页面也是会实时刷新的。</p>
+
+<p><a href="http://jason5.cn/images/QQ20180403-193917.png"><img src="http://jason5.cn/images/QQ20180403-193917.png" alt="" /></a></p>
 
 <p>这里遇到了一个问题，启动App后，必须首先进入Debugger页面打开调试工具，Native里的weex页面才能被正常渲染和执行，暂时还没搞清楚原因。</p>
 
