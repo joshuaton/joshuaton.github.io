@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-04-09T17:14:52+08:00</updated>
+  <updated>2018-04-09T17:24:34+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -429,7 +429,7 @@ methods: {
 </span><span class='line'>&lt;h3&gt;4.效果&lt;/h3&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;最后看一下效果，看得出来哪部分是原生实现，哪部分是Weex实现吗
-</span><span class='line'>&lt;a href="http://jason5.cn/images/weex-navi-demo.mov"&gt;&lt;img src="http://jason5.cn/images/weex-navi-demo.mov" alt="" /&gt;&lt;/a&gt;&lt;/p&gt;
+</span><span class='line'>&lt;a href="http://jason5.cn/images/weex-navi-demo.gif"&gt;&lt;img src="http://jason5.cn/images/weex-navi-demo.gif" alt="" /&gt;&lt;/a&gt;&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;hr /&gt;
 </span><span class='line'>
