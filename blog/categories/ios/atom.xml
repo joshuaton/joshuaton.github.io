@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-04-09T16:49:47+08:00</updated>
+  <updated>2018-04-09T16:51:03+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -407,6 +407,9 @@ methods: {
 <span class='line-number'>223</span>
 <span class='line-number'>224</span>
 <span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>导航栏支持设置标题，左边和右边部分的显隐，左图片，右图片和右文字。对不同的平台做了下适配。&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;调用的时候比较简单，在页面头部加上如下代码就可以了&lt;/p&gt;
@@ -435,6 +438,9 @@ methods: {
 </span><span class='line'>    &lt;updated&gt;2018-04-03T17:48:04+08:00&lt;/updated&gt;
 </span><span class='line'>    &lt;id&gt;http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian&lt;/id&gt;
 </span><span class='line'>    &lt;content type="html"&gt;&lt;![CDATA[&lt;p&gt;官方的文档里说提供了一个工具DevTool，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;!--more--&gt;
+</span><span class='line'>
 </span><span class='line'>
 </span><span class='line'>&lt;h3&gt;1. 先在本机安装iOS的调试工具&lt;/h3&gt;
 </span><span class='line'>

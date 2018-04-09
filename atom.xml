@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-04-09T16:49:47+08:00</updated>
+  <updated>2018-04-09T16:51:03+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -502,6 +502,9 @@
     <updated>2018-04-03T17:48:04+08:00</updated>
     <id>http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian</id>
     <content type="html"><![CDATA[<p>官方的文档里说提供了一个工具DevTool，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。</p>
+
+<!--more-->
+
 
 <h3>1. 先在本机安装iOS的调试工具</h3>
 
