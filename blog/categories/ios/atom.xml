@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-04-09T16:51:44+08:00</updated>
+  <updated>2018-04-09T17:13:58+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -410,6 +410,11 @@ methods: {
 <span class='line-number'>226</span>
 <span class='line-number'>227</span>
 <span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>导航栏支持设置标题，左边和右边部分的显隐，左图片，右图片和右文字。对不同的平台做了下适配。&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;调用的时候比较简单，在页面头部加上如下代码就可以了&lt;/p&gt;
@@ -420,6 +425,11 @@ methods: {
 </span><span class='line'>    :show-right="false"&gt;
 </span><span class='line'>&lt;/NavBar&gt;
 </span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h3&gt;4.效果&lt;/h3&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;最后看一下效果，看得出来哪部分是原生实现，哪部分是Weex实现吗
+</span><span class='line'>&lt;a href="http://jason5.cn/images/weex-navi-demo.mov"&gt;&lt;img src="http://jason5.cn/images/weex-navi-demo.mov" alt="" /&gt;&lt;/a&gt;&lt;/p&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;hr /&gt;
 </span><span class='line'>
