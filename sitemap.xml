@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html</loc>
+<lastmod>2018-03-26T11:48:50+08:00</lastmod>
+</url>
+<url>
+<loc>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html</loc>
+<lastmod>2017-12-16T14:37:21+08:00</lastmod>
+</url>
+<url>
+<loc>http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html</loc>
+<lastmod>2017-11-22T10:42:20+08:00</lastmod>
+</url>
+<url>
+<loc>http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html</loc>
+<lastmod>2017-06-16T15:01:32+08:00</lastmod>
+</url>
+<url>
 <loc>http://jason5.cn/blog/mobiketi-yan-xu.html</loc>
 <lastmod>2016-11-15T14:49:07+08:00</lastmod>
 </url>
@@ -56,7 +72,16 @@
 <loc>http://jason5.cn/</loc>
 </url>
 <url>
+<loc>http://jason5.cn/archives/</loc>
+</url>
+<url>
+<loc>http://jason5.cn/blog/</loc>
+</url>
+<url>
 <loc>http://jason5.cn/blog/archives/</loc>
+</url>
+<url>
+<loc>http://jason5.cn/about/</loc>
 </url>
 <url>
 <loc>http://jason5.cn/blog/categories/other/</loc>
@@ -72,5 +97,8 @@
 </url>
 <url>
 <loc>http://jason5.cn/blog/categories/performance/</loc>
+</url>
+<url>
+<loc>http://jason5.cn/blog/categories/ios/</loc>
 </url>
 </urlset>

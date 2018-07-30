@@ -4,7 +4,7 @@
   <title><![CDATA[分类：other | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/other/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-07-30T21:10:21+08:00</updated>
+  <updated>2018-07-30T21:17:56+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[升级到macOS High Sierra Pod不能执行的解决办法]]></title>
+    <link href="http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html"/>
+    <updated>2017-11-22T10:42:20+08:00</updated>
+    <id>http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa</id>
+    <content type="html"><![CDATA[<p>macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下：
+<code>
+JUNSHAO-MC0:~ junshao$ pod
+-bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby: bad interpreter: No such file or directory
+</code>
+解决办法是重装cocoapods
+<code>
+sudo gem uninstall cocoapods
+sudo gem install -n /usr/local/bin cocoapods
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mobike体验续]]></title>
@@ -211,18 +229,6 @@ un<em>frigging</em>believable</p>
 <h3>图片链接</h3>
 
 <p><a href="http://www.baidu.com"><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Hello World第一篇]]></title>
-    <link href="http://jason5.cn/blog/hello-world.html"/>
-    <updated>2015-07-21T12:26:37+08:00</updated>
-    <id>http://jason5.cn/blog/hello-world</id>
-    <content type="html"><![CDATA[<p>哈哈，我的“你好，世界”<br/>
-终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
-注：用 Octopress + Github Pages构建博客是不需要自己准备服务器的哦，这点就完爆WordPress了。
-<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">Octopress 搭建流程 – Github Pages</a></p>
 ]]></content>
   </entry>
   

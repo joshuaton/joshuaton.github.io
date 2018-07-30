@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-07-30T21:10:21+08:00</updated>
+  <updated>2018-07-30T21:17:56+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,396 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[集成Weex到现有应用-iOS篇]]></title>
+    <link href="http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html"/>
+    <updated>2018-03-26T11:48:50+08:00</updated>
+    <id>http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian</id>
+    <content type="html"><![CDATA[<p>最近看了一下weex，将weex集成到了现有的iOS APP里，并且实现了一个静态页面的展示，做下记录。</p>
+
+<!--more-->
+
+
+<h2>一. 现有iOS应用的修改</h2>
+
+<h3>1. 用cocopods引入WeexSDK</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pod <span class="s1">&#39;WeexSDK&#39;</span>, <span class="s1">&#39;0.18.0&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. 在iOS APP里初始化Weex</h3>
+
+<p>didFinishLaunchingWithOptions里添加代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//business configuration</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppGroup</span><span class="p">:</span><span class="s">@&quot;TencentApp&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppName</span><span class="p">:</span><span class="s">@&quot;TIP&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppVersion</span><span class="p">:</span><span class="s">@&quot;1.0.0&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//init sdk environment</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="n">initSDKEnvironment</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//register custom module and component，optional</span>
+</span><span class='line'><span class="c1">//这里暂时用不到，之后再说</span>
+</span><span class='line'><span class="c1">//[WXSDKEngine registerComponent:@&quot;MyView&quot; withClass:[MyViewComponent class]];</span>
+</span><span class='line'><span class="c1">//[WXSDKEngine registerModule:@&quot;event&quot; withClass:[WXEventModule class]];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//register the implementation of protocol, optional</span>
+</span><span class='line'><span class="c1">//如果在weex页面里需要下载网络图片，需要自己实现协议，如果没有，可以注释掉</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="nl">registerHandler</span><span class="p">:[</span><span class="n">WXImgLoaderDefaultImpl</span> <span class="n">new</span><span class="p">]</span> <span class="nl">withProtocol</span><span class="p">:@</span><span class="n">protocol</span><span class="p">(</span><span class="n">WXImgLoaderProtocol</span><span class="p">)];</span>
+</span><span class='line'><span class="c1">//set the log level</span>
+</span><span class='line'><span class="p">[</span><span class="n">WXLog</span> <span class="nl">setLogLevel</span><span class="p">:</span> <span class="n">WXLogLevelAll</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. 在业务相关页面用weex渲染原生View</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">IGWeexDemoViewController</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="n">WXSDKInstance</span> <span class="o">*</span><span class="n">instance</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">weexView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">IGWeexDemoViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//    self.url = @&quot;http://10.66.212.209:8081/dist/index.js&quot;;</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span> <span class="s">@&quot;http://weex-1251917893.cosgz.myqcloud.com/index.js&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WXSDKInstance</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">viewController</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">__weak</span> <span class="k">typeof</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">onCreate</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span> <span class="o">=</span> <span class="n">view</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">onFailed</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//process failure</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">renderFinish</span> <span class="o">=</span> <span class="o">^</span> <span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//process renderFinish</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_instance</span> <span class="nl">renderWithURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">url</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_instance</span> <span class="n">destroyInstance</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 运行效果</h3>
+
+<p><img src="http://jason5.cn/images/QQ20180326-114148.png" alt="" /></p>
+
+<h2>二. 生成js文件</h2>
+
+<p>在第一张的第3节中，原生View通过加载一个js文件，然后用Weex SDK进行渲染。这一章介绍js文件的生成方法。</p>
+
+<h3>1. 安装node</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>brew install node
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. 安装weex-toolkit</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install -g weex-toolkit
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. 初始化weex工程</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>weex create awesome-project
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在项目根目录运行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装项目依赖</p>
+
+<h3>4. 生成原生用到的js文件</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm run serve
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行这个命令，会在本地启动一个http server，原生终端用到的js文件就可以通过url访问了。生成的js在dist目录下，找到之后就可以拼出js的url了，例如
+<a href="http://10.66.212.209:8081/dist/index.js%E3%80%82">http://10.66.212.209:8081/dist/index.js%E3%80%82</a></p>
+
+<h2>三. 如何显示网络图片</h2>
+
+<p>运行demo后，会发现网络图片不能展示。原来weex初始并没有集成网络图片下载功能，需要自己去实现。方法如下</p>
+
+<h3>1.自定义图片下载协议WXImgLoaderProtocol</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@protocol</span> <span class="nc">WXImgLoaderProtocol</span> <span class="o">&lt;</span><span class="n">WXModuleProtocol</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">downloadImageWithURL</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">url</span> <span class="nl">imageFrame</span><span class="p">:(</span><span class="bp">CGRect</span><span class="p">)</span><span class="n">imageFrame</span> <span class="nl">userInfo</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">options</span> <span class="nl">completed</span><span class="p">:(</span><span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span>  <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">))</span><span class="n">completedBlock</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2.协议的实现类WXImgLoaderDefaultImpl</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//WXImgLoaderDefaultImpl.h文件</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WXImgLoaderDefaultImpl</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//WXImgLoaderDefaultImpl.m文件</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">WXImgLoaderDefaultImpl</span>
+</span><span class='line'><span class="cp">#pragma mark WXImgLoaderProtocol</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">downloadImageWithURL:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span> <span class="nf">imageFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">imageFrame</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">completed:</span><span class="p">(</span><span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span>  <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">))</span><span class="nv">completedBlock</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">url</span> <span class="nl">hasPrefix</span><span class="p">:</span><span class="s">@&quot;//&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;http:&quot;</span> <span class="nl">stringByAppendingString</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)[[</span><span class="n">SDWebImageManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">downloadImageWithURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="n">url</span><span class="p">]</span> <span class="nl">options</span><span class="p">:</span><span class="mi">0</span> <span class="nl">progress</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSInteger</span> <span class="n">receivedSize</span><span class="p">,</span> <span class="bp">NSInteger</span> <span class="n">expectedSize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">}</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">completedBlock</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">completedBlock</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">finished</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3.在weex初始化的时候注册协议</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="nl">registerHandler</span><span class="p">:[</span><span class="n">WXImgLoaderDefaultImpl</span> <span class="n">new</span><span class="p">]</span> <span class="nl">withProtocol</span><span class="p">:@</span><span class="n">protocol</span><span class="p">(</span><span class="n">WXImgLoaderProtocol</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>四. todo</h2>
+
+<p>后续还有一些问题要研究</p>
+
+<ol>
+<li>weex页面里，如何调用native的网络模块获取到数据</li>
+<li>多页面的跳转</li>
+<li>调试工具weex devtool的使用方法</li>
+<li>如何构建发布流程</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[如何查看p12文件的信息]]></title>
+    <link href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html"/>
+    <updated>2017-12-16T14:37:21+08:00</updated>
+    <id>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi</id>
+    <content type="html"><![CDATA[<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes</span></code></pre></td></tr></table></div></figure>
+
+
+<p>pem文件可以直接用文本工具打开</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[升级到macOS High Sierra Pod不能执行的解决办法]]></title>
+    <link href="http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html"/>
+    <updated>2017-11-22T10:42:20+08:00</updated>
+    <id>http://jason5.cn/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa</id>
+    <content type="html"><![CDATA[<p>macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>JUNSHAO-MC0:~ junshao$ pod
+</span><span class='line'>-bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby: bad interpreter: No such file or directory</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解决办法是重装cocoapods</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gem uninstall cocoapods
+</span><span class='line'>sudo gem install -n /usr/local/bin cocoapods</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf]]></title>
+    <link href="http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html"/>
+    <updated>2017-06-16T15:01:32+08:00</updated>
+    <id>http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself</id>
+    <content type="html"><![CDATA[<p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
+
+<!--more-->
+
+
+<h2>解决 retain circle</h2>
+
+<p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
+
+<p>示例代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>clang 的文档表示，在 doSomething 内，weakSelf 不会被释放。但，下面的情况除外：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    [weakSelf doSomething];
+</span><span class='line'>    [weakSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 doSomething 中，weakSelf 不会变成 nil，不过在 doSomething 执行完成，调用第二个方法 doOtherThing 的时候，weakSelf 有可能被释放，于是，strongSelf 就派上用场了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+</span><span class='line'>    __strong __typeof(self) strongSelf = weakSelf;
+</span><span class='line'>    [strongSelf doSomething];
+</span><span class='line'>    [strongSelf doOtherThing];
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>__strong 确保在 Block 内，strongSelf 不会被释放。</p>
+
+<h2>总结</h2>
+
+<ul>
+<li>在 Block 内如果需要访问 self 的方法、变量，建议使用 weakSelf。</li>
+<li>如果在 Block 内需要多次 访问 self，则需要使用 strongSelf。</li>
+</ul>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself">I finally figured out weakSelf and strongSelf</a></li>
+<li><a href="https://stackoverflow.com/questions/21113963/is-the-weakself-strongself-dance-really-necessary-when-referencing-self-inside-a?rq=1">Is the weakSelf/strongSelf dance really necessary when referencing self inside a non-retained completion called from a UIViewController?</a></li>
+</ul>
+
+
+<blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mobike体验续]]></title>
