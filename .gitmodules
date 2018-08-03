@@ -4,9 +4,6 @@
 [submodule ".themes/Whitespace"]
 	path = .themes/Whitespace
 	url = https://github.com/lucaslew/whitespace.git
-[submodule ".themes/whiterspace"]
-	path = .themes/whiterspace
-	url = https://github.com/mjhea0/whiterspace.git
 [submodule ".themes/Abacus"]
 	path = .themes/Abacus
 	url = https://github.com/bhrigu123/abacus.git
