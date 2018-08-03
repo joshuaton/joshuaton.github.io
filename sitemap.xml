@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://jason5.cn/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan.html</loc>
+<lastmod>2018-04-09T15:33:36+08:00</lastmod>
+</url>
+<url>
+<loc>http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html</loc>
+<lastmod>2018-04-03T17:48:04+08:00</lastmod>
+</url>
+<url>
+<loc>http://jason5.cn/blog/weexzhong-jshe-nativede-jiao-hu-iospian.html</loc>
+<lastmod>2018-03-27T11:21:56+08:00</lastmod>
+</url>
+<url>
 <loc>http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html</loc>
 <lastmod>2018-03-26T11:48:50+08:00</lastmod>
 </url>
@@ -69,16 +81,16 @@
 <lastmod>2015-07-21T12:26:37+08:00</lastmod>
 </url>
 <url>
-<loc>http://jason5.cn/</loc>
+<loc>http://jason5.cn/archives/</loc>
 </url>
 <url>
-<loc>http://jason5.cn/archives/</loc>
+<loc>http://jason5.cn/blog/archives/</loc>
 </url>
 <url>
 <loc>http://jason5.cn/blog/</loc>
 </url>
 <url>
-<loc>http://jason5.cn/blog/archives/</loc>
+<loc>http://jason5.cn/</loc>
 </url>
 <url>
 <loc>http://jason5.cn/about/</loc>
@@ -100,5 +112,8 @@
 </url>
 <url>
 <loc>http://jason5.cn/blog/categories/ios/</loc>
+</url>
+<url>
+<loc>http://jason5.cn/posts/2/</loc>
 </url>
 </urlset>
