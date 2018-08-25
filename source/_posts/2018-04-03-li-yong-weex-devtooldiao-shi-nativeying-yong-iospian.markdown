@@ -3,7 +3,7 @@ layout: post
 title: "利用Weex DevTool调试Native应用-iOS篇"
 date: 2018-04-03 17:48:04 +0800
 comments: true
-categories: ios
+categories: weex
 ---
 官方的文档里说提供了一个工具DevTool，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。
 

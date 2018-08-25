@@ -3,7 +3,7 @@ layout: post
 title: "Weex中js和Native的交互-iOS篇"
 date: 2018-03-27 11:21:56 +0800
 comments: true
-categories: iOS
+categories: weex
 ---
 
 终端集成Weex后，看了下js调用Native的方法，做了个展示列表的demo，做下记录。

@@ -3,7 +3,7 @@ layout: post
 title: "集成Weex到现有应用-iOS篇"
 date: 2018-03-26 11:48:50 +0800
 comments: true
-categories: iOS
+categories: weex
 ---
 最近看了一下weex，将weex集成到了现有的iOS APP里，并且实现了一个静态页面的展示，做下记录。
 

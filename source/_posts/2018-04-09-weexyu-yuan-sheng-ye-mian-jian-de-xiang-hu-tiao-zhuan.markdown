@@ -3,7 +3,7 @@ layout: post
 title: "weex与原生页面间的相互跳转"
 date: 2018-04-09 15:33:36 +0800
 comments: true
-categories: ios
+categories: weex
 ---
 我们在现有应用中集成Weex，难免会遇到Weex页面与原生页面相互跳转的问题。通常的一种场景是，某一个中间的原生页面我们用Weex来替换，这样就存在原生页面跳转到Weex页面，再由Weex页面跳转到原生页面的场景。这篇文章讲述如何实现这种场景。
 
