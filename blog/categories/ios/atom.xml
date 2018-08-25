@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-08-03T11:29:36+08:00</updated>
+  <updated>2018-08-25T22:17:44+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用Weex实现三端开发架构和思路]]></title>
+    <link href="http://jason5.cn/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html"/>
+    <updated>2018-08-25T21:59:32+08:00</updated>
+    <id>http://jason5.cn/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu</id>
+    <content type="html"><![CDATA[<p>基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：</p>
+
+<p>1.iOS和Android客户端维持tcp+pb方式不变</p>
+
+<p>2.新增http proxy模块，提供http接口给Weex h5访问</p>
+
+<p>职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。目前http proxy用java实现，与Android客户端网络层复用代码。</p>
+
+<p>3.改造svr接入层，验证Weex h5登录态，进行openid转换</p>
+
+<p>以微信登录为例，之前iOS和Android用的是App授权登录，由于Weex h5是微信公众号授权登录，两者appid不同，授权得到的openid和accesstoken都不一样，需要支持对公众号进行登录校验。校验完登录态后，将公众号openid转换为App openid，再与svr逻辑层进行通信。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Weex与原生页面间的相互跳转]]></title>
@@ -829,18 +848,6 @@ npm install
 <li>如何构建发布流程</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[如何查看p12文件的信息]]></title>
-    <link href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html"/>
-    <updated>2017-12-16T14:37:21+08:00</updated>
-    <id>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi</id>
-    <content type="html"><![CDATA[<pre><code>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes
-</code></pre>
-
-<p>pem文件可以直接用文本工具打开</p>
 ]]></content>
   </entry>
   
