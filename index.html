@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="我们在现有应用中集成Weex，难免会遇到Weex页面与原生页面相互跳转的问题。通常的一种场景是，某一个中间的原生页面我们用Weex来替换，这样就存在原生页面跳转到Weex页面，再由Weex页面跳转到原生页面的场景。这篇文章讲述如何实现这种场景。 ">
+  <meta name="description" content="基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图： 1.iOS和Android客户端维持tcp+pb方式不变 2.新增http proxy模块，提供http接口给Weex h5访问 职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +23,7 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -65,6 +65,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html">用Weex实现三端开发架构和思路</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-08-25T21:59:32+08:00'><span class='date'>2018 年8 月25 日</span> <span class='time'>9:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：</p>
+
+<p><a href="http://jason5.cn/images/weex-http-proxy.png"><img src="http://jason5.cn/images/weex-http-proxy.png" alt="" /></a></p>
+
+<p>1.iOS和Android客户端维持tcp+pb方式不变</p>
+
+<p>2.新增http proxy模块，提供http接口给Weex h5访问</p>
+
+<p>职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。目前http proxy用java实现，与Android客户端网络层复用代码。</p>
+
+<p>3.改造svr接入层，验证Weex h5登录态，进行openid转换</p>
+
+<p>以微信登录为例，之前iOS和Android用的是App授权登录，由于Weex h5是微信公众号授权登录，两者appid不同，授权得到的openid和accesstoken都不一样，需要支持对公众号进行登录校验。校验完登录态后，将公众号openid转换为App openid，再与svr逻辑层进行通信。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -391,42 +432,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">利用traceview优化Android应用流畅度</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-08-03T18:19:30+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>6:19 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>众所周知，屏幕刷新频率必须要达到60Hz，人眼才能感觉不到界面的卡顿。60Hz意味着界面每一帧的计算加渲染时间不能超过16ms，当某些业务逻辑比较耗时的时候，执行时间可能超过16ms的阈值，这时候给用户直观的感受就是界面卡顿。</p>
-
-<p>traceview是安卓sdk提供的一个性能分析工具，能够收集函数的执行时间，以精确的分析系统的瓶颈所在。当我们遇到系统卡顿问题的时候，可以利用这个工具来进行分析。下边的篇幅就项目中一个真实的卡顿问题，来介绍traceview工具的使用。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -441,16 +446,21 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (6)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (2)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (6)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+<li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
 
   </ul>
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html">用Weex实现三端开发架构和思路</a>
+      </li>
     
       <li class="post">
         <a href="/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan.html">Weex与原生页面间的相互跳转</a>
@@ -466,10 +476,6 @@
     
       <li class="post">
         <a href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html">集成Weex到现有应用-iOS篇</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html">如何查看p12文件的信息</a>
       </li>
     
   </ul>
