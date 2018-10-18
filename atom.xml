@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-15T18:02:36+08:00</updated>
+  <updated>2018-10-18T15:52:23+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS开发中支持实时UI调试的方法]]></title>
+    <link href="http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html"/>
+    <updated>2018-10-18T14:02:46+08:00</updated>
+    <id>http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa</id>
+    <content type="html"><![CDATA[<h3>背景</h3>
+
+<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
+
+<h3>使用方法</h3>
+
+<p>1.在App Store下载InjectionIII</p>
+
+<p>2.在应用启动函数 加入以下代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
+
+<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
+
+<h3>原理</h3>
+
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[用Weex实现三端开发架构和思路]]></title>
@@ -2364,96 +2400,6 @@ method          加密方法，可选择 &ldquo;bf-cfb&rdquo;, &ldquo;aes-256-cf
 <p>参考资料：<br/>
 *  <a href="http://greendao-orm.com/">greenDAO – Android ORM for SQLite</a> <br/>
 *  <a href="http://glblong.blog.51cto.com/3058613/1354953">Android开源：数据库ORM框架GreenDao学习心得及使用总结</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Markdown学习]]></title>
-    <link href="http://jason5.cn/blog/markdownxue-xi.html"/>
-    <updated>2015-07-21T22:14:36+08:00</updated>
-    <id>http://jason5.cn/blog/markdownxue-xi</id>
-    <content type="html"><![CDATA[<h1>这是H1</h1>
-
-<h2>这是H2</h2>
-
-<h3>这是H3</h3>
-
-<!--more-->
-
-
-<blockquote><p>这是一段引用</p>
-
-<blockquote><p>这是引用内的引用哈哈</p></blockquote></blockquote>
-
-<h3>无序列表</h3>
-
-<ul>
-<li>Red</li>
-<li>Green</li>
-<li>Blue</li>
-</ul>
-
-
-<h3>有序列表</h3>
-
-<ol>
-<li>Bird</li>
-<li>McHale</li>
-<li>Parish</li>
-</ol>
-
-
-<h3>代码</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
-</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>代码嵌入文字</h3>
-
-<p>Use the <code>printf()</code> function.</p>
-
-<h3>分割线</h3>
-
-<hr />
-
-<h3>文字链接</h3>
-
-<p><a href="http://www.baidu.com" title="baidu title">点我</a></p>
-
-<p><a href="http://example.com/" title="Optional Title Here">foo</a></p>
-
-<h3>隐式链接标记</h3>
-
-<p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
-<a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
-
-<h3>参考式链接</h3>
-
-<p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
-<a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
-
-<h3>强调</h3>
-
-<p><strong>single asterisks</strong>
-un<em>frigging</em>believable</p>
-
-<h3>图片</h3>
-
-<p><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></p>
-
-<h3>图片链接</h3>
-
-<p><a href="http://www.baidu.com"><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></a></p>
 ]]></content>
   </entry>
   

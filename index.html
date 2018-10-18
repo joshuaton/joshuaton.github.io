@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图： 1.iOS和Android客户端维持tcp+pb方式不变 2.新增http proxy模块，提供http接口给Weex h5访问 职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。 &hellip;">
+  <meta name="description" content="背景 平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。 使用方法 1.在App &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,62 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">iOS开发中支持实时UI调试的方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-10-18T14:02:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>2:02 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>背景</h3>
+
+<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
+
+<h3>使用方法</h3>
+
+<p>1.在App Store下载InjectionIII</p>
+
+<p>2.在应用启动函数 加入以下代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
+
+<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
+
+<h3>原理</h3>
+
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -386,52 +442,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/mobiketi-yan.html">Mobike体验</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-11-13T21:25:26+08:00'><span class='date'>2016 年11 月13 日</span> <span class='time'>9:25 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天到上海出差，第一次来，想到处随意逛逛，单车是个很不错的选择，所以注册了mobike。</p>
-
-<p>今天骑了三段：</p>
-
-<p>第一段2km，耗时19m。这一段主要是在上海交大校园里，人少路况好，体验非常不错。</p>
-
-<p>第二段3km，耗时22m。这一段是从酒店去外滩，在半路上被交警拦下，有一段路不准骑车，于是改乘地铁。这一段由于是在马路上，没有专门的自行车道，骑行感受一般。不过最难忍受的是这个车骑久了不舒服，座位对我来说比较偏矮，发不上力，且久了容易酸，下地铁台阶的时候感觉都快跪下去了。</p>
-
-<p>第三段7km，耗时49m。从南京路步行街到酒店。跟第二段类似，没有专用自行车道，不停在人行道和马路边缘穿行，影响骑行速度。这次我骑得比较慢，也可能更适应了，腿酸的感受稍微弱一点。</p>
-
-<p>总体感受：
-1. 方便，随停真的是太方便了，完全不操心。
-2. 用的人挺多的，上海和深圳都是这样。
-3. lite版单车还比较少，一般附近难以找到，看起来可能会好骑一点，因为更轻，还没有体验过。
-4. app做得不错，功能简洁易用，单车定位比较准。
-5. 在北京这种有专用自行车道的城市，发展会更好，而对于没有骑行环境的城市，例如重庆，基本就搞不起来了。</p>
-
-<p>经过今天的体验，总体来讲感觉不错，从最以前的完全不看好，到现在觉得稍微觉得有戏。以后有需要会继续用。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -446,7 +456,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (6)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
@@ -457,6 +467,10 @@
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">iOS开发中支持实时UI调试的方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html">用Weex实现三端开发架构和思路</a>
@@ -472,10 +486,6 @@
     
       <li class="post">
         <a href="/blog/weexzhong-jshe-nativede-jiao-hu-iospian.html">Weex中js和Native的交互-iOS篇</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html">集成Weex到现有应用-iOS篇</a>
       </li>
     
   </ul>
