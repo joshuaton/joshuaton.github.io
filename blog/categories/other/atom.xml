@@ -4,7 +4,7 @@
   <title><![CDATA[分类：other | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/other/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-18T15:52:23+08:00</updated>
+  <updated>2018-10-18T16:02:45+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在新电脑上恢复Octopress]]></title>
+    <link href="http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html"/>
+    <updated>2018-10-18T15:56:46+08:00</updated>
+    <id>http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress</id>
+    <content type="html"><![CDATA[<p>换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令</p>
+
+<p>1.首先将博客的源文件clone到本地的octopress文件夹内</p>
+
+<pre><code>$ git clone -b source https://github.com/username/username.github.io.git octopress  
+</code></pre>
+
+<p>2.将博客文件clone到octopress的_deploy文件夹内</p>
+
+<pre><code>$ cd octopress  
+$ git clone https://github.com/username/username.github.io.git _deploy   
+</code></pre>
+
+<p>username为github用户名</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[升级到macOS High Sierra Pod不能执行的解决办法]]></title>
@@ -145,90 +167,6 @@ nohup ssserver -c /etc/shadowsocks/config.json &amp;gt; log &amp;amp;
 <p>参考资料：<br/>
 <a href="http://hceasy.com/2013/12/shadowsocks-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2/">shadowsocks 服务端部署</a><br/>
 <a href="https://wiki.archlinux.org/index.php/Shadowsocks_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87">Shadowsocks wiki</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Markdown学习]]></title>
-    <link href="http://jason5.cn/blog/markdownxue-xi.html"/>
-    <updated>2015-07-21T22:14:36+08:00</updated>
-    <id>http://jason5.cn/blog/markdownxue-xi</id>
-    <content type="html"><![CDATA[<h1>这是H1</h1>
-
-<h2>这是H2</h2>
-
-<h3>这是H3</h3>
-
-<!--more-->
-
-
-<blockquote><p>这是一段引用</p>
-
-<blockquote><p>这是引用内的引用哈哈</p></blockquote></blockquote>
-
-<h3>无序列表</h3>
-
-<ul>
-<li>Red</li>
-<li>Green</li>
-<li>Blue</li>
-</ul>
-
-
-<h3>有序列表</h3>
-
-<ol>
-<li>Bird</li>
-<li>McHale</li>
-<li>Parish</li>
-</ol>
-
-
-<h3>代码</h3>
-
-<pre><code class="java">System.out.println("hello");
-
-for(int i=0; i&lt;a.size(); i++){
-    System.out.println("test");
-}
-</code></pre>
-
-<h3>代码嵌入文字</h3>
-
-<p>Use the <code>printf()</code> function.</p>
-
-<h3>分割线</h3>
-
-<hr />
-
-<h3>文字链接</h3>
-
-<p><a href="http://www.baidu.com" title="baidu title">点我</a></p>
-
-<p><a href="http://example.com/" title="Optional Title Here">foo</a></p>
-
-<h3>隐式链接标记</h3>
-
-<p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
-<a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
-
-<h3>参考式链接</h3>
-
-<p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
-<a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
-
-<h3>强调</h3>
-
-<p><strong>single asterisks</strong>
-un<em>frigging</em>believable</p>
-
-<h3>图片</h3>
-
-<p><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></p>
-
-<h3>图片链接</h3>
-
-<p><a href="http://www.baidu.com"><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></a></p>
 ]]></content>
   </entry>
   

@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>iOS开发中支持实时UI调试的方法 - 移动开发技术</title>
+  <title>在新电脑上恢复Octopress - 移动开发技术</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="背景 平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。 使用方法 1.在App &hellip;">
+  <meta name="description" content="换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令 1.首先将博客的源文件clone到本地的octopress文件夹内 1
+$ git clone -b source https://github.com/username/username.github.io.git &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">
+  <link rel="canonical" href="http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
@@ -68,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">iOS开发中支持实时UI调试的方法</h1>
+      <h1 class="entry-title">在新电脑上恢复Octopress</h1>
     
     
       <p class="meta">
@@ -77,41 +78,31 @@
 
 
 
-<time class='entry-date' datetime='2018-10-18T14:02:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>2:02 pm</span></time>
+<time class='entry-date' datetime='2018-10-18T15:56:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>3:56 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h3>背景</h3>
+<div class="entry-content"><p>换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令</p>
 
-<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
+<p>1.首先将博客的源文件clone到本地的octopress文件夹内</p>
 
-<h3>使用方法</h3>
-
-<p>1.在App Store下载InjectionIII</p>
-
-<p>2.在应用启动函数 加入以下代码</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
-</span><span class='line'><span class="cp">#endif</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone -b source https://github.com/username/username.github.io.git octopress  
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
+<p>2.将博客文件clone到octopress的_deploy文件夹内</p>
 
-<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd octopress  
+</span><span class='line'>$ git clone https://github.com/username/username.github.io.git _deploy   </span></code></pre></td></tr></table></div></figure>
 
-<h3>原理</h3>
 
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
+<p>username为github用户名</p>
 </div>
 
 
@@ -127,12 +118,12 @@
 
 
 
-<time class='entry-date' datetime='2018-10-18T14:02:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>2:02 pm</span></time>
+<time class='entry-date' datetime='2018-10-18T15:56:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>3:56 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ios/'>ios</a>
+    <a class='category' href='/blog/categories/other/'>other</a>
   
 </span>
 
@@ -148,10 +139,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html" title="Previous Post: 用Weex实现三端开发架构和思路">&laquo; 用Weex实现三端开发架构和思路</a>
+        <a class="basic-alignment left" href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html" title="Previous Post: iOS开发中支持实时UI调试的方法">&laquo; iOS开发中支持实时UI调试的方法</a>
       
-      
-        <a class="basic-alignment right" href="/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html" title="Next Post: 在新电脑上恢复Octopress">在新电脑上恢复Octopress &raquo;</a>
       
     </p>
   </footer>
@@ -165,7 +154,7 @@
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-    id: 'iOS开发中支持实时UI调试的方法',
+    id: '在新电脑上恢复Octopress',
     owner: 'joshuaton',
     repo: 'joshuaton.github.io',
     oauth: {

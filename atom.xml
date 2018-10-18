@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-18T15:52:23+08:00</updated>
+  <updated>2018-10-18T16:02:45+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在新电脑上恢复Octopress]]></title>
+    <link href="http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html"/>
+    <updated>2018-10-18T15:56:46+08:00</updated>
+    <id>http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress</id>
+    <content type="html"><![CDATA[<p>换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令</p>
+
+<p>1.首先将博客的源文件clone到本地的octopress文件夹内</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone -b source https://github.com/username/username.github.io.git octopress  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2.将博客文件clone到octopress的_deploy文件夹内</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd octopress  
+</span><span class='line'>$ git clone https://github.com/username/username.github.io.git _deploy   </span></code></pre></td></tr></table></div></figure>
+
+
+<p>username为github用户名</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS开发中支持实时UI调试的方法]]></title>
@@ -2059,347 +2085,6 @@ method          加密方法，可选择 &ldquo;bf-cfb&rdquo;, &ldquo;aes-256-cf
 <p>参考资料：<br/>
 <a href="http://hceasy.com/2013/12/shadowsocks-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2/">shadowsocks 服务端部署</a><br/>
 <a href="https://wiki.archlinux.org/index.php/Shadowsocks_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87">Shadowsocks wiki</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[greenDAO使用入门]]></title>
-    <link href="http://jason5.cn/blog/greendaoshi-yong-ru-men.html"/>
-    <updated>2015-07-26T11:25:29+08:00</updated>
-    <id>http://jason5.cn/blog/greendaoshi-yong-ru-men</id>
-    <content type="html"><![CDATA[<p>ORM（Object Relational Mapping）可以帮我们减轻开发工作量，提高工作效率。之前做Java Web项目用过Hibernate，现在想在Android项目中用一下ORM。</p>
-
-<p>之前上网查了一下目前主流的Android ORM，有如下几种：<br/>
-* ORMLite<br/>
-* SugarORM<br/>
-* GreenDAO<br/>
-* Active Android<br/>
-* Realm</p>
-
-<p>当这些库都没有用过的时候，如何进行技术选型呢，我用了个很简单的办法，看下Github上的star数就好了，greenDAO是其中最多的，并且初步横向比较了下，greenDAO的性能不错，下边是网上一张greeDAO和ORMLite的性能对比图</p>
-
-<p><img src="http://i3.tietuku.com/b07d9bec3ea47b7d.png" alt="" /></p>
-
-<p>greenDAO的使用比较简单，下边就开始介绍下如何使用greenDAO吧。</p>
-
-<!--more-->
-
-
-<h2>1. DAOGenerator工程和Android App工程</h2>
-
-<p><img src="http://i3.tietuku.com/4e32221ef721f18c.png" alt="" /></p>
-
-<p>上边这张图说明了greenDAO的作用，greenDAO用来帮助我们的工程生成Java Objects和访问数据库的DAO类，其中Java Objects中的属性字段和SQLite Database里的表的列属性一一对应。生成Java Objects和DAO类后，应用程序Android App可以通过使用DAO类来进行增删查改的数据库操作，操作方法全都是基于Java Objects的，不用写sql语句。</p>
-
-<p>这里涉及了两个工程，DAOGenerator工程和Android App工程。前者用于生成Java Objects和DAO类，后者是开发者的应用工程，使用前者生成的类。</p>
-
-<p>下边就以我做的项目来举例，两个工程的目录结构如下所示</p>
-
-<p>|&ndash;PmdCampus<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;|&ndash;src  <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;|&ndash;src-gen        <br/>
-|&ndash;PmdCampusDAOGenerator</p>
-
-<p>PmdCampusDAOGenerator是生成DAO类的独立Java工程，PmdCampus是应用开发者的Android App工程。</p>
-
-<p>如果是用gradle来编译的话，PmdCampusDAOGenerator工程的build.gradle文件如下</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="err">&#39;</span><span class="n">java</span><span class="err">&#39;</span>
-</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="err">&#39;</span><span class="n">application</span><span class="err">&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nf">fileTree</span><span class="o">(</span><span class="nl">dir:</span> <span class="err">&#39;</span><span class="n">libs</span><span class="err">&#39;</span><span class="o">,</span> <span class="nl">include:</span> <span class="o">[</span><span class="err">&#39;</span><span class="o">*.</span><span class="na">jar</span><span class="err">&#39;</span><span class="o">])</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="err">&#39;</span><span class="n">de</span><span class="o">.</span><span class="na">greenrobot</span><span class="o">:</span><span class="n">greendao</span><span class="o">-</span><span class="nl">generator:</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">1</span><span class="err">&#39;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其中<code>compile 'de.greenrobot:greendao-generator:1.3.1'</code>这行是引入greenDAO的库。</p>
-
-<p>再来看下PmdCampus工程的build.gradle，由于太多其它内容，这里只贴出关键的部分。需要引入以下库</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">compile</span> <span class="err">&#39;</span><span class="n">de</span><span class="o">.</span><span class="na">greenrobot</span><span class="o">:</span><span class="nl">greendao:</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">7</span><span class="err">&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>大家注意PmdCampus下除了常规的src目录外，还有一个手工创建的src-gen目录，这个目录就是存放PmdCampusDAOGenerator工程生成的Java Objects和DAO类的。所以，PmdCampus的build.gradle文件配置一下，编译src-gen里的java文件，需要加入以下的配置：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">sourceSets</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">main</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">java</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">srcDir</span> <span class="err">&#39;</span><span class="n">src</span><span class="err">&#39;</span>
-</span><span class='line'>            <span class="n">srcDir</span> <span class="err">&#39;</span><span class="n">src</span><span class="o">-</span><span class="n">gen</span><span class="err">&#39;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>2. 在DAOGenerate工程创建DAOGenerator类</h2>
-
-<p>DAOGenerate工程是一个普通的Java工程，DAOGenerator类是用来生成DAO文件的类，有main函数入口，直接从main函数运行就可以了。DAOGenerator类的代码如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">example</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">de.greenrobot.daogenerator.DaoGenerator</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">de.greenrobot.daogenerator.Entity</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">de.greenrobot.daogenerator.Schema</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DAOGenerator</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Schema</span> <span class="n">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Schema</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;com.tencent.PmdCampus.module.message.dao&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">addChat</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">new</span> <span class="nf">DaoGenerator</span><span class="o">().</span><span class="na">generateAll</span><span class="o">(</span><span class="n">schema</span><span class="o">,</span> <span class="s">&quot;./PmdCampus/src-gen&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">addChat</span><span class="o">(</span><span class="n">Schema</span> <span class="n">schema</span><span class="o">){</span>
-</span><span class='line'>        <span class="n">Entity</span> <span class="n">chat</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="na">addEntity</span><span class="o">(</span><span class="s">&quot;Chat&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="c1">//        chat.setTableName(&quot;ChatAnotherTableName&quot;);       //可以设置sqlite中的table name，默认跟Entity的名字相同</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addIdProperty</span><span class="o">().</span><span class="na">primaryKey</span><span class="o">().</span><span class="na">autoincrement</span><span class="o">();</span>  <span class="c1">// 消息唯一ID</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addIntProperty</span><span class="o">(</span><span class="s">&quot;conversationId&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>   <span class="c1">// 聊天会话ID</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addIntProperty</span><span class="o">(</span><span class="s">&quot;type&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>              <span class="c1">// 消息类型，1文字，2图片</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addStringProperty</span><span class="o">(</span><span class="s">&quot;senderId&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>        <span class="c1">// 发送人唯一标识</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addStringProperty</span><span class="o">(</span><span class="s">&quot;receiverId&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>      <span class="c1">// 接收人唯一标识</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addStringProperty</span><span class="o">(</span><span class="s">&quot;content&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>        <span class="c1">// 消息内容，1文字内容，2图片url</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addLongProperty</span><span class="o">(</span><span class="s">&quot;send_time&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>        <span class="c1">// 消息发送的时间</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addIntProperty</span><span class="o">(</span><span class="s">&quot;status&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>            <span class="c1">// 消息是否发送成功（0表示成功或已读， 1表示失败, 2表示正在发送, 3表示未读）</span>
-</span><span class='line'>        <span class="n">chat</span><span class="o">.</span><span class="na">addLongProperty</span><span class="o">(</span><span class="s">&quot;seq&quot;</span><span class="o">).</span><span class="na">notNull</span><span class="o">();</span>              <span class="c1">// 服务端有序的序号</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在main方法中</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Schema</span> <span class="n">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Schema</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">&quot;com.tencent.PmdCampus.module.message.dao&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>该方法第一个参数用来更新数据库版本号，第二个参数为要生成的DAO类所在包路径。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">addChat</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
-</span><span class='line'><span class="k">new</span> <span class="nf">DaoGenerator</span><span class="o">().</span><span class="na">generateAll</span><span class="o">(</span><span class="n">schema</span><span class="o">,</span> <span class="s">&quot;./PmdCampus/src-gen&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>进行建表和设置要生成DAO文件的目标工程的项目路径。addChat方法里定义了Chat对象的属性，数据库中的字段也会一一对应。</p>
-
-<p>之后运行main函数，就会在PmdCampus/src-gen目录下生成Java Objects和DAO类了。
-<img src="http://i3.tietuku.com/d85c5423440290ca.png" alt="" /></p>
-
-<h2>3. 在Android App工程里创建DBHelper类</h2>
-
-<p>生成了DAO类之后，在自己的Android App工程就可以使用了，为了更加方便，这里封装了一个DBHelper类，代码如下</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">tencent</span><span class="o">.</span><span class="na">PmdCampus</span><span class="o">.</span><span class="na">module</span><span class="o">.</span><span class="na">message</span><span class="o">.</span><span class="na">storage</span><span class="o">.</span><span class="na">db</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.tencent.PmdCampus.module.message.dao.Chat</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.tencent.PmdCampus.module.message.dao.ChatDao</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.tencent.PmdCampus.module.message.dao.DaoMaster</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.tencent.PmdCampus.module.message.dao.DaoSession</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">de.greenrobot.dao.query.DeleteQuery</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">de.greenrobot.dao.query.QueryBuilder</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Created by junshao on 15/7/26.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChatDBHelper</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Context</span> <span class="n">mContext</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">ChatDBHelper</span> <span class="n">instance</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="n">ChatDao</span> <span class="n">chatDao</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">ChatDBHelper</span> <span class="nf">getInstance</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">instance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">{</span>
-</span><span class='line'>            <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ChatDBHelper</span><span class="o">();</span>
-</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">mContext</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
-</span><span class='line'>            <span class="o">{</span>
-</span><span class='line'>                <span class="n">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="n">DaoMaster</span><span class="o">.</span><span class="na">OpenHelper</span> <span class="n">helper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DaoMaster</span><span class="o">.</span><span class="na">DevOpenHelper</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="s">&quot;message.db&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-</span><span class='line'>            <span class="n">DaoMaster</span> <span class="n">daoMaster</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">DaoMaster</span><span class="o">(</span><span class="n">helper</span><span class="o">.</span><span class="na">getWritableDatabase</span><span class="o">());</span>
-</span><span class='line'>            <span class="n">DaoSession</span> <span class="n">daoSession</span> <span class="o">=</span> <span class="n">daoMaster</span><span class="o">.</span><span class="na">newSession</span><span class="o">();</span>
-</span><span class='line'>            <span class="n">chatDao</span> <span class="o">=</span> <span class="n">daoSession</span><span class="o">.</span><span class="na">getChatDao</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insertChat</span><span class="o">(</span><span class="n">Chat</span> <span class="n">chat</span><span class="o">){</span>
-</span><span class='line'>        <span class="n">chatDao</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">chat</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delChat</span><span class="o">(</span><span class="kt">long</span> <span class="n">id</span><span class="o">){</span>
-</span><span class='line'>        <span class="n">chatDao</span><span class="o">.</span><span class="na">deleteByKey</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delAllChat</span><span class="o">(){</span>
-</span><span class='line'>        <span class="n">chatDao</span><span class="o">.</span><span class="na">deleteAll</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Chat</span><span class="o">&gt;</span> <span class="nf">queryChatList</span><span class="o">(</span><span class="kt">long</span> <span class="n">seq</span><span class="o">){</span>
-</span><span class='line'>        <span class="n">QueryBuilder</span> <span class="n">qb</span> <span class="o">=</span> <span class="n">chatDao</span><span class="o">.</span><span class="na">queryBuilder</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">qb</span><span class="o">.</span><span class="na">where</span><span class="o">(</span><span class="n">ChatDao</span><span class="o">.</span><span class="na">Properties</span><span class="o">.</span><span class="na">Seq</span><span class="o">.</span><span class="na">le</span><span class="o">(</span><span class="n">seq</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">qb</span><span class="o">.</span><span class="na">orderDesc</span><span class="o">(</span><span class="n">ChatDao</span><span class="o">.</span><span class="na">Properties</span><span class="o">.</span><span class="na">Seq</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">qb</span><span class="o">.</span><span class="na">list</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>ChatDBHelper是一个单例，主要负责初始化ChatDao对象，然后利用ChatDao就可以用操作对象的方式直接操作DB了。queryChatList里用到了QueryBuilder，QueryBuilder可以设置诸多属性，这里用到了where和orderDesc，相当于对应的sql语句。关于API更多的使用说明可以参考<a href="http://greendao-orm.com/">greenDAO官方网站</a>。</p>
-
-<h2>4. 在业务逻辑里使用DBHelper类</h2>
-
-<p>现在可以愉快方便的使用DBHelpler类了，生成一个Chat对象并插入，然后查询的代码如下:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">ChatDBHelper</span> <span class="n">chatDBHelper</span> <span class="o">=</span> <span class="n">ChatDBHelper</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
-</span><span class='line'><span class="n">Chat</span> <span class="n">chat</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Chat</span><span class="o">();</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setConversationId</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setSenderId</span><span class="o">(</span><span class="s">&quot;111&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setReceiverId</span><span class="o">(</span><span class="s">&quot;111&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="s">&quot;content&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setStatus</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
-</span><span class='line'><span class="n">chat</span><span class="o">.</span><span class="na">setSeq</span><span class="o">(</span><span class="mi">111</span><span class="o">);</span>
-</span><span class='line'><span class="n">chatDBHelper</span><span class="o">.</span><span class="na">insertChat</span><span class="o">(</span><span class="n">chat</span><span class="o">);</span>
-</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">Chat</span><span class="o">&gt;</span> <span class="n">chatList</span> <span class="o">=</span> <span class="n">chatDBHelper</span><span class="o">.</span><span class="na">queryChatList</span><span class="o">(</span><span class="mi">111</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这篇文章只是简单的介绍了greenDAO的入门用法，更多高级内容请参考官方网站。</p>
-
-<hr />
-
-<p>参考资料：<br/>
-*  <a href="http://greendao-orm.com/">greenDAO – Android ORM for SQLite</a> <br/>
-*  <a href="http://glblong.blog.51cto.com/3058613/1354953">Android开源：数据库ORM框架GreenDao学习心得及使用总结</a></p>
 ]]></content>
   </entry>
   
