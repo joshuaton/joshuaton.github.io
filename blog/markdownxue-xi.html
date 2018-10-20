@@ -9,16 +9,20 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="这是H1 这是H2 这是H3 这是一段引用 这是引用内的引用哈哈 无序列表 Red
+  <meta name="description" content="这是H1 1
+#这是H1 这是H2 1
+##这是H2 这是H3 1
+###这是H3 这是一段引用 这是引用内的引用哈哈 1
+2
+&gt;这是一段引用
+&gt;&gt;这是引用内的引用哈哈 无序列表 Red
 Green
-Blue 有序列表 Bird
-McHale
-Parish 代码 1
+Blue 1
 2
 3
-4
-5
-System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
+* Red
+* Green
+* Blue 有序列表 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -95,9 +99,22 @@ System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
 
 <div class="entry-content"><h1>这是H1</h1>
 
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#这是H1
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h2>这是H2</h2>
 
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>##这是H2</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>这是H3</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>###这是H3</span></code></pre></td></tr></table></div></figure>
+
 
 <!--more-->
 
@@ -105,6 +122,12 @@ System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
 <blockquote><p>这是一段引用</p>
 
 <blockquote><p>这是引用内的引用哈哈</p></blockquote></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;这是一段引用
+</span><span class='line'>&gt;&gt;这是引用内的引用哈哈</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>无序列表</h3>
 
@@ -115,6 +138,14 @@ System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
 </ul>
 
 
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>*   Red
+</span><span class='line'>*   Green
+</span><span class='line'>*   Blue</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>有序列表</h3>
 
 <ol>
@@ -122,6 +153,14 @@ System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
 <li>McHale</li>
 <li>Parish</li>
 </ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.  Bird
+</span><span class='line'>2.  McHale
+</span><span class='line'>3.  Parish</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>代码</h3>
@@ -139,42 +178,136 @@ System.out.println(&quot;hello&quot;); for(int i=0; i&lt;a. &hellip;">
 </span></code></pre></td></tr></table></div></figure>
 
 
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">~~~</span><span class="n">java</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;hello&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++){</span>
+</span><span class='line'>  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="o">~~~</span>
+</span><span class='line'><span class="nl">PS:</span> <span class="o">~~~</span><span class="n">替换为</span><span class="err">```</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>代码嵌入文字</h3>
 
 <p>Use the <code>printf()</code> function.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Use</span> <span class="n">the</span> <span class="err">`</span><span class="n">printf</span><span class="o">()</span><span class="err">`</span> <span class="n">function</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>分割线</h3>
 
 <hr />
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">***</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>文字链接</h3>
 
 <p><a href="http://www.baidu.com" title="baidu title">点我</a></p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">[</span><span class="n">点我</span><span class="o">](</span><span class="nl">http:</span><span class="c1">//www.baidu.com &quot;baidu title&quot;)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p><a href="http://example.com/" title="Optional Title Here">foo</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">[</span><span class="n">foo</span><span class="o">](</span><span class="nl">http:</span><span class="c1">//example.com/  &quot;Optional Title Here&quot;)</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>隐式链接标记</h3>
 
 <p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
 <a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">I</span> <span class="n">get</span> <span class="mi">10</span> <span class="n">times</span> <span class="n">more</span> <span class="n">traffic</span> <span class="n">from</span> <span class="o">[</span><span class="n">Google</span><span class="o">][]</span> <span class="n">than</span> <span class="n">from</span>
+</span><span class='line'><span class="o">[</span><span class="n">Yahoo</span><span class="o">][]</span> <span class="n">or</span> <span class="o">[</span><span class="n">MSN</span><span class="o">][].</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">[</span><span class="n">google</span><span class="o">]:</span> <span class="nl">http:</span><span class="c1">//google.com/        &quot;Google&quot;</span>
+</span><span class='line'>  <span class="o">[</span><span class="n">yahoo</span><span class="o">]:</span>  <span class="nl">http:</span><span class="c1">//search.yahoo.com/  &quot;Yahoo Search&quot;</span>
+</span><span class='line'>  <span class="o">[</span><span class="n">msn</span><span class="o">]:</span>    <span class="nl">http:</span><span class="c1">//search.msn.com/    &quot;MSN Search&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>参考式链接</h3>
 
 <p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from
 <a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">I</span> <span class="n">get</span> <span class="mi">10</span> <span class="n">times</span> <span class="n">more</span> <span class="n">traffic</span> <span class="n">from</span> <span class="o">[</span><span class="n">Google</span><span class="o">]</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="n">than</span> <span class="n">from</span>
+</span><span class='line'><span class="o">[</span><span class="n">Yahoo</span><span class="o">]</span> <span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">or</span> <span class="o">[</span><span class="n">MSN</span><span class="o">]</span> <span class="o">[</span><span class="mi">3</span><span class="o">].</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">[</span><span class="mi">1</span><span class="o">]:</span> <span class="nl">http:</span><span class="c1">//google.com/        &quot;Google&quot;</span>
+</span><span class='line'>  <span class="o">[</span><span class="mi">2</span><span class="o">]:</span> <span class="nl">http:</span><span class="c1">//search.yahoo.com/  &quot;Yahoo Search&quot;</span>
+</span><span class='line'>  <span class="o">[</span><span class="mi">3</span><span class="o">]:</span> <span class="nl">http:</span><span class="c1">//search.msn.com/    &quot;MSN Search&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>强调</h3>
 
-<p><strong>single asterisks</strong>
-un<em>frigging</em>believable</p>
+<p><strong>single asterisks</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">**</span><span class="n">single</span> <span class="n">asterisks</span><span class="o">**</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>un<em>frigging</em>believable</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">un</span><span class="o">*</span><span class="n">frigging</span><span class="o">*</span><span class="n">believable</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>图片</h3>
 
 <p><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></p>
 
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">![](</span><span class="nl">http:</span><span class="c1">//www.baidu.com/img/bdlogo.png)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h3>图片链接</h3>
 
 <p><a href="http://www.baidu.com"><img src="http://www.baidu.com/img/bdlogo.png" alt="" /></a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">[![](</span><span class="nl">http:</span><span class="c1">//www.baidu.com/img/bdlogo.png)](http://www.baidu.com)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
 
 
