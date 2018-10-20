@@ -9,8 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="这两天出差全靠mobike了，总共骑了大概有10趟吧，lite版的单车骑着确实轻松不少，价钱还更便宜。 昨天去了陆家嘴，逛了ifc，在黄浦江边吹了下风，是个好大上的地方。
-">
+  <meta name="description" content="Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,40 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-06-16T15:01:32+08:00'><span class='date'>2017 年6 月16 日</span> <span class='time'>3:01 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -415,40 +448,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/shadowsocksshang-wang-gong-lue.html">Shadowsocks上网攻略</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-08-02T16:27:32+08:00'><span class='date'>2015 年8 月2 日</span> <span class='time'>4:27 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>由于某些原因，某博士的KX上网快要停止服务了，平时离不开Google，离不开……，为了自己能够更方便的工作和娱乐，也不再求人，于是研究了下如何自己搭建KX上网服务。下边就说一下如何利用Shadowsocks来搭建KX上网服务。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/shadowsocksshang-wang-gong-lue.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -466,7 +465,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
 <li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
-<li class='category'><a href='/blog/categories/other/'>other (7)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (8)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
@@ -476,6 +475,10 @@ compile 'com.android.support:cardview-v7:23.1.1'
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html">Github Pages支持https的方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html">在新电脑上恢复Octopress</a>
@@ -491,10 +494,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
     
       <li class="post">
         <a href="/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan.html">Weex与原生页面间的相互跳转</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html">利用Weex DevTool调试Native应用-iOS篇</a>
       </li>
     
   </ul>

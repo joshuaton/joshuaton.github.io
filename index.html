@@ -9,8 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令 1.首先将博客的源文件clone到本地的octopress文件夹内 1
-$ git clone -b source https://github.com/username/username.github.io.git &hellip;">
+  <meta name="description" content="到Github Pages项目里，点击Setting，勾选Enforce HTTPS ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,37 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html">Github Pages支持https的方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-10-20T19:38:41+08:00'><span class='date'>2018 年10 月20 日</span> <span class='time'>7:38 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>到Github Pages项目里，点击Setting，勾选Enforce HTTPS</p>
+
+<p><img src="https://jason5.cn/img/WX20181020-194050@2x.png" alt="" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -424,40 +454,6 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-06-16T15:01:32+08:00'><span class='date'>2017 年6 月16 日</span> <span class='time'>3:01 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -473,7 +469,7 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
 <li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
-<li class='category'><a href='/blog/categories/other/'>other (7)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (8)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
@@ -483,6 +479,10 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html">Github Pages支持https的方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html">在新电脑上恢复Octopress</a>
@@ -498,10 +498,6 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
     
       <li class="post">
         <a href="/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan.html">Weex与原生页面间的相互跳转</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html">利用Weex DevTool调试Native应用-iOS篇</a>
       </li>
     
   </ul>
