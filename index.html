@@ -9,8 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="DNS配置中有两种常见的类型，A和CNAME。 A是name到ip的配置，用于域名解析到最终的接入IP。 CNAME是name到name的配置，用于配置域名的别名。 参考Differences between the A and CNAME records
-">
+  <meta name="description" content="关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。 iOS App 签名的原理 这里按照我的理解角度复述一下： 为了不让每次开发App，都将App上传到苹果后台，用苹果后台的私钥A签名，需要本地生成一对公私钥。这样每次签名就在本地Mac机器上，用私钥L签名就可以了。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/dui-ios-appqian-ming-de-li-jie.html">对iOS App签名的理解</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-10-22T11:23:43+08:00'><span class='date'>2018 年10 月22 日</span> <span class='time'>11:23 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。</p>
+
+<p><a href="http://blog.cnbang.net/tech/3386/">iOS App 签名的原理</a></p>
+
+<p>这里按照我的理解角度复述一下：</p>
+
+<ol>
+<li>为了不让每次开发App，都将App上传到苹果后台，用苹果后台的私钥A签名，需要本地生成一对公私钥。这样每次签名就在本地Mac机器上，用私钥L签名就可以了。</li>
+<li>那么苹果如果验证公钥L的合法性呢，就需要开发者将公钥L上传到苹果的后台，苹果用私钥A进行一次签名，签名+公钥L就是证书了。（这里实际上用一次对公钥L的签名替代了每次对App的签名，省去了App每次修改都上传签名的麻烦，很巧妙）</li>
+<li>第2步中的证书+一些额外信息（AppId，设备列表，push权限等）全部都在苹果的后台用私钥A签名，打包成的东西叫Provisioning Profile，下载到本地Mac后，打包在App中。安装在iOS设备的时候，用公钥A对其进行解密，验证证书+一些额外信息（AppId，设备列表，push权限等。证书验证后拿到公钥L，对App数据进行解密验证（App是用私钥L签名的）。</li>
+</ol>
+
+
+<p>好了，上边的文字其实看着还是有点乱和绕，权当我自己的思路做参考吧。</p>
+
+<p>回到我们的项目，其实有一点是可以改进的。</p>
+
+<p><img src="https://jason5.cn/images/WX20181022-114418@2x.png" alt="" /></p>
+
+<p>以上图片是我们项目在苹果后台的证书配置，可以看到，有很多项，原因是每个开发的电脑上都生成了一对公钥L和私钥L，然后将公钥L上传到苹果后台生成了证书。更好的办法是，只用一台开发电脑生成公钥L和私钥L，然后到处p12文件，分享给别的电脑，这样苹果后台就只需要一个证书就可以了。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -414,39 +461,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html">如何查看p12文件的信息</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-12-16T14:37:21+08:00'><span class='date'>2017 年12 月16 日</span> <span class='time'>2:37 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes</span></code></pre></td></tr></table></div></figure>
-
-
-<p>pem文件可以直接用文本工具打开</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -461,7 +475,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (4)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
@@ -472,6 +486,10 @@
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/dui-ios-appqian-ming-de-li-jie.html">对iOS App签名的理解</a>
+      </li>
     
       <li class="post">
         <a href="/blog/dnspei-zhi-zhong-ahe-cnamede-qu-bie.html">DNS配置中A和CNAME的区别</a>
@@ -487,10 +505,6 @@
     
       <li class="post">
         <a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">iOS开发中支持实时UI调试的方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html">用Weex实现三端开发架构和思路</a>
       </li>
     
   </ul>
