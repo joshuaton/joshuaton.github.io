@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>如何查看p12文件的信息 - 移动开发技术</title>
+  <title>TIP项目网络框架梳理 - 移动开发技术</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="1
-openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工具打开
-">
+  <meta name="description" content="前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。 整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。 IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html">
+  <link rel="canonical" href="http://jason5.cn/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
@@ -70,7 +68,7 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
   
   <header>
     
-      <h1 class="entry-title">如何查看p12文件的信息</h1>
+      <h1 class="entry-title">TIP项目网络框架梳理</h1>
     
     
       <p class="meta">
@@ -79,18 +77,42 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
 
 
 
-<time class='entry-date' datetime='2017-12-16T14:37:21+08:00'><span class='date'>2017 年12 月16 日</span> <span class='time'>2:37 pm</span></time>
+<time class='entry-date' datetime='2018-10-23T16:07:12+08:00'><span class='date'>2018 年10 月23 日</span> <span class='time'>4:07 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes</span></code></pre></td></tr></table></div></figure>
+<div class="entry-content"><p>前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。</p>
+
+<p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
+
+<p><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></p>
+
+<ul>
+<li>IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。</li>
+<li>PMDNetworking是发起网络请求的类，这里首先要用PMDCallFactory工厂类，生成一个实现PMDCall协议的对象，然后调用makeCallWithRequest方法进行网络请求。</li>
+<li>PMDCallFactory用于生成PMDCall协议对象</li>
+<li>PMDCall协议对象为了避免被回收，放到了PMDCallPool里进行管理</li>
+<li>PMDBaseCall实现了PMDCall协议，完成了主要的网络请求逻辑。分为以下几个步骤</li>
+</ul>
 
 
-<p>pem文件可以直接用文本工具打开</p>
+<p>（1）callWithRequest准备发起网络请求</p>
+
+<p>（2）dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
+
+<p>（3）realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
+
+<p>（4）convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p>
+
+<ul>
+<li>PMDInterceptor和PMDConverter协议分别是需要在网络请求发出之前和之后要处理的逻辑，只要实现此协议，加入到PMDBaseCall中就可以了。</li>
+</ul>
+
+
+<p>基本的结构就是这样了，除此之外，框架还实现了取消发送，重新发送等逻辑，这里不再详细介绍。</p>
 </div>
 
 
@@ -106,7 +128,7 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
 
 
 
-<time class='entry-date' datetime='2017-12-16T14:37:21+08:00'><span class='date'>2017 年12 月16 日</span> <span class='time'>2:37 pm</span></time>
+<time class='entry-date' datetime='2018-10-23T16:07:12+08:00'><span class='date'>2018 年10 月23 日</span> <span class='time'>4:07 pm</span></time>
       
 
 <span class="categories">
@@ -127,10 +149,8 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html" title="Previous Post: 升级到macOS High Sierra pod不能执行的解决办法">&laquo; 升级到macOS High Sierra pod不能执行的解决办法</a>
+        <a class="basic-alignment left" href="/blog/dui-ios-appqian-ming-de-li-jie.html" title="Previous Post: 对iOS App签名的理解">&laquo; 对iOS App签名的理解</a>
       
-      
-        <a class="basic-alignment right" href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html" title="Next Post: 集成Weex到现有应用-iOS篇">集成Weex到现有应用-iOS篇 &raquo;</a>
       
     </p>
   </footer>
@@ -144,7 +164,7 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-    id: '如何查看p12文件的信息',
+    id: 'TIP项目网络框架梳理',
     owner: 'joshuaton',
     repo: 'joshuaton.github.io',
     oauth: {

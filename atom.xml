@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-22T14:26:01+08:00</updated>
+  <updated>2018-10-23T16:27:59+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,43 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[TIP项目网络框架梳理]]></title>
+    <link href="http://jason5.cn/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html"/>
+    <updated>2018-10-23T16:07:12+08:00</updated>
+    <id>http://jason5.cn/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li</id>
+    <content type="html"><![CDATA[<p>前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。</p>
+
+<p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
+
+<p><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></p>
+
+<ul>
+<li>IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。</li>
+<li>PMDNetworking是发起网络请求的类，这里首先要用PMDCallFactory工厂类，生成一个实现PMDCall协议的对象，然后调用makeCallWithRequest方法进行网络请求。</li>
+<li>PMDCallFactory用于生成PMDCall协议对象</li>
+<li>PMDCall协议对象为了避免被回收，放到了PMDCallPool里进行管理</li>
+<li>PMDBaseCall实现了PMDCall协议，完成了主要的网络请求逻辑。分为以下几个步骤</li>
+</ul>
+
+
+<p>（1）callWithRequest准备发起网络请求</p>
+
+<p>（2）dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
+
+<p>（3）realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
+
+<p>（4）convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p>
+
+<ul>
+<li>PMDInterceptor和PMDConverter协议分别是需要在网络请求发出之前和之后要处理的逻辑，只要实现此协议，加入到PMDBaseCall中就可以了。</li>
+</ul>
+
+
+<p>基本的结构就是这样了，除此之外，框架还实现了取消发送，重新发送等逻辑，这里不再详细介绍。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[对iOS App签名的理解]]></title>
@@ -1551,245 +1588,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 
 <p>效果
 <img src="http://jason5.cn/images/o_ICBC1.gif" alt="" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CardView在API 21以下的圆角效果处理]]></title>
-    <link href="http://jason5.cn/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html"/>
-    <updated>2016-07-21T19:48:15+08:00</updated>
-    <id>http://jason5.cn/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li</id>
-    <content type="html"><![CDATA[<p>CardView是Android5.0（API 21）加入的新控件，当然，在API 21以下也能用，在build.gradle的依赖里加入下边一行就可以用了</p>
-
-<p><code>
-compile 'com.android.support:cardview-v7:23.1.1'
-</code></p>
-
-<p>项目中要做一个卡片浏览的程序，卡片需要有5dp的圆角，圆角效果CardView自带属性就可以支持，加上app:cardCornerRadius属性就好了，如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;android.support.v7.widget.CardView</span>
-</span><span class='line'>  <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
-</span><span class='line'>  <span class="na">xmlns:app=</span><span class="s">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
-</span><span class='line'>  <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>  <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
-</span><span class='line'>  <span class="na">app:cardUseCompatPadding=</span><span class="s">&quot;true&quot;</span>
-</span><span class='line'>  <span class="na">app:cardCornerRadius=</span><span class="s">&quot;5dp&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  ...
-</span><span class='line'><span class="nt">&lt;/android.support.v7.widget.CardView&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!--more-->
-
-
-<p>在API 21以上（包括）的机器实现了很完美的圆角效果，效果如下：</p>
-
-<p><img src="http://jason5.cn/images/1841176-cc3c3a00ecd691e4.png" alt="" /></p>
-
-<p>但是在API 21以下的机器出现了问题，以下是API 19的实现效果：</p>
-
-<p><img src="http://jason5.cn/images/1841176-edef0454295c6e12.png" alt="" /></p>
-
-<p>初步一看，虽然加上了圆角属性，但是图片边上是方的。将左下角和左上角放大仔细看下：</p>
-
-<p><img src="http://jason5.cn/images/1841176-c40edd84f7c1e6cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p><img src="http://jason5.cn/images/1841176-d504c2a1be51063b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p>可以看到，CardView本身是圆角效果了，但是里边的内容却还是方的，并且出现了多余的白边。
-再仔细查看CardView的文档，发现其有一个属性cardPreventCornerOverlap</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>Add padding to CardView on v20 and before to prevent intersections between the Card content and rounded corners.
-</span><span class='line'>在v20和之前的版本中添加内边距，这个属性是为了防止卡片内容和边角的重叠
-</span><span class='line'><span class="nt">&lt;attr</span> <span class="na">name=</span><span class="s">&quot;cardPreventCornerOverlap&quot;</span> <span class="na">format=</span><span class="s">&quot;boolean&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>cardPreventCornerOverlap默认为true，意思是阻止API 20或者之前的CardView的corner和内部元素重叠。没有重叠就产生了上边的效果，多了一条白边。于是在xml布局文件里增加CardView的属性app:cardPreventCornerOverlap=&ldquo;false"，左下角和左上角效果如下：</p>
-
-<p><img src="http://jason5.cn/images/1841176-2690d1d4c4535311.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p><img src="http://jason5.cn/images/1841176-60dd4cef0a629cc5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p>可以看到，CardView里的元素已经和CardView重叠了，但是元素本身没有圆角，所以顶点伸出去了。到这里思路就很简单了，将里边的元素单独做圆角处理。</p>
-
-<p>drawable下新建shape_radius.xml文件，代码如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;shape</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span> <span class="na">android:shape=</span><span class="s">&quot;rectangle&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;corners</span> <span class="na">android:radius=</span><span class="s">&quot;5dp&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;solid</span> <span class="na">android:color=</span><span class="s">&quot;@color/f2f2f2&quot;</span><span class="nt">&gt;&lt;/solid&gt;</span>
-</span><span class='line'><span class="nt">&lt;/shape&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在CardView里的元素LinearLayout加上backgroud属性</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;LinearLayout</span> <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>    <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>    <span class="na">android:orientation=</span><span class="s">&quot;vertical&quot;</span>
-</span><span class='line'>    <span class="na">android:background=</span><span class="s">&quot;@drawable/shape_radius&quot;</span> <span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;ImageView</span>
-</span><span class='line'>      <span class="na">android:id=</span><span class="s">&quot;@+id/iv_header&quot;</span>
-</span><span class='line'>      <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>      <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
-</span><span class='line'>      <span class="na">android:layout_gravity=</span><span class="s">&quot;center_horizontal&quot;</span>
-</span><span class='line'>      <span class="na">android:adjustViewBounds=</span><span class="s">&quot;true&quot;</span>
-</span><span class='line'>      <span class="na">android:scaleType=</span><span class="s">&quot;fitCenter&quot;</span>
-</span><span class='line'>      <span class="na">android:src=</span><span class="s">&quot;@drawable/ic_person_default&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/LinearLayout&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>左下角正常，左上角依然</p>
-
-<p><img src="http://jason5.cn/images/1841176-cf5c737487884d83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p><img src="http://jason5.cn/images/1841176-a6f1a4ab15d9850c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" /></p>
-
-<p>图片还需要单独做圆角处理，这里需要的效果是，图片的上边两个角需要圆角，下边两个角需要直角。
-自定义UpRoundImageView类，继承自ImageView，专门做圆角的绘制，代码如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UpRoundImageView</span> <span class="kd">extends</span> <span class="n">ImageView</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">float</span> <span class="n">mRadus</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">SystemUtils</span><span class="o">.</span><span class="na">getDensity</span><span class="o">(</span><span class="n">CampusApplication</span><span class="o">.</span><span class="na">getCampusApplicationContext</span><span class="o">());</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/*圆角的半径，依次为左上角xy半径，右上角，右下角，左下角*/</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">float</span><span class="o">[]</span> <span class="n">rids</span> <span class="o">=</span> <span class="o">{</span><span class="n">mRadus</span><span class="o">,</span> <span class="n">mRadus</span><span class="o">,</span> <span class="n">mRadus</span><span class="o">,</span> <span class="n">mRadus</span><span class="o">,</span> <span class="mf">0.0f</span><span class="o">,</span><span class="mf">0.0f</span><span class="o">,</span><span class="mf">0.0f</span><span class="o">,</span><span class="mf">0.0f</span><span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">UpRoundImageView</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">UpRoundImageView</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">AttributeSet</span> <span class="n">attrs</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">attrs</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">UpRoundImageView</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">AttributeSet</span> <span class="n">attrs</span><span class="o">,</span> <span class="kt">int</span> <span class="n">defStyleAttr</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">attrs</span><span class="o">,</span> <span class="n">defStyleAttr</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * 画图</span>
-</span><span class='line'><span class="cm">     * @param canvas</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onDraw</span><span class="o">(</span><span class="n">Canvas</span> <span class="n">canvas</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Path</span> <span class="n">path</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Path</span><span class="o">();</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">w</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getHeight</span><span class="o">();</span>
-</span><span class='line'>        <span class="cm">/*向路径中添加圆角矩形。radii数组定义圆角矩形的四个圆角的x,y半径。radii长度必须为8*/</span>
-</span><span class='line'>        <span class="n">path</span><span class="o">.</span><span class="na">addRoundRect</span><span class="o">(</span><span class="k">new</span> <span class="nf">RectF</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="n">w</span><span class="o">,</span><span class="n">h</span><span class="o">),</span><span class="n">rids</span><span class="o">,</span><span class="n">Path</span><span class="o">.</span><span class="na">Direction</span><span class="o">.</span><span class="na">CW</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">canvas</span><span class="o">.</span><span class="na">clipPath</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onDraw</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>将ImageView替换成UpRoundImageView， 这样就实现了全部圆角效果。
-另外，可以在CardView加上app:cardElevation=&ldquo;3dp"属性，这个属性加上后可以在CardView后形成一个阴影，有卡片浮上来的感觉，更符合Material Design风格。 xml中CardView的属性设置为</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;android.support.v7.widget.CardView</span>
-</span><span class='line'>    <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
-</span><span class='line'>    <span class="na">xmlns:app=</span><span class="s">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
-</span><span class='line'>    <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>    <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
-</span><span class='line'>    <span class="na">app:cardUseCompatPadding=</span><span class="s">&quot;true&quot;</span>
-</span><span class='line'>    <span class="na">app:cardCornerRadius=</span><span class="s">&quot;5dp&quot;</span>
-</span><span class='line'>    <span class="na">app:cardPreventCornerOverlap=</span><span class="s">&quot;false&quot;</span>
-</span><span class='line'>    <span class="na">app:cardElevation=</span><span class="s">&quot;3dp&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    ...
-</span><span class='line'><span class="nt">&lt;/android.support.v7.widget.CardView&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最后实现效果在各个平台一致：</p>
-
-<p>api 19实现效果
-<img src="http://jason5.cn/images/1841176-0c3a2248165f44f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="api 19实现效果" /></p>
-
-<p>api 22实现效果
-<img src="http://jason5.cn/images/1841176-9be814e5334aaf83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="api 22实现效果" /></p>
 ]]></content>
   </entry>
   
