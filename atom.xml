@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-23T16:29:58+08:00</updated>
+  <updated>2018-10-23T16:31:26+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -22,7 +22,7 @@
 
 <p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
 
-<p><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></p>
+<p><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="https://jason5.cn/images/tip-network-uml.jpg" /></p>
 
 <ul>
 <li>IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。</li>
