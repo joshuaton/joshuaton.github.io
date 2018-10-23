@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-23T16:34:17+08:00</updated>
+  <updated>2018-10-23T16:38:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -33,13 +33,13 @@
 </ul>
 
 
-<p>（1）callWithRequest准备发起网络请求</p>
+<blockquote><p>1.callWithRequest准备发起网络请求</p>
 
-<p>（2）dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
+<p>2.dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
 
-<p>（3）realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
+<p>3.realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
 
-<p>（4）convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p>
+<p>4.convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p></blockquote>
 
 <ul>
 <li>PMDInterceptor和PMDConverter协议分别是需要在网络请求发出之前和之后要处理的逻辑，只要实现此协议，加入到PMDBaseCall中就可以了。</li>
