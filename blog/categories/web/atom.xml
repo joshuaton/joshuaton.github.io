@@ -4,7 +4,7 @@
   <title><![CDATA[分类：web | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-10-23T16:39:26+08:00</updated>
+  <updated>2018-11-05T16:20:34+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,171 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Express学习笔记(二)-路由]]></title>
+    <link href="http://jason5.cn/blog/expressxue-xi-bi-ji-er-lu-you.html"/>
+    <updated>2018-11-05T16:08:45+08:00</updated>
+    <id>http://jason5.cn/blog/expressxue-xi-bi-ji-er-lu-you</id>
+    <content type="html"><![CDATA[<p>这一篇主要介绍路由的用法</p>
+
+<h3>基本用法</h3>
+
+<pre><code class="javascript">var express = require('express');
+var app = express();
+
+// GET method route
+app.get('/', function (req, res) {
+  res.send('GET request to the homepage');
+});
+
+// POST method route
+app.post('/', function (req, res) {
+  res.send('POST request to the homepage');
+});
+
+app.all('/secret', function (req, res, next) {
+  console.log('Accessing the secret section ...');
+  next(); // pass control to the next handler
+});
+</code></pre>
+
+<p>all表示接受所有的http方法</p>
+
+<h3>路由路径</h3>
+
+<p>支持正则表达式</p>
+
+<pre><code class="javascript">app.get('/ab*cd', function(req, res) {
+  res.send('ab*cd');
+});
+</code></pre>
+
+<p>此路由路径将匹配 abcd、abxcd、abRABDOMcd、ab123cd 等。</p>
+
+<h3>路由处理顺序</h3>
+
+<pre><code class="javascript">var cb0 = function (req, res, next) {
+  console.log('CB0');
+  next();
+}
+
+var cb1 = function (req, res, next) {
+  console.log('CB1');
+  next();
+}
+
+app.get('/example/d', [cb0, cb1], function (req, res, next) {
+  console.log('the response will be sent by the next function ...');
+  next();
+}, function (req, res) {
+  res.send('Hello from D!');
+});
+</code></pre>
+
+<p>可以写数组，也可以写多个回调函数参数，挨着执行，前一个函数必须执行<code>next()</code>，否则http请求会挂起</p>
+
+<h3>模块封装</h3>
+
+<p>可以封装一个bird.js模块</p>
+
+<pre><code class="javascript">var express = require('express');
+var router = express.Router();
+
+// middleware that is specific to this router
+router.use(function timeLog(req, res, next) {
+  console.log('Time: ', Date.now());
+  next();
+});
+// define the home page route
+router.get('/', function(req, res) {
+  res.send('Birds home page');
+});
+// define the about route
+router.get('/about', function(req, res) {
+  res.send('About birds');
+});
+
+module.exports = router;
+</code></pre>
+
+<p>使用模块后，url从外部使用模块开始，接着模块定义的路径，就可以访问</p>
+
+<pre><code>var birds = require('./birds');
+...
+app.use('/birds', birds);
+</code></pre>
+
+<p>此时，可以相应<code>/birds</code>和<code>/birds/about</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Express学习笔记(一)-开始]]></title>
+    <link href="http://jason5.cn/blog/expressxue-xi-bi-ji.html"/>
+    <updated>2018-11-05T15:57:02+08:00</updated>
+    <id>http://jason5.cn/blog/expressxue-xi-bi-ji</id>
+    <content type="html"><![CDATA[<p>Express是一个基于nodejs的web开发框架。</p>
+
+<h3>Hello World</h3>
+
+<p>1.安装</p>
+
+<pre><code>$ mkdir myapp
+$ cd myapp
+$ npm init
+$ npm install express --save
+</code></pre>
+
+<p>2.修改app.js，然后运行</p>
+
+<pre><code>$ node app.js
+</code></pre>
+
+<p>打开浏览器，可以看到运行结果了</p>
+
+<h3>脚手架工程</h3>
+
+<p>1.安装express-generator</p>
+
+<pre><code>$ npm install express-generator -g
+</code></pre>
+
+<p>2.生成脚手架工程</p>
+
+<pre><code>$ express --view=pug myapp
+</code></pre>
+
+<p>pug是使用的模板引擎</p>
+
+<pre><code>$ cd myapp
+$ npm install
+</code></pre>
+
+<p>3.运行</p>
+
+<pre><code>$ npm start
+</code></pre>
+
+<p>在浏览器里访问。</p>
+
+<h3>路由</h3>
+
+<pre><code class="javascript">app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
+</code></pre>
+
+<p>表示根目录相应http get方法</p>
+
+<h3>静态文件</h3>
+
+<pre><code class="javascript">app.use('/static', express.static(__dirname + '/public'));
+</code></pre>
+
+<p>public目录下的所有文件可以作为静态资源访问。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[如何用charles进行https抓包]]></title>
