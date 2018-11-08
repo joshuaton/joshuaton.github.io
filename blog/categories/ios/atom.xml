@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-11-05T16:20:34+08:00</updated>
+  <updated>2018-11-08T15:23:08+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[对JSPatch原理的理解]]></title>
+    <link href="http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie.html"/>
+    <updated>2018-11-08T15:08:47+08:00</updated>
+    <id>http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie</id>
+    <content type="html"><![CDATA[<p>JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。</p>
+
+<p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
+
+<p>1.补丁下发阶段</p>
+
+<p>应用启动的时候，会加载下发的补丁js文件，以下这一段热更新代码会被执行。</p>
+
+<pre><code class="javascript">replaceMethod("IGTabBarController", "onNaviBarTaskBoxClick:", false, function (invocation) {
+    log("origin method");
+    callOriginMethod(invocation, "origin_onNaviBarTaskBoxClick:");
+});
+</code></pre>
+
+<p>OC中的JSContext在初始化的时候加载过replaceMethod函数，所以会调用到OC代码</p>
+
+<pre><code>ocReplaceMethod:(NSString *)className selectorName:(NSString *)selectorName isClass:(BOOL)isClass func:(JSValue *)func
+</code></pre>
+
+<p>这个函数里，做了一个重要的逻辑（这里参考了JSPatch的实现方式），将IGTabBarController的实例方法onNaviBarTaskBoxClick:指向了forwardInvocation:，然后自定义实现PMDForwardInvocation替换forwardInvocation:的行为</p>
+
+<p>2.用户调用阶段</p>
+
+<p>用户操作点击后，IGTabBarController的onNaviBarTaskBoxClick:会被执行，从而PMDForwardInvocation被执行，根据OC的函数转发特性，PMDForwardInvocation会拿到所有的函数参数信息invocation。然后调用<code>jsfunc(@[invocation])</code>。这样就将所有原生参数通过invocation对象传回给了js代码。js代码拿到这些参数就可以去实现任何逻辑了，以达到替换原方法的目的。</p>
+
+<p>总结：这里是一个很重要的技巧，如何将需要动态更新的OC方法的参数全部传给js代码，JSPatch是利用了forwardInvocation的特性。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[TIP项目网络框架梳理]]></title>
@@ -118,69 +152,6 @@
 </code></pre>
 
 <p>pem文件可以直接用文本工具打开</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf]]></title>
-    <link href="http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html"/>
-    <updated>2017-06-16T15:01:32+08:00</updated>
-    <id>http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself</id>
-    <content type="html"><![CDATA[<p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
-
-<!--more-->
-
-
-<h2>解决 retain circle</h2>
-
-<p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
-
-<p>示例代码：</p>
-
-<pre><code>__weak __typeof__(self) weakSelf = self;
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [weakSelf doSomething];
-});
-</code></pre>
-
-<p>clang 的文档表示，在 doSomething 内，weakSelf 不会被释放。但，下面的情况除外：</p>
-
-<pre><code>__weak __typeof__(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [weakSelf doSomething];
-    [weakSelf doOtherThing];
-});
-</code></pre>
-
-<p>在 doSomething 中，weakSelf 不会变成 nil，不过在 doSomething 执行完成，调用第二个方法 doOtherThing 的时候，weakSelf 有可能被释放，于是，strongSelf 就派上用场了：</p>
-
-<pre><code>__weak __typeof__(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    __strong __typeof(self) strongSelf = weakSelf;
-    [strongSelf doSomething];
-    [strongSelf doOtherThing];
-});
-</code></pre>
-
-<p>__strong 确保在 Block 内，strongSelf 不会被释放。</p>
-
-<h2>总结</h2>
-
-<ul>
-<li>在 Block 内如果需要访问 self 的方法、变量，建议使用 weakSelf。</li>
-<li>如果在 Block 内需要多次 访问 self，则需要使用 strongSelf。</li>
-</ul>
-
-
-<h2>参考</h2>
-
-<ul>
-<li><a href="https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself">I finally figured out weakSelf and strongSelf</a></li>
-<li><a href="https://stackoverflow.com/questions/21113963/is-the-weakself-strongself-dance-really-necessary-when-referencing-self-inside-a?rq=1">Is the weakSelf/strongSelf dance really necessary when referencing self inside a non-retained completion called from a UIViewController?</a></li>
-</ul>
-
-
-<blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
 ]]></content>
   </entry>
   
