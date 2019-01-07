@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-07T16:06:23+08:00</updated>
+  <updated>2019-01-07T16:14:07+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -54,7 +54,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>源码解读</h3>
+<h3>hook过程</h3>
 
 <p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下。</p>
 
@@ -206,6 +206,16 @@
 <p>接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第11行为AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。</p>
 
 <p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类之间的关系和情况。</p>
+
+<p><a href="https://jason5.cn/images/Aspects.png"><img src="https://jason5.cn/images/Aspects.png" alt="" /></a></p>
+
+<h3>hook后的执行流程</h3>
+
+<p>hook完成后，我们来看下hook后代码的执行流程。</p>
+
+<h3>总结</h3>
+
+<p>ios的runtime是黑魔法，运用起来可以做出很多强大的功能。总的来讲，Aspects利用了ios的method_swizzling和消息转发机制forwordInvocation，来实现了对函数进行切片hook。</p>
 ]]></content>
   </entry>
   
