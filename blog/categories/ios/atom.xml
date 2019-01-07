@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-07T17:37:30+08:00</updated>
+  <updated>2019-01-07T17:39:50+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -20,7 +20,7 @@
     <id>http://jason5.cn/blog/acpectsyuan-ma-jie-du</id>
     <content type="html"><![CDATA[<p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
 
-<h3>调用方式</h3>
+<h2>调用方式</h2>
 
 <p>首先我们下载官方demo，从入口代码开始看：</p>
 
@@ -41,7 +41,7 @@
 };
 </code></pre>
 
-<h3>hook过程</h3>
+<h2>hook过程</h2>
 
 <p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下：</p>
 
@@ -134,7 +134,7 @@
 
 <p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。</p>
 
-<h3>hook后的执行流程</h3>
+<h2>hook后的执行流程</h2>
 
 <p>hook完成后，我们来看下hook后代码的执行流程。</p>
 
@@ -181,7 +181,7 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
 
 <p>到此为止，就实现了在原来的实例方法执行后，再执行hook插入的block代码。</p>
 
-<h3>总结</h3>
+<h2>总结</h2>
 
 <p>ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。</p>
 ]]></content>
