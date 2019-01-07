@@ -278,6 +278,8 @@
 
 <p><a href="https://jason5.cn/images/Aspects.png"><img src="https://jason5.cn/images/Aspects.png" alt="" /></a></p>
 
+<p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。</p>
+
 <h3>hook后的执行流程</h3>
 
 <p>hook完成后，我们来看下hook后代码的执行流程。</p>
@@ -361,7 +363,7 @@
 
 <h3>总结</h3>
 
-<p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。</p>
+<p>ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。</p>
 </div>
 
 
