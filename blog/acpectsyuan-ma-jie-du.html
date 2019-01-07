@@ -9,9 +9,10 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="Aspects是iOS面向切面编程的一个第三方库，它可以在不改变原有代码的情况下，在任意函数之前之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，阐述下其原理。 使用方式 首先我们下载官方demo，从入口代码开始看。 1
+  <meta name="description" content="Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。 调用方式 首先我们下载官方demo，从入口代码开始看： 1
 2
-3 &hellip;">
+3
+4 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -86,11 +87,11 @@
   </header>
 
 
-<div class="entry-content"><p>Aspects是iOS面向切面编程的一个第三方库，它可以在不改变原有代码的情况下，在任意函数之前之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，阐述下其原理。</p>
+<div class="entry-content"><p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
 
-<h3>使用方式</h3>
+<h3>调用方式</h3>
 
-<p>首先我们下载官方demo，从入口代码开始看。</p>
+<p>首先我们下载官方demo，从入口代码开始看：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -103,7 +104,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这段代码就是Aspects的使用方式，表示在aspectsController的buttonPressed函数执行之后，再执行block里的代码，打印一行日志。withOptions的参数写的0，这里是一个枚举值，可以控制block代码怎样执行，具体的定义如下</p>
+<p>这段代码就是Aspects的调用方式之一，表示在对象aspectsController的buttonPressed函数执行之后，再执行block里的代码，打印一行日志。withOptions的参数写的0，这里是一个枚举值，可以控制block代码怎样执行，具体的定义如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -124,7 +125,7 @@
 
 <h3>hook过程</h3>
 
-<p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下。</p>
+<p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -174,7 +175,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在before，instead，after数组里放入多个AspectIdentifier，从名称可以看出这些AspectIdentifier所执行的时机。</p>
+<p>AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在before，instead，after数组里放入多个AspectIdentifier，从名称可以看出这些AspectIdentifier所执行的时机。AspectsContainer将在后边取出并执行。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -189,7 +190,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>其次调用aspect_prepareClassAndHookSelector函数，这是最关键的部分。</p>
+<p>其次调用aspect_prepareClassAndHookSelector函数，这是最关键的部分：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -224,7 +225,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这个函数分为两部分，aspect_hookClass和后边的部分。我们先来看aspect_hookClass函数，省略后的代码如下。</p>
+<p>这个函数分为两部分，第2行aspect_hookClass和后边的部分。我们先来看aspect_hookClass函数，省略后的代码如下。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -269,11 +270,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>第11行代码通过运行时的方式定义了一个新的子类。如果是demo执行到这里的话，生成的子类叫AspectsViewController_Aspects。第12行，将子类的forwardInvocation替换为了自定义的实现函数<strong>ASPECTS_ARE_BEING_CALLED</strong>。第18行，将AspectsViewController实例的isa指针指向了子类AspectsViewController_Aspects。</p>
+<p>第11行代码通过运行时的函数objc_allocateClassPair定义了一个新的子类。如果是demo执行到这里的话，生成的子类叫AspectsViewController_Aspects。第12行，将子类的forwardInvocation替换为了自定义的实现函数__ASPECTS_ARE_BEING_CALLED__。第18行，将AspectsViewController实例的isa指针指向了子类AspectsViewController_Aspects。</p>
 
-<p>接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第11行为AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。</p>
+<p>接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第10行在AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。</p>
 
-<p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类之间的关系和情况。</p>
+<p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。</p>
 
 <p><a href="https://jason5.cn/images/Aspects.png"><img src="https://jason5.cn/images/Aspects.png" alt="" /></a></p>
 
@@ -281,9 +282,86 @@
 
 <p>hook完成后，我们来看下hook后代码的执行流程。</p>
 
+<p>这一段很重要！！！往AspectsViewController实例发送buttonPressed消息的时候，首先应该去查找实例所对应的类的方法列表，由于AspectsViewController的isa指向了AspectsViewController_Aspects类，就会去AspectsViewController_Aspects类中查找，结果是查找不到buttonPressed实现，然后会去查找父类AspectsViewController的方法列表，这时候查找到了buttonPressed的实现，但是实现是指向了_msg_forward，这样就进入了消息转发流程。按照消息转发流程，系统会调用AspectsViewController_Aspects类的forwardInvocation方法，forwardInvocation方法被我们替换成了自定义实现__ASPECTS_ARE_BEING_CALLED__，最终就进入了这个方法。</p>
+
+<p>__ASPECTS_ARE_BEING_CALLED__的省略后的代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// This is the swizzled forwardInvocation: method.</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">__ASPECTS_ARE_BEING_CALLED__</span><span class="p">(</span><span class="n">__unsafe_unretained</span> <span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">NSInvocation</span> <span class="o">*</span><span class="n">invocation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">originalSelector</span> <span class="o">=</span> <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">aliasSelector</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">objectContainer</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">classContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForClass</span><span class="p">(</span><span class="n">object_getClass</span><span class="p">(</span><span class="nb">self</span><span class="p">),</span> <span class="n">aliasSelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">AspectInfo</span> <span class="o">*</span><span class="n">info</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AspectInfo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithInstance</span><span class="p">:</span><span class="nb">self</span> <span class="nl">invocation</span><span class="p">:</span><span class="n">invocation</span><span class="p">];</span>
+</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">aspectsToRemove</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Before hooks.</span>
+</span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">classContainer</span><span class="p">.</span><span class="n">beforeAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">beforeAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Instead hooks.</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">respondsToAlias</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">.</span><span class="n">count</span> <span class="o">||</span> <span class="n">classContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">.</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">classContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">target</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">do</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">((</span><span class="n">respondsToAlias</span> <span class="o">=</span> <span class="p">[</span><span class="n">klass</span> <span class="nl">instancesRespondToSelector</span><span class="p">:</span><span class="n">aliasSelector</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">invocation</span> <span class="n">invoke</span><span class="p">];</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span><span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">respondsToAlias</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">klass</span> <span class="o">=</span> <span class="n">class_getSuperclass</span><span class="p">(</span><span class="n">klass</span><span class="p">)));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// After hooks.</span>
+</span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">classContainer</span><span class="p">.</span><span class="n">afterAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">afterAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第7行，对于hook的实例方法，先拿到之前设置的切片代码信息，存储在classContainer里。第24行，通过invocation调用AspectsViewController_Aspects的aspect_buttonPressed方法，由于这个方法已经指向了原来的实现buttonPressed，所以就调用了原始的代码。在这之后，如果Container里有afterAspects，就调用切片的block。beforeAspects同理。</p>
+
+<p>到此为止，就实现了在原来的实例方法执行后，再执行hook插入的block代码。</p>
+
 <h3>总结</h3>
 
-<p>ios的runtime是黑魔法，运用起来可以做出很多强大的功能。总的来讲，Aspects利用了ios的method_swizzling和消息转发机制forwordInvocation，来实现了对函数进行切片hook。</p>
+<p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。</p>
 </div>
 
 
