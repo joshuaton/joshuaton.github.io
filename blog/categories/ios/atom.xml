@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2018-11-08T15:23:08+08:00</updated>
+  <updated>2019-01-07T16:06:23+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,125 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Acpects源码解读]]></title>
+    <link href="http://jason5.cn/blog/acpectsyuan-ma-jie-du.html"/>
+    <updated>2019-01-07T15:25:12+08:00</updated>
+    <id>http://jason5.cn/blog/acpectsyuan-ma-jie-du</id>
+    <content type="html"><![CDATA[<p>Aspects是iOS面向切面编程的一个第三方库，它可以在不改变原有代码的情况下，在任意函数之前之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，阐述下其原理。</p>
+
+<h3>使用方式</h3>
+
+<p>首先我们下载官方demo，从入口代码开始看。</p>
+
+<pre><code class="objective-c">AspectsViewController *aspectsController = [AspectsViewController new];
+[aspectsController aspect_hookSelector:@selector(buttonPressed:) withOptions:0 usingBlock:^(id info, id sender) {
+    NSLog(@"Button was pressed by: %@", sender);
+} error:NULL];
+</code></pre>
+
+<p>这段代码就是Aspects的使用方式，表示在aspectsController的buttonPressed函数执行之后，再执行block里的代码，打印一行日志。withOptions的参数写的0，这里是一个枚举值，可以控制block代码怎样执行，具体的定义如下</p>
+
+<pre><code class="objective-c">typedef NS_OPTIONS(NSUInteger, AspectOptions) {
+    AspectPositionAfter   = 0,            /// Called after the original implementation (default)
+    AspectPositionInstead = 1,            /// Will replace the original implementation.
+    AspectPositionBefore  = 2,            /// Called before the original implementation.
+
+    AspectOptionAutomaticRemoval = 1 &lt;&lt; 3 /// Will remove the hook after the first execution.
+};
+</code></pre>
+
+<h3>源码解读</h3>
+
+<p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下。</p>
+
+<pre><code class="objective-c">static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSError **error) {
+    __block AspectIdentifier *identifier = nil;
+    AspectsContainer *aspectContainer = aspect_getContainerForObject(self, selector);
+    identifier = [AspectIdentifier identifierWithSelector:selector object:self options:options block:block error:error];
+    if (identifier) {
+        [aspectContainer addAspect:identifier withOptions:options];
+
+        // Modify the class to allow message interception.
+        aspect_prepareClassAndHookSelector(self, selector, error);
+    }
+    return identifier;
+}
+</code></pre>
+
+<p>这段代码做了两件事情。</p>
+
+<p>首先生成AspectIdentifier，然后将AspectIdentifier加入到AspectsContainer中。AspectIdentifier的定义如下，它描述了一个Ascpect切片代码的信息。</p>
+
+<pre><code class="objective-c">@interface AspectIdentifier : NSObject
+@property (nonatomic, assign) SEL selector;
+@property (nonatomic, strong) id block;
+@property (nonatomic, strong) NSMethodSignature *blockSignature;
+@property (nonatomic, weak) id object;
+@property (nonatomic, assign) AspectOptions options;
+@end
+</code></pre>
+
+<p>AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在before，instead，after数组里放入多个AspectIdentifier，从名称可以看出这些AspectIdentifier所执行的时机。</p>
+
+<pre><code class="objective-c">@interface AspectsContainer : NSObject
+@property (atomic, copy) NSArray *beforeAspects;
+@property (atomic, copy) NSArray *insteadAspects;
+@property (atomic, copy) NSArray *afterAspects;
+@end
+</code></pre>
+
+<p>其次调用aspect_prepareClassAndHookSelector函数，这是最关键的部分。</p>
+
+<pre><code class="objective-c">static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSError **error) {
+    Class klass = aspect_hookClass(self, error);
+    Method targetMethod = class_getInstanceMethod(klass, selector);
+    IMP targetMethodIMP = method_getImplementation(targetMethod);
+    if (!aspect_isMsgForwardIMP(targetMethodIMP)) {
+        // Make a method alias for the existing method implementation, it not already copied.
+        const char *typeEncoding = method_getTypeEncoding(targetMethod);
+        SEL aliasSelector = aspect_aliasForSelector(selector);
+        if (![klass instancesRespondToSelector:aliasSelector]) {
+            __unused BOOL addedAlias = class_addMethod(klass, aliasSelector, method_getImplementation(targetMethod), typeEncoding);
+        }
+        // We use forwardInvocation to hook in.
+        class_replaceMethod(klass, selector, aspect_getMsgForwardIMP(self, selector), typeEncoding);
+    }
+}
+</code></pre>
+
+<p>这个函数分为两部分，aspect_hookClass和后边的部分。我们先来看aspect_hookClass函数，省略后的代码如下。</p>
+
+<pre><code class="objective-c">static Class aspect_hookClass(NSObject *self, NSError **error) {
+    Class statedClass = self.class;
+    Class baseClass = object_getClass(self);
+    NSString *className = NSStringFromClass(baseClass);
+
+    // Default case. Create dynamic subclass.
+    const char *subclassName = [className stringByAppendingString:AspectsSubclassSuffix].UTF8String;
+    Class subclass = objc_getClass(subclassName);
+
+    if (subclass == nil) {
+        subclass = objc_allocateClassPair(baseClass, subclassName, 0);
+        aspect_swizzleForwardInvocation(subclass);
+        aspect_hookedGetClass(subclass, statedClass);
+        aspect_hookedGetClass(object_getClass(subclass), statedClass);
+        objc_registerClassPair(subclass);
+    }
+
+    object_setClass(self, subclass);
+    return subclass;
+}
+</code></pre>
+
+<p>第11行代码通过运行时的方式定义了一个新的子类。如果是demo执行到这里的话，生成的子类叫AspectsViewController_Aspects。第12行，将子类的forwardInvocation替换为了自定义的实现函数<strong>ASPECTS_ARE_BEING_CALLED</strong>。第18行，将AspectsViewController实例的isa指针指向了子类AspectsViewController_Aspects。</p>
+
+<p>接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第11行为AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。</p>
+
+<p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类之间的关系和情况。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[对JSPatch原理的理解]]></title>
@@ -140,18 +259,6 @@
 <h3>原理</h3>
 
 <p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[如何查看p12文件的信息]]></title>
-    <link href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html"/>
-    <updated>2017-12-16T14:37:21+08:00</updated>
-    <id>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi</id>
-    <content type="html"><![CDATA[<pre><code>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes
-</code></pre>
-
-<p>pem文件可以直接用文本工具打开</p>
 ]]></content>
   </entry>
   

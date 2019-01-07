@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Acpects源码解读 - 移动开发技术</title>
+  <meta name="author" content="jason">
+
+  
+  <meta name="description" content="Aspects是iOS面向切面编程的一个第三方库，它可以在不改变原有代码的情况下，在任意函数之前之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，阐述下其原理。 使用方式 首先我们下载官方demo，从入口代码开始看。 1
+2
+3 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jason5.cn/blog/acpectsyuan-ma-jie-du.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">移动开发技术</a></h1>
+  
+    <h2>Jason's Blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jason5.cn">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Acpects源码解读</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-01-07T15:25:12+08:00'><span class='date'>2019 年1 月7 日</span> <span class='time'>3:25 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Aspects是iOS面向切面编程的一个第三方库，它可以在不改变原有代码的情况下，在任意函数之前之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，阐述下其原理。</p>
+
+<h3>使用方式</h3>
+
+<p>首先我们下载官方demo，从入口代码开始看。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">AspectsViewController</span> <span class="o">*</span><span class="n">aspectsController</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectsViewController</span> <span class="n">new</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">aspectsController</span> <span class="nl">aspect_hookSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonPressed</span><span class="p">:)</span> <span class="nl">withOptions</span><span class="p">:</span><span class="mi">0</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">info</span><span class="p">,</span> <span class="kt">id</span> <span class="n">sender</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Button was pressed by: %@&quot;</span><span class="p">,</span> <span class="n">sender</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="nl">error</span><span class="p">:</span><span class="nb">NULL</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码就是Aspects的使用方式，表示在aspectsController的buttonPressed函数执行之后，再执行block里的代码，打印一行日志。withOptions的参数写的0，这里是一个枚举值，可以控制block代码怎样执行，具体的定义如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">typedef</span> <span class="nf">NS_OPTIONS</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">,</span> <span class="n">AspectOptions</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">AspectPositionAfter</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>            <span class="c1">/// Called after the original implementation (default)</span>
+</span><span class='line'>    <span class="n">AspectPositionInstead</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>            <span class="c1">/// Will replace the original implementation.</span>
+</span><span class='line'>    <span class="n">AspectPositionBefore</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>            <span class="c1">/// Called before the original implementation.</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">AspectOptionAutomaticRemoval</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span> <span class="c1">/// Will remove the hook after the first execution.</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>源码解读</h3>
+
+<p>我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="nf">aspect_add</span><span class="p">(</span><span class="kt">id</span> <span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">,</span> <span class="kt">id</span> <span class="n">block</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">__block</span> <span class="n">AspectIdentifier</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">aspectContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForObject</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">identifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectIdentifier</span> <span class="nl">identifierWithSelector</span><span class="p">:</span><span class="n">selector</span> <span class="nl">object</span><span class="p">:</span><span class="nb">self</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">block</span><span class="p">:</span><span class="n">block</span> <span class="nl">error</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">identifier</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">aspectContainer</span> <span class="nl">addAspect</span><span class="p">:</span><span class="n">identifier</span> <span class="nl">withOptions</span><span class="p">:</span><span class="n">options</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Modify the class to allow message interception.</span>
+</span><span class='line'>        <span class="n">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这段代码做了两件事情。</p>
+
+<p>首先生成AspectIdentifier，然后将AspectIdentifier加入到AspectsContainer中。AspectIdentifier的定义如下，它描述了一个Ascpect切片代码的信息。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">AspectIdentifier</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">id</span> <span class="n">block</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="n">blockSignature</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">id</span> <span class="n">object</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在before，instead，after数组里放入多个AspectIdentifier，从名称可以看出这些AspectIdentifier所执行的时机。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">AspectsContainer</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">beforeAspects</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">insteadAspects</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">afterAspects</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其次调用aspect_prepareClassAndHookSelector函数，这是最关键的部分。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">aspect_hookClass</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Method</span> <span class="n">targetMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">IMP</span> <span class="n">targetMethodIMP</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">aspect_isMsgForwardIMP</span><span class="p">(</span><span class="n">targetMethodIMP</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Make a method alias for the existing method implementation, it not already copied.</span>
+</span><span class='line'>        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">typeEncoding</span> <span class="o">=</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">klass</span> <span class="nl">instancesRespondToSelector</span><span class="p">:</span><span class="n">aliasSelector</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">__unused</span> <span class="kt">BOOL</span> <span class="n">addedAlias</span> <span class="o">=</span> <span class="n">class_addMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// We use forwardInvocation to hook in.</span>
+</span><span class='line'>        <span class="n">class_replaceMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">aspect_getMsgForwardIMP</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个函数分为两部分，aspect_hookClass和后边的部分。我们先来看aspect_hookClass函数，省略后的代码如下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">Class</span> <span class="nf">aspect_hookClass</span><span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">Class</span> <span class="n">statedClass</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="k">class</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">Class</span> <span class="n">baseClass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">className</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">(</span><span class="n">baseClass</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Default case. Create dynamic subclass.</span>
+</span><span class='line'>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">subclassName</span> <span class="o">=</span> <span class="p">[</span><span class="n">className</span> <span class="nl">stringByAppendingString</span><span class="p">:</span><span class="n">AspectsSubclassSuffix</span><span class="p">].</span><span class="n">UTF8String</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">Class</span> <span class="n">subclass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="n">subclassName</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">subclass</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">subclass</span> <span class="o">=</span> <span class="n">objc_allocateClassPair</span><span class="p">(</span><span class="n">baseClass</span><span class="p">,</span> <span class="n">subclassName</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">aspect_swizzleForwardInvocation</span><span class="p">(</span><span class="n">subclass</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">aspect_hookedGetClass</span><span class="p">(</span><span class="n">subclass</span><span class="p">,</span> <span class="n">statedClass</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">aspect_hookedGetClass</span><span class="p">(</span><span class="n">object_getClass</span><span class="p">(</span><span class="n">subclass</span><span class="p">),</span> <span class="n">statedClass</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">objc_registerClassPair</span><span class="p">(</span><span class="n">subclass</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">object_setClass</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">subclass</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">subclass</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第11行代码通过运行时的方式定义了一个新的子类。如果是demo执行到这里的话，生成的子类叫AspectsViewController_Aspects。第12行，将子类的forwardInvocation替换为了自定义的实现函数<strong>ASPECTS_ARE_BEING_CALLED</strong>。第18行，将AspectsViewController实例的isa指针指向了子类AspectsViewController_Aspects。</p>
+
+<p>接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第11行为AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。</p>
+
+<p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类之间的关系和情况。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">jason</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2019-01-07T15:25:12+08:00'><span class='date'>2019 年1 月7 日</span> <span class='time'>3:25 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ios/'>ios</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/dui-jspatchyuan-li-de-li-jie.html" title="Previous Post: 对JSPatch原理的理解">&laquo; 对JSPatch原理的理解</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  <h1>Comments</h1>
+  <div id="container"></div>
+</section>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+    id: 'Acpects源码解读',
+    owner: 'joshuaton',
+    repo: 'joshuaton.github.io',
+    oauth: {
+        client_id: 'eec868eaacadc00f17c0',
+        client_secret: '9840ef585828127e5f235ff6d2b28141ae182f98',
+    },
+});
+gitment.render('container');
+</script>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (7)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
+<li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (3)</a></li>
+<li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
+
+  </ul>
+</section><section>
+  <h1>最新发布</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/acpectsyuan-ma-jie-du.html">Acpects源码解读</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/dui-jspatchyuan-li-de-li-jie.html">对JSPatch原理的理解</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/expressxue-xi-bi-ji-er-lu-you.html">Express学习笔记(二)-路由</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/expressxue-xi-bi-ji.html">Express学习笔记(一)-开始</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html">TIP项目网络框架梳理</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+<script>
+var _mtac = {};
+(function() {
+    var mta = document.createElement("script");
+    mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.2";
+    mta.setAttribute("name", "MTAH5");
+    mta.setAttribute("sid", "500600841");
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(mta, s);
+})();
+</script>
+            
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
