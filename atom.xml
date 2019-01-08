@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-07T22:34:06+08:00</updated>
+  <updated>2019-01-08T10:14:51+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jason5.cn/blog/acpectsyuan-ma-jie-du.html"/>
     <updated>2019-01-07T15:25:12+08:00</updated>
     <id>http://jason5.cn/blog/acpectsyuan-ma-jie-du</id>
-    <content type="html"><![CDATA[<p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
+    <content type="html"><![CDATA[<p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
 
 <h2>调用方式</h2>
 
@@ -28,9 +28,9 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">AspectsViewController</span> <span class="o">*</span><span class="n">aspectsController</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectsViewController</span> <span class="n">new</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">aspectsController</span> <span class="nl">aspect_hookSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonPressed</span><span class="p">:)</span> <span class="nl">withOptions</span><span class="p">:</span><span class="mi">0</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">info</span><span class="p">,</span> <span class="kt">id</span> <span class="n">sender</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Button was pressed by: %@&quot;</span><span class="p">,</span> <span class="n">sender</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">AspectsViewController</span> <span class="o">*</span><span class="n">aspectsController</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectsViewController</span> <span class="k">new</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">aspectsController</span> <span class="nl">aspect_hookSelector</span><span class="p">:</span><span class="err">@</span><span class="n">selector</span><span class="p">(</span><span class="nl">buttonPressed</span><span class="p">:)</span> <span class="nl">withOptions</span><span class="p">:</span><span class="mi">0</span> <span class="nl">usingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">id</span> <span class="n">info</span><span class="p">,</span> <span class="n">id</span> <span class="n">sender</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="err">@</span><span class="s">&quot;Button was pressed by: %@&quot;</span><span class="p">,</span> <span class="n">sender</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span> <span class="nl">error</span><span class="p">:</span><span class="nb">NULL</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -44,7 +44,7 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">typedef</span> <span class="nf">NS_OPTIONS</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">,</span> <span class="n">AspectOptions</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">typedef</span> <span class="nf">NS_OPTIONS</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">AspectOptions</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">AspectPositionAfter</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>            <span class="c1">/// Called after the original implementation (default)</span>
 </span><span class='line'>    <span class="n">AspectPositionInstead</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>            <span class="c1">/// Will replace the original implementation.</span>
 </span><span class='line'>    <span class="n">AspectPositionBefore</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>            <span class="c1">/// Called before the original implementation.</span>
@@ -70,15 +70,15 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="nf">aspect_add</span><span class="p">(</span><span class="kt">id</span> <span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">,</span> <span class="kt">id</span> <span class="n">block</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">__block</span> <span class="n">AspectIdentifier</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">aspectContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForObject</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">identifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectIdentifier</span> <span class="nl">identifierWithSelector</span><span class="p">:</span><span class="n">selector</span> <span class="nl">object</span><span class="p">:</span><span class="nb">self</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">block</span><span class="p">:</span><span class="n">block</span> <span class="nl">error</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">static</span> <span class="n">id</span> <span class="nf">aspect_add</span><span class="p">(</span><span class="n">id</span> <span class="n">self</span><span class="p">,</span> <span class="n">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">,</span> <span class="n">id</span> <span class="n">block</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">__block</span> <span class="n">AspectIdentifier</span> <span class="o">*</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">aspectContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">identifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">AspectIdentifier</span> <span class="nl">identifierWithSelector</span><span class="p">:</span><span class="n">selector</span> <span class="nl">object</span><span class="p">:</span><span class="n">self</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">block</span><span class="p">:</span><span class="n">block</span> <span class="nl">error</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">identifier</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">aspectContainer</span> <span class="nl">addAspect</span><span class="p">:</span><span class="n">identifier</span> <span class="nl">withOptions</span><span class="p">:</span><span class="n">options</span><span class="p">];</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="c1">// Modify the class to allow message interception.</span>
-</span><span class='line'>        <span class="n">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="k">return</span> <span class="n">identifier</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
@@ -96,13 +96,13 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">AspectIdentifier</span> : <span class="bp">NSObject</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">id</span> <span class="n">block</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="n">blockSignature</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">id</span> <span class="n">object</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="err">@</span><span class="n">interface</span> <span class="nl">AspectIdentifier</span> <span class="p">:</span> <span class="n">NSObject</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">SEL</span> <span class="n">selector</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">id</span> <span class="n">block</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">NSMethodSignature</span> <span class="o">*</span><span class="n">blockSignature</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">weak</span><span class="p">)</span> <span class="n">id</span> <span class="n">object</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">AspectOptions</span> <span class="n">options</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -113,11 +113,11 @@
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">AspectsContainer</span> : <span class="bp">NSObject</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">beforeAspects</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">insteadAspects</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">atomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">afterAspects</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="err">@</span><span class="n">interface</span> <span class="nl">AspectsContainer</span> <span class="p">:</span> <span class="n">NSObject</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">beforeAspects</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">insteadAspects</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">property</span> <span class="p">(</span><span class="n">atomic</span><span class="p">,</span> <span class="n">copy</span><span class="p">)</span> <span class="n">NSArray</span> <span class="o">*</span><span class="n">afterAspects</span><span class="p">;</span>
+</span><span class='line'><span class="err">@</span><span class="n">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -138,19 +138,19 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">aspect_hookClass</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">aspect_prepareClassAndHookSelector</span><span class="p">(</span><span class="n">NSObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">aspect_hookClass</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
 </span><span class='line'>    <span class="n">Method</span> <span class="n">targetMethod</span> <span class="o">=</span> <span class="n">class_getInstanceMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">selector</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">IMP</span> <span class="n">targetMethodIMP</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">IMP</span> <span class="n">targetMethodIMP</span> <span class="o">=</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">);</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">aspect_isMsgForwardIMP</span><span class="p">(</span><span class="n">targetMethodIMP</span><span class="p">))</span> <span class="p">{</span>
 </span><span class='line'>        <span class="c1">// Make a method alias for the existing method implementation, it not already copied.</span>
 </span><span class='line'>        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">typeEncoding</span> <span class="o">=</span> <span class="n">method_getTypeEncoding</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">);</span>
-</span><span class='line'>        <span class="kt">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">selector</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">selector</span><span class="p">);</span>
 </span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">klass</span> <span class="nl">instancesRespondToSelector</span><span class="p">:</span><span class="n">aliasSelector</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">__unused</span> <span class="kt">BOOL</span> <span class="n">addedAlias</span> <span class="o">=</span> <span class="n">class_addMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">__unused</span> <span class="n">BOOL</span> <span class="n">addedAlias</span> <span class="o">=</span> <span class="n">class_addMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">,</span> <span class="n">method_getImplementation</span><span class="p">(</span><span class="n">targetMethod</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>        <span class="c1">// We use forwardInvocation to hook in.</span>
-</span><span class='line'>        <span class="n">class_replaceMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">aspect_getMsgForwardIMP</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">class_replaceMethod</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">aspect_getMsgForwardIMP</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">),</span> <span class="n">typeEncoding</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -178,16 +178,16 @@
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">Class</span> <span class="nf">aspect_hookClass</span><span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">Class</span> <span class="n">statedClass</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="k">class</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">Class</span> <span class="n">baseClass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
-</span><span class='line'>  <span class="bp">NSString</span> <span class="o">*</span><span class="n">className</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">(</span><span class="n">baseClass</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">static</span> <span class="n">Class</span> <span class="nf">aspect_hookClass</span><span class="p">(</span><span class="n">NSObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">**</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">Class</span> <span class="n">statedClass</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">class</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">Class</span> <span class="n">baseClass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="n">self</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">className</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">(</span><span class="n">baseClass</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// Default case. Create dynamic subclass.</span>
 </span><span class='line'>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">subclassName</span> <span class="o">=</span> <span class="p">[</span><span class="n">className</span> <span class="nl">stringByAppendingString</span><span class="p">:</span><span class="n">AspectsSubclassSuffix</span><span class="p">].</span><span class="n">UTF8String</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">Class</span> <span class="n">subclass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="n">subclassName</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">Class</span> <span class="n">subclass</span> <span class="o">=</span> <span class="n">objc_getClass</span><span class="p">(</span><span class="n">subclassName</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">subclass</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">subclass</span> <span class="o">==</span> <span class="n">nil</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="n">subclass</span> <span class="o">=</span> <span class="n">objc_allocateClassPair</span><span class="p">(</span><span class="n">baseClass</span><span class="p">,</span> <span class="n">subclassName</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 </span><span class='line'>      <span class="n">aspect_swizzleForwardInvocation</span><span class="p">(</span><span class="n">subclass</span><span class="p">);</span>
 </span><span class='line'>      <span class="n">aspect_hookedGetClass</span><span class="p">(</span><span class="n">subclass</span><span class="p">,</span> <span class="n">statedClass</span><span class="p">);</span>
@@ -195,7 +195,7 @@
 </span><span class='line'>      <span class="n">objc_registerClassPair</span><span class="p">(</span><span class="n">subclass</span><span class="p">);</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="n">object_setClass</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">subclass</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">object_setClass</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">subclass</span><span class="p">);</span>
 </span><span class='line'>  <span class="k">return</span> <span class="n">subclass</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -207,7 +207,7 @@
 
 <p>到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。</p>
 
-<p><a href="https://jason5.cn/images/Aspects.png"><img src="https://jason5.cn/images/Aspects.png" alt="" /></a></p>
+<p><img src="http://km.oa.com/files/photos/pictures/201901/1546852701_51_w1338_h361.png" alt="" /></p>
 
 <p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。</p>
 
@@ -252,27 +252,27 @@
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// This is the swizzled forwardInvocation: method.</span>
-</span><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">__ASPECTS_ARE_BEING_CALLED__</span><span class="p">(</span><span class="n">__unsafe_unretained</span> <span class="bp">NSObject</span> <span class="o">*</span><span class="nb">self</span><span class="p">,</span> <span class="kt">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">NSInvocation</span> <span class="o">*</span><span class="n">invocation</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">SEL</span> <span class="n">originalSelector</span> <span class="o">=</span> <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// This is the swizzled forwardInvocation: method.</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">__ASPECTS_ARE_BEING_CALLED__</span><span class="p">(</span><span class="n">__unsafe_unretained</span> <span class="n">NSObject</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="n">SEL</span> <span class="n">selector</span><span class="p">,</span> <span class="n">NSInvocation</span> <span class="o">*</span><span class="n">invocation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SEL</span> <span class="n">originalSelector</span> <span class="o">=</span> <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">SEL</span> <span class="n">aliasSelector</span> <span class="o">=</span> <span class="n">aspect_aliasForSelector</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">selector</span><span class="p">);</span>
 </span><span class='line'>    <span class="n">invocation</span><span class="p">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">aliasSelector</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">objectContainer</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">classContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForClass</span><span class="p">(</span><span class="n">object_getClass</span><span class="p">(</span><span class="nb">self</span><span class="p">),</span> <span class="n">aliasSelector</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">AspectInfo</span> <span class="o">*</span><span class="n">info</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AspectInfo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithInstance</span><span class="p">:</span><span class="nb">self</span> <span class="nl">invocation</span><span class="p">:</span><span class="n">invocation</span><span class="p">];</span>
-</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">aspectsToRemove</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">objectContainer</span> <span class="o">=</span> <span class="n">objc_getAssociatedObject</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">aliasSelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">AspectsContainer</span> <span class="o">*</span><span class="n">classContainer</span> <span class="o">=</span> <span class="n">aspect_getContainerForClass</span><span class="p">(</span><span class="n">object_getClass</span><span class="p">(</span><span class="n">self</span><span class="p">),</span> <span class="n">aliasSelector</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">AspectInfo</span> <span class="o">*</span><span class="n">info</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AspectInfo</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithInstance</span><span class="p">:</span><span class="n">self</span> <span class="nl">invocation</span><span class="p">:</span><span class="n">invocation</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">aspectsToRemove</span> <span class="o">=</span> <span class="n">nil</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// Before hooks.</span>
 </span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">classContainer</span><span class="p">.</span><span class="n">beforeAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
 </span><span class='line'>    <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">beforeAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// Instead hooks.</span>
-</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">respondsToAlias</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">BOOL</span> <span class="n">respondsToAlias</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">.</span><span class="n">count</span> <span class="o">||</span> <span class="n">classContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">.</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">classContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
 </span><span class='line'>        <span class="n">aspect_invoke</span><span class="p">(</span><span class="n">objectContainer</span><span class="p">.</span><span class="n">insteadAspects</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">target</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Class</span> <span class="n">klass</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">(</span><span class="n">invocation</span><span class="p">.</span><span class="n">target</span><span class="p">);</span>
 </span><span class='line'>        <span class="k">do</span> <span class="p">{</span>
 </span><span class='line'>            <span class="k">if</span> <span class="p">((</span><span class="n">respondsToAlias</span> <span class="o">=</span> <span class="p">[</span><span class="n">klass</span> <span class="nl">instancesRespondToSelector</span><span class="p">:</span><span class="n">aliasSelector</span><span class="p">]))</span> <span class="p">{</span>
 </span><span class='line'>                <span class="p">[</span><span class="n">invocation</span> <span class="n">invoke</span><span class="p">];</span>
@@ -294,7 +294,7 @@
 
 <h2>总结</h2>
 
-<p>ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。</p>
+<p>oc语言的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了method swizzling和消息转发机制forwordInvocation，实现了对函数进行切面hook。</p>
 ]]></content>
   </entry>
   
