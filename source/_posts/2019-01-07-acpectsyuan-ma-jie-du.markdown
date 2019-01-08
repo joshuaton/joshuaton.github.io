@@ -120,7 +120,7 @@ static Class aspect_hookClass(NSObject *self, NSError **error) {
 
 接着，我们继续看aspect_prepareClassAndHookSelector函数的后半部分。第10行在AspectsViewController_Aspects类添加了一个方法aliasSelector，demo中就是aspect_buttonPressed，它的实现指向了原来AspectsViewController类的buttonPressed的实现。第13行，将AspectsViewController_Aspects类的buttonPressed实现指向了_objc_msgForward，这样调用就会启动oc的消息转发机制。
 
-到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。
+到这里，Aspects的hook流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。
 
 ![](http://km.oa.com/files/photos/pictures/201901/1546852701_51_w1338_h361.png)
 
