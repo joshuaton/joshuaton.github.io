@@ -5,12 +5,12 @@ date: 2019-01-07 15:25:12 +0800
 comments: true
 categories: ios
 ---
-Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于iOS的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。
+Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。
 
 ##调用方式
 首先我们下载官方demo，从入口代码开始看：
 
-```objective-c
+```c++
 AspectsViewController *aspectsController = [AspectsViewController new];
 [aspectsController aspect_hookSelector:@selector(buttonPressed:) withOptions:0 usingBlock:^(id info, id sender) {
     NSLog(@"Button was pressed by: %@", sender);
@@ -19,7 +19,7 @@ AspectsViewController *aspectsController = [AspectsViewController new];
 
 这段代码就是Aspects的调用方式之一，表示在对象aspectsController的buttonPressed函数执行之后，再执行block里的代码，打印一行日志。withOptions的参数写的0，这里是一个枚举值，可以控制block代码怎样执行，具体的定义如下：
 
-```objective-c
+```c++
 typedef NS_OPTIONS(NSUInteger, AspectOptions) {
     AspectPositionAfter   = 0,            /// Called after the original implementation (default)
     AspectPositionInstead = 1,            /// Will replace the original implementation.
@@ -32,7 +32,7 @@ typedef NS_OPTIONS(NSUInteger, AspectOptions) {
 ##hook过程
 我们从入口函数进入开始跟踪代码，最后发现无论是对实例方法还是类方法进行hook，都会调用aspect_add函数，省略了一些无关代码后如下：
 
-```objective-c
+```c++
 static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSError **error) {
     __block AspectIdentifier *identifier = nil;
     AspectsContainer *aspectContainer = aspect_getContainerForObject(self, selector);
@@ -51,7 +51,7 @@ static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSE
 
 首先生成AspectIdentifier，然后将AspectIdentifier加入到AspectsContainer中。AspectIdentifier的定义如下，它描述了一个Ascpect切片代码的信息。
 
-```objective-c
+```c++
 @interface AspectIdentifier : NSObject
 @property (nonatomic, assign) SEL selector;
 @property (nonatomic, strong) id block;
@@ -63,7 +63,7 @@ static id aspect_add(id self, SEL selector, AspectOptions options, id block, NSE
 
 AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在before，instead，after数组里放入多个AspectIdentifier，从名称可以看出这些AspectIdentifier所执行的时机。AspectsContainer将在后边取出并执行。
 
-```objective-c
+```c++
 @interface AspectsContainer : NSObject
 @property (atomic, copy) NSArray *beforeAspects;
 @property (atomic, copy) NSArray *insteadAspects;
@@ -73,7 +73,7 @@ AspectsContainer的定义如下，它负责容纳AspectIdentifier，可以在bef
 
 其次调用aspect_prepareClassAndHookSelector函数，这是最关键的部分：
 
-```objective-c
+```c++
 static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSError **error) {
     Class klass = aspect_hookClass(self, error);
     Method targetMethod = class_getInstanceMethod(klass, selector);
@@ -93,7 +93,7 @@ static void aspect_prepareClassAndHookSelector(NSObject *self, SEL selector, NSE
 
 这个函数分为两部分，第2行aspect_hookClass和后边的部分。我们先来看aspect_hookClass函数，省略后的代码如下。
 
-```objective-c
+```c++
 static Class aspect_hookClass(NSObject *self, NSError **error) {
 	Class statedClass = self.class;
 	Class baseClass = object_getClass(self);
@@ -122,7 +122,7 @@ static Class aspect_hookClass(NSObject *self, NSError **error) {
 
 到这里，Aspects这个库的关键初始化流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。
 
-[![](https://jason5.cn/images/Aspects.png)](https://jason5.cn/images/Aspects.png)
+![](http://km.oa.com/files/photos/pictures/201901/1546852701_51_w1338_h361.png)
 
 Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。
 
@@ -133,7 +133,7 @@ hook完成后，我们来看下hook后代码的执行流程。
 
 \_\_ASPECTS\_ARE\_BEING\_CALLED\_\_的省略后的代码如下：
 
-```objective-c
+```c++
 // This is the swizzled forwardInvocation: method.
 static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL selector, NSInvocation *invocation) {
     SEL originalSelector = invocation.selector;
@@ -173,6 +173,6 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
 到此为止，就实现了在原来的实例方法执行后，再执行hook插入的block代码。
 
 ##总结
-ios的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了ios的method swizzling和消息转发机制forwordInvocation，实现了对函数进行切片hook。
+oc语言的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了method swizzling和消息转发机制forwordInvocation，实现了对函数进行切面hook。
 
 
