@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T20:02:58+08:00</updated>
+  <updated>2019-01-28T20:03:37+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[SDWebImage源码浅析]]></title>
+    <title type="html"><![CDATA[SDWebImage源码解读]]></title>
     <link href="http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi.html"/>
     <updated>2019-01-28T16:21:16+08:00</updated>
     <id>http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi</id>
