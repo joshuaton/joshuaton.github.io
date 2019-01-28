@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T20:07:02+08:00</updated>
+  <updated>2019-01-28T22:09:29+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -55,7 +55,7 @@
 
 <p>在官方Demo中，有一个列表页和详情页，我们从更简单的详情页来分析，详情页只有一个FLAnimatedImage控件，功能就是加载了一张图片，代码如下：</p>
 
-<pre><code class="objective-c">__weak typeof(self) weakSelf = self;
+<pre><code class="c++">__weak typeof(self) weakSelf = self;
 [self.imageView sd_setImageWithURL:self.imageURL
                   placeholderImage:nil
                            options:SDWebImageProgressiveDownload
@@ -80,7 +80,7 @@
 
 <p>接下来到时序图的第(1)步，调用<code>UIView+WebCache</code>的<code>sd_internalSetImageWithURL:</code>方法，代码如下：</p>
 
-<pre><code class="objective-c">[self sd_internalSetImageWithURL:url
+<pre><code class="c++">[self sd_internalSetImageWithURL:url
                     placeholderImage:placeholder
                              options:options
                         operationKey:nil
@@ -94,7 +94,7 @@
 
 <p>继续跟进这个方法，时序图到第(2)步，调用<code>SDWebImageManager</code>的<code>loadImageWithURL:</code>方法，代码如下：</p>
 
-<pre><code class="objective-c">id &lt;SDWebImageOperation&gt; operation = [manager loadImageWithURL:url options:options progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+<pre><code class="c++">id &lt;SDWebImageOperation&gt; operation = [manager loadImageWithURL:url options:options progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
     //加载完图片的回调
     ……
 }
@@ -102,7 +102,7 @@
 
 <p>时序图来到第(3)步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>queryCacheOperationForKey</code>来进行缓存查询</p>
 
-<pre><code class="objective-c">//SDImageCache.m
+<pre><code class="c++">//SDImageCache.m
 - (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options done:(nullable SDCacheQueryCompletedBlock)doneBlock {
 
     // 读内存缓存操作
@@ -135,7 +135,7 @@
 
 <p>流程来到时序图中的第(5)步，查询完缓存返回后，<code>SDWebImageManager</code>会调用<code>SDWebImageDownloader</code>的<code>downloadImageWithURL:</code>方法从网络下载图片</p>
 
-<pre><code class="objective-c">//SDWebImageDownloader.m
+<pre><code class="c++">//SDWebImageDownloader.m
 - (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url
                                                    options:(SDWebImageDownloaderOptions)options
                                                   progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
@@ -319,7 +319,7 @@ if (transformedImage &amp;&amp; finished) {
 
 <p>到这里，Aspects的hook流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。</p>
 
-<p><img src="http://km.oa.com/files/photos/pictures/201901/1546852701_51_w1338_h361.png" alt="" /></p>
+<p><a href="https://jason5.cn/images/2018-01/Aspects.png"><img src="https://jason5.cn/images/2018-01/Aspects.png" alt="" /></a></p>
 
 <p>Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。</p>
 
