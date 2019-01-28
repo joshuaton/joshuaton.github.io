@@ -106,7 +106,7 @@
 
 <h3>调用时序图</h3>
 
-<p>以官方Demo详情页加载图片为例，整理的时序图如下：</p>
+<p>以官方Demo详情页加载图片为例，加载图片的时序图如下：</p>
 
 <p><a href="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg"><img src="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg" alt="" /></a></p>
 
@@ -347,7 +347,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>从网络下载图片的代码如上，先是生成<code>NSOperation</code>，然后加入叫做<code>downloadQueue</code>的<code>NSOperationQueue</code>执行。</p>
+<p>从网络下载图片的代码如上，第8行生成<code>NSOperation</code>，第26行加入叫做<code>downloadQueue</code>的<code>NSOperationQueue</code>执行。</p>
 
 <p>下载完成后，时序图流程来到第（6）步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>storeImage:</code>方法将结果进行缓存，以便下次使用，然后再进行成功的回调，代码如下：</p>
 
@@ -386,7 +386,7 @@
 
 <p>到这里图片加载流程结束。</p>
 
-<p>SDWebImage里还有很多实现细节，由于篇幅原因在本文中省略。比如多线程的控制和加锁，各种控制下载行为的选项，取消正在下载的操作，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
+<p>SDWebImage里还有很多实现细节，比如多线程的控制和加锁，各种控制下载行为的选项，取消正在下载的操作，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。由于篇幅原因在本文中省略，等以后有时间再细致分析。</p>
 </div>
   
   
