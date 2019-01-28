@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T19:35:36+08:00</updated>
+  <updated>2019-01-28T19:36:36+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -56,24 +56,24 @@
 <p>在官方Demo中，有一个列表页和详情页，我们从更简单的详情页来分析，详情页只有一个FLAnimatedImage控件，功能就是加载了一张图片，代码如下：</p>
 
 <pre><code class="objective-c">__weak typeof(self) weakSelf = self;
-    [self.imageView sd_setImageWithURL:self.imageURL
-                      placeholderImage:nil
-                               options:SDWebImageProgressiveDownload
-                              progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL *targetURL) {
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                      float progress = 0;
-                                      if (expectedSize != 0) {
-                                          progress = (float)receivedSize / (float)expectedSize;
-                                      }
-                                      weakSelf.progressView.hidden = NO;
-                                      [weakSelf.progressView setProgress:progress animated:YES];
-                                  });
-                              }
-                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                 weakSelf.progressView.hidden = YES;
-                                 [weakSelf.activityIndicator stopAnimating];
-                                 weakSelf.activityIndicator.hidden = YES;
-                             }];
+[self.imageView sd_setImageWithURL:self.imageURL
+                  placeholderImage:nil
+                           options:SDWebImageProgressiveDownload
+                          progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL *targetURL) {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  float progress = 0;
+                                  if (expectedSize != 0) {
+                                      progress = (float)receivedSize / (float)expectedSize;
+                                  }
+                                  weakSelf.progressView.hidden = NO;
+                                  [weakSelf.progressView setProgress:progress animated:YES];
+                              });
+                          }
+                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                             weakSelf.progressView.hidden = YES;
+                             [weakSelf.activityIndicator stopAnimating];
+                             weakSelf.activityIndicator.hidden = YES;
+                         }];
 </code></pre>
 
 <p>对外暴露的接口还是很简单的，传递加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock</p>
