@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。 源码目录 SDWebImage下分为以下几个目录 &hellip;">
+  <meta name="description" content="SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。 源码目录 SDWebImage下分为以下几个目录 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -87,7 +87,7 @@
   </header>
 
 
-  <div class="entry-content"><p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+  <div class="entry-content"><p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
 
 <h3>源码目录</h3>
 
@@ -362,7 +362,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>到这里流程结束。</p>
+<p>到这里图片加载流程结束。</p>
+
+<p>SDWebImage里还有很多实现细节。比如多线程的控制和加锁，各种控制下载行为的选项，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
 </div>
   
   

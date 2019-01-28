@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T19:28:59+08:00</updated>
+  <updated>2019-01-28T19:35:36+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi.html"/>
     <updated>2019-01-28T16:21:16+08:00</updated>
     <id>http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi</id>
-    <content type="html"><![CDATA[<p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+    <content type="html"><![CDATA[<p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
 
 <h3>源码目录</h3>
 
@@ -183,7 +183,9 @@
 }
 </code></pre>
 
-<p>到这里流程结束。</p>
+<p>到这里图片加载流程结束。</p>
+
+<p>SDWebImage里还有很多实现细节。比如多线程的控制和加锁，各种控制下载行为的选项，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
 ]]></content>
   </entry>
   
