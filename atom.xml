@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T19:18:26+08:00</updated>
+  <updated>2019-01-28T19:28:59+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -25,13 +25,13 @@
 <p>SDWebImage下分为以下几个目录</p>
 
 <ul>
-<li>Downloader: 负责图片的下载，基于NSURLSession实现。</li>
-<li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能</li>
-<li>Decoder: 负责图片的解码功能</li>
-<li>Utils: 封装的工具类，是对其他功能的调用入口，主要是SDWebImaegeManger这个类</li>
-<li>Categories: 一些扩展支持，比如对GIF图片的支持加载等</li>
-<li>WebCache Categories: 对UIView的扩展支持，最常用的是UIImageView+WebCache.h，实现了UIImageView的图片加载功能</li>
-<li>FLAnimatedImage: 对FLAnimatedImage进行了扩展，可以加载动态图片</li>
+<li>Downloader: 负责图片的下载，基于<code>NSURLSession</code>实现，主要类是<code>SDWebImageDownloader</code></li>
+<li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能，主要类是<code>SDImageCache</code></li>
+<li>Decoder: 负责图片的解码功能，以支持不同格式的图片，例如<code>SDWebImageGIFCoder</code>是对GIF图片的支持</li>
+<li>Utils: 封装的工具类，是对图片缓存和下载的调用入口，主要类是<code>SDWebImaegeManger</code></li>
+<li>Categories: 一些扩展支持，比如如果要对GIF图片进行下载展示，需要引入<code>UIImage+GIF.h</code>（框架已默认引入）</li>
+<li>WebCache Categories: 对<code>UIView</code>的扩展支持，最常用的是<code>UIImageView+WebCache.h</code>，实现了<code>UIImageView</code>的图片加载和缓存功能</li>
+<li>FLAnimatedImage: 对<code>FLAnimatedImage</code>进行了扩展，可以对动态图片进行加载和缓存</li>
 </ul>
 
 
@@ -40,6 +40,16 @@
 <p>以官方Demo详情页加载图片为例，整理的时序图如下：</p>
 
 <p><a href="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg"><img src="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg" alt="" /></a></p>
+
+<ol>
+<li>调用<code>sd_internalSetImageWithURL:placeholderImage:options:operationKey:internalSetImageBlock:progress:completed:context:</code></li>
+<li>调用<code>loadImageWithURL:options:progress:completed:</code></li>
+<li>调用<code>queryCacheOperationForKey:cacheOptions:done</code>查询缓存</li>
+<li>调用<code>imageFromMemoryCacheForKey</code>查内存, 调用<code>diskImageDataBySearchingAllPathsForKey</code>查磁盘</li>
+<li>调用<code>downloadImageWithURL:options:progress:completed:</code>从网络下载</li>
+<li>调用<code>storeImage:imageData:forKey:toDisk:completion:</code>将结果缓存</li>
+</ol>
+
 
 <h3>源码分析</h3>
 
