@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-28T19:36:36+08:00</updated>
+  <updated>2019-01-28T20:02:58+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -28,7 +28,7 @@
 <li>Downloader: 负责图片的下载，基于<code>NSURLSession</code>实现，主要类是<code>SDWebImageDownloader</code></li>
 <li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能，主要类是<code>SDImageCache</code></li>
 <li>Decoder: 负责图片的解码功能，以支持不同格式的图片，例如<code>SDWebImageGIFCoder</code>是对GIF图片的支持</li>
-<li>Utils: 封装的工具类，是对图片缓存和下载的调用入口，主要类是<code>SDWebImaegeManger</code></li>
+<li>Utils: 封装的工具类，主要类是<code>SDWebImaegeManger</code>，控制整个图片下载和缓存流程</li>
 <li>Categories: 一些扩展支持，比如如果要对GIF图片进行下载展示，需要引入<code>UIImage+GIF.h</code>（框架已默认引入）</li>
 <li>WebCache Categories: 对<code>UIView</code>的扩展支持，最常用的是<code>UIImageView+WebCache.h</code>，实现了<code>UIImageView</code>的图片加载和缓存功能</li>
 <li>FLAnimatedImage: 对<code>FLAnimatedImage</code>进行了扩展，可以对动态图片进行加载和缓存</li>
@@ -76,42 +76,31 @@
                          }];
 </code></pre>
 
-<p>对外暴露的接口还是很简单的，传递加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock</p>
+<p>对外暴露的接口比较简单，传递需要加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock就可以了。</p>
 
-<p>代码继续跟进，来到UIView+WebCache.m里</p>
+<p>接下来到时序图的第(1)步，调用<code>UIView+WebCache</code>的<code>sd_internalSetImageWithURL:</code>方法，代码如下：</p>
 
-<pre><code class="objective-c">- (void)sd_internalSetImageWithURL:(nullable NSURL *)url
-                  placeholderImage:(nullable UIImage *)placeholder
-                           options:(SDWebImageOptions)options
-                      operationKey:(nullable NSString *)operationKey
-             internalSetImageBlock:(nullable SDInternalSetImageBlock)setImageBlock
-                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
-                         completed:(nullable SDExternalCompletionBlock)completedBlock
-                           context:(nullable NSDictionary&lt;NSString *, id&gt; *)context {
-}
+<pre><code class="objective-c">[self sd_internalSetImageWithURL:url
+                    placeholderImage:placeholder
+                             options:options
+                        operationKey:nil
+               internalSetImageBlock:^(UIImage * _Nullable image, NSData * _Nullable imageData, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+                           ……
+                       }
+                            progress:progressBlock
+                           completed:completedBlock
+                             context:@{SDWebImageInternalSetImageGroupKey: group}];
 </code></pre>
 
-<p>在这个方法里，最关键的一行是</p>
+<p>继续跟进这个方法，时序图到第(2)步，调用<code>SDWebImageManager</code>的<code>loadImageWithURL:</code>方法，代码如下：</p>
 
 <pre><code class="objective-c">id &lt;SDWebImageOperation&gt; operation = [manager loadImageWithURL:url options:options progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-}
-</code></pre>
-
-<p>这里调用了SDWebImageManager的loadImageWithURL方法</p>
-
-<pre><code class="objective-c">- (id &lt;SDWebImageOperation&gt;)loadImageWithURL:(nullable NSURL *)url
-                                     options:(SDWebImageOptions)options
-                                    progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
-                                   completed:(nullable SDInternalCompletionBlock)completedBlock {
+    //加载完图片的回调
     ……
-    SDWebImageCombinedOperation *operation = [SDWebImageCombinedOperation new];
-    operation.cacheOperation = [self.imageCache queryCacheOperationForKey:key options:cacheOptions done:^(UIImage *cachedImage, NSData *cachedData, SDImageCacheType cacheType) {
-        //从网络下载的操作
-    }];
 }
 </code></pre>
 
-<p>如上的代码，先用imageCache去查询缓存，如果没有，则进入done block，执行从网络下载的操作。</p>
+<p>时序图来到第(3)步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>queryCacheOperationForKey</code>来进行缓存查询</p>
 
 <pre><code class="objective-c">//SDImageCache.m
 - (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options done:(nullable SDCacheQueryCompletedBlock)doneBlock {
@@ -128,7 +117,8 @@
 
     NSOperation *operation = [NSOperation new];
     void(^queryDiskBlock)(void) =  ^{
-        //读磁盘缓操作  
+        //读磁盘缓存
+        ……  
     };
 
     if (options &amp; SDImageCacheQueryDiskSync) {
@@ -141,7 +131,9 @@
 }
 </code></pre>
 
-<p>再看下从网络下载的代码，生成NSOperation，然后加入downloadQueue执行</p>
+<p>可以看到，在上边的代码中，调用<code>imageFromMemoryCacheForKey</code>先从内存里查询是否有图片缓存，调用<code>dispatch_async(self.ioQueue, queryDiskBlock)</code>从磁盘里查询是否有图片缓存。这是时序图中的第(4)步。如果命中了缓存，则直接回调完成block，不再走下边的流程了。如果没有命中缓存，那么继续下边。</p>
+
+<p>流程来到时序图中的第(5)步，查询完缓存返回后，<code>SDWebImageManager</code>会调用<code>SDWebImageDownloader</code>的<code>downloadImageWithURL:</code>方法从网络下载图片</p>
 
 <pre><code class="objective-c">//SDWebImageDownloader.m
 - (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url
@@ -183,9 +175,30 @@
 }
 </code></pre>
 
+<p>从网络下载图片的代码如上，先是生成<code>NSOperation</code>，然后加入叫做<code>downloadQueue</code>的<code>NSOperationQueue</code>执行。</p>
+
+<p>下载完成后，时序图流程来到第（6）步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>storeImage:</code>方法将结果进行缓存，以便下次使用，然后再进行成功的回调，代码如下：</p>
+
+<pre><code class="objective-c">UIImage *transformedImage = [self.delegate imageManager:self transformDownloadedImage:downloadedImage withURL:url];
+
+if (transformedImage &amp;&amp; finished) {
+    BOOL imageWasTransformed = ![transformedImage isEqual:downloadedImage];
+    NSData *cacheData;
+    // pass nil if the image was transformed, so we can recalculate the data from the image
+    if (self.cacheSerializer) {
+        cacheData = self.cacheSerializer(transformedImage, (imageWasTransformed ? nil : downloadedData), url);
+    } else {
+        cacheData = (imageWasTransformed ? nil : downloadedData);
+    }
+    [self.imageCache storeImage:transformedImage imageData:cacheData forKey:key toDisk:cacheOnDisk completion:nil];
+}
+
+[self callCompletionBlockForOperation:strongSubOperation completion:completedBlock image:transformedImage data:downloadedData error:nil cacheType:SDImageCacheTypeNone finished:finished url:url];
+</code></pre>
+
 <p>到这里图片加载流程结束。</p>
 
-<p>SDWebImage里还有很多实现细节。比如多线程的控制和加锁，各种控制下载行为的选项，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
+<p>SDWebImage里还有很多实现细节，由于篇幅原因在本文中省略。比如多线程的控制和加锁，各种控制下载行为的选项，取消正在下载的操作，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
 ]]></content>
   </entry>
   

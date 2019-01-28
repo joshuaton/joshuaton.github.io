@@ -94,7 +94,7 @@
 <li>Downloader: 负责图片的下载，基于<code>NSURLSession</code>实现，主要类是<code>SDWebImageDownloader</code></li>
 <li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能，主要类是<code>SDImageCache</code></li>
 <li>Decoder: 负责图片的解码功能，以支持不同格式的图片，例如<code>SDWebImageGIFCoder</code>是对GIF图片的支持</li>
-<li>Utils: 封装的工具类，是对图片缓存和下载的调用入口，主要类是<code>SDWebImaegeManger</code></li>
+<li>Utils: 封装的工具类，主要类是<code>SDWebImaegeManger</code>，控制整个图片下载和缓存流程</li>
 <li>Categories: 一些扩展支持，比如如果要对GIF图片进行下载展示，需要引入<code>UIImage+GIF.h</code>（框架已默认引入）</li>
 <li>WebCache Categories: 对<code>UIView</code>的扩展支持，最常用的是<code>UIImageView+WebCache.h</code>，实现了<code>UIImageView</code>的图片加载和缓存功能</li>
 <li>FLAnimatedImage: 对<code>FLAnimatedImage</code>进行了扩展，可以对动态图片进行加载和缓存</li>
@@ -162,41 +162,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>对外暴露的接口还是很简单的，传递加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock</p>
+<p>对外暴露的接口比较简单，传递需要加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock就可以了。</p>
 
-<p>代码继续跟进，来到UIView+WebCache.m里</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sd_internalSetImageWithURL:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
-</span><span class='line'>                  <span class="nf">placeholderImage:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">placeholder</span>
-</span><span class='line'>                           <span class="nf">options:</span><span class="p">(</span><span class="n">SDWebImageOptions</span><span class="p">)</span><span class="nv">options</span>
-</span><span class='line'>                      <span class="nf">operationKey:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">operationKey</span>
-</span><span class='line'>             <span class="nf">internalSetImageBlock:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDInternalSetImageBlock</span><span class="p">)</span><span class="nv">setImageBlock</span>
-</span><span class='line'>                          <span class="nf">progress:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderProgressBlock</span><span class="p">)</span><span class="nv">progressBlock</span>
-</span><span class='line'>                         <span class="nf">completed:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDExternalCompletionBlock</span><span class="p">)</span><span class="nv">completedBlock</span>
-</span><span class='line'>                           <span class="nf">context:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSDictionary</span><span class="o">&lt;</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">,</span> <span class="kt">id</span><span class="o">&gt;</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span> <span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在这个方法里，最关键的一行是</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="kt">id</span> <span class="o">&lt;</span><span class="n">SDWebImageOperation</span><span class="o">&gt;</span> <span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="n">manager</span> <span class="nl">loadImageWithURL</span><span class="p">:</span><span class="n">url</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">progress</span><span class="p">:</span><span class="n">combinedProgressBlock</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里调用了SDWebImageManager的loadImageWithURL方法</p>
+<p>接下来到时序图的第(1)步，调用<code>UIView+WebCache</code>的<code>sd_internalSetImageWithURL:</code>方法，代码如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -208,20 +176,33 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">SDWebImageOperation</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">loadImageWithURL:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
-</span><span class='line'>                                     <span class="nf">options:</span><span class="p">(</span><span class="n">SDWebImageOptions</span><span class="p">)</span><span class="nv">options</span>
-</span><span class='line'>                                    <span class="nf">progress:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderProgressBlock</span><span class="p">)</span><span class="nv">progressBlock</span>
-</span><span class='line'>                                   <span class="nf">completed:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDInternalCompletionBlock</span><span class="p">)</span><span class="nv">completedBlock</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">[</span><span class="nb">self</span> <span class="nl">sd_internalSetImageWithURL</span><span class="p">:</span><span class="n">url</span>
+</span><span class='line'>                    <span class="nl">placeholderImage</span><span class="p">:</span><span class="n">placeholder</span>
+</span><span class='line'>                             <span class="nl">options</span><span class="p">:</span><span class="n">options</span>
+</span><span class='line'>                        <span class="nl">operationKey</span><span class="p">:</span><span class="nb">nil</span>
+</span><span class='line'>               <span class="nl">internalSetImageBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">image</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">imageData</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                           <span class="err">……</span>
+</span><span class='line'>                       <span class="p">}</span>
+</span><span class='line'>                            <span class="nl">progress</span><span class="p">:</span><span class="n">progressBlock</span>
+</span><span class='line'>                           <span class="nl">completed</span><span class="p">:</span><span class="n">completedBlock</span>
+</span><span class='line'>                             <span class="nl">context</span><span class="p">:</span><span class="l">@{</span><span class="nl">SDWebImageInternalSetImageGroupKey</span><span class="p">:</span> <span class="n">group</span><span class="l">}</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>继续跟进这个方法，时序图到第(2)步，调用<code>SDWebImageManager</code>的<code>loadImageWithURL:</code>方法，代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="kt">id</span> <span class="o">&lt;</span><span class="n">SDWebImageOperation</span><span class="o">&gt;</span> <span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="n">manager</span> <span class="nl">loadImageWithURL</span><span class="p">:</span><span class="n">url</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">progress</span><span class="p">:</span><span class="n">combinedProgressBlock</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//加载完图片的回调</span>
 </span><span class='line'>  <span class="err">……</span>
-</span><span class='line'>  <span class="n">SDWebImageCombinedOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="n">SDWebImageCombinedOperation</span> <span class="n">new</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">operation</span><span class="p">.</span><span class="n">cacheOperation</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">imageCache</span> <span class="nl">queryCacheOperationForKey</span><span class="p">:</span><span class="n">key</span> <span class="nl">options</span><span class="p">:</span><span class="n">cacheOptions</span> <span class="nl">done</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span><span class="n">cachedData</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//从网络下载的操作</span>
-</span><span class='line'>    <span class="p">}];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>如上的代码，先用imageCache去查询缓存，如果没有，则进入done block，执行从网络下载的操作。</p>
+<p>时序图来到第(3)步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>queryCacheOperationForKey</code>来进行缓存查询</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -249,6 +230,7 @@
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
+<span class='line-number'>27</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">//SDImageCache.m</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">nullable</span> <span class="bp">NSOperation</span> <span class="o">*</span><span class="p">)</span><span class="nf">queryCacheOperationForKey:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span> <span class="nf">options:</span><span class="p">(</span><span class="n">SDImageCacheOptions</span><span class="p">)</span><span class="nv">options</span> <span class="nf">done:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDCacheQueryCompletedBlock</span><span class="p">)</span><span class="nv">doneBlock</span> <span class="p">{</span>
 </span><span class='line'>
@@ -264,7 +246,8 @@
 </span><span class='line'>
 </span><span class='line'>    <span class="bp">NSOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSOperation</span> <span class="n">new</span><span class="p">];</span>
 </span><span class='line'>    <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">queryDiskBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>  <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>      <span class="c1">//读磁盘缓操作  </span>
+</span><span class='line'>      <span class="c1">//读磁盘缓存</span>
+</span><span class='line'>      <span class="err">……</span>
 </span><span class='line'>    <span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">options</span> <span class="o">&amp;</span> <span class="n">SDImageCacheQueryDiskSync</span><span class="p">)</span> <span class="p">{</span>
@@ -278,7 +261,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>再看下从网络下载的代码，生成NSOperation，然后加入downloadQueue执行</p>
+<p>可以看到，在上边的代码中，调用<code>imageFromMemoryCacheForKey</code>先从内存里查询是否有图片缓存，调用<code>dispatch_async(self.ioQueue, queryDiskBlock)</code>从磁盘里查询是否有图片缓存。这是时序图中的第(4)步。如果命中了缓存，则直接回调完成block，不再走下边的流程了。如果没有命中缓存，那么继续下边。</p>
+
+<p>流程来到时序图中的第(5)步，查询完缓存返回后，<code>SDWebImageManager</code>会调用<code>SDWebImageDownloader</code>的<code>downloadImageWithURL:</code>方法从网络下载图片</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -359,9 +344,46 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>从网络下载图片的代码如上，先是生成<code>NSOperation</code>，然后加入叫做<code>downloadQueue</code>的<code>NSOperationQueue</code>执行。</p>
+
+<p>下载完成后，时序图流程来到第（6）步，<code>SDWebImageManager</code>会调用<code>SDImageCache</code>的<code>storeImage:</code>方法将结果进行缓存，以便下次使用，然后再进行成功的回调，代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">UIImage</span> <span class="o">*</span><span class="n">transformedImage</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">delegate</span> <span class="nl">imageManager</span><span class="p">:</span><span class="nb">self</span> <span class="nl">transformDownloadedImage</span><span class="p">:</span><span class="n">downloadedImage</span> <span class="nl">withURL</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">transformedImage</span> <span class="o">&amp;&amp;</span> <span class="n">finished</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">imageWasTransformed</span> <span class="o">=</span> <span class="o">!</span><span class="p">[</span><span class="n">transformedImage</span> <span class="nl">isEqual</span><span class="p">:</span><span class="n">downloadedImage</span><span class="p">];</span>
+</span><span class='line'>    <span class="bp">NSData</span> <span class="o">*</span><span class="n">cacheData</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// pass nil if the image was transformed, so we can recalculate the data from the image</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">cacheSerializer</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cacheData</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">cacheSerializer</span><span class="p">(</span><span class="n">transformedImage</span><span class="p">,</span> <span class="p">(</span><span class="n">imageWasTransformed</span> <span class="o">?</span> <span class="nb">nil</span> <span class="o">:</span> <span class="n">downloadedData</span><span class="p">),</span> <span class="n">url</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cacheData</span> <span class="o">=</span> <span class="p">(</span><span class="n">imageWasTransformed</span> <span class="o">?</span> <span class="nb">nil</span> <span class="o">:</span> <span class="n">downloadedData</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">imageCache</span> <span class="nl">storeImage</span><span class="p">:</span><span class="n">transformedImage</span> <span class="nl">imageData</span><span class="p">:</span><span class="n">cacheData</span> <span class="nl">forKey</span><span class="p">:</span><span class="n">key</span> <span class="nl">toDisk</span><span class="p">:</span><span class="n">cacheOnDisk</span> <span class="nl">completion</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span> <span class="nl">callCompletionBlockForOperation</span><span class="p">:</span><span class="n">strongSubOperation</span> <span class="nl">completion</span><span class="p">:</span><span class="n">completedBlock</span> <span class="nl">image</span><span class="p">:</span><span class="n">transformedImage</span> <span class="nl">data</span><span class="p">:</span><span class="n">downloadedData</span> <span class="nl">error</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">cacheType</span><span class="p">:</span><span class="n">SDImageCacheTypeNone</span> <span class="nl">finished</span><span class="p">:</span><span class="n">finished</span> <span class="nl">url</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>到这里图片加载流程结束。</p>
 
-<p>SDWebImage里还有很多实现细节。比如多线程的控制和加锁，各种控制下载行为的选项，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
+<p>SDWebImage里还有很多实现细节，由于篇幅原因在本文中省略。比如多线程的控制和加锁，各种控制下载行为的选项，取消正在下载的操作，URL参数的容错，PlaceHolder的设置，加载IndicatorView的显示控制，下载过程Progress的控制等。这些等以后有时间再细致分析。</p>
 </div>
 
 
