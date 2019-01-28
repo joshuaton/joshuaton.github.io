@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-26T23:19:26+08:00</updated>
+  <updated>2019-01-28T19:18:26+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,170 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SDWebImage源码浅析]]></title>
+    <link href="http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi.html"/>
+    <updated>2019-01-28T16:21:16+08:00</updated>
+    <id>http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi</id>
+    <content type="html"><![CDATA[<p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+
+<h3>源码目录</h3>
+
+<p>SDWebImage下分为以下几个目录</p>
+
+<ul>
+<li>Downloader: 负责图片的下载，基于NSURLSession实现。</li>
+<li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能</li>
+<li>Decoder: 负责图片的解码功能</li>
+<li>Utils: 封装的工具类，是对其他功能的调用入口，主要是SDWebImaegeManger这个类</li>
+<li>Categories: 一些扩展支持，比如对GIF图片的支持加载等</li>
+<li>WebCache Categories: 对UIView的扩展支持，最常用的是UIImageView+WebCache.h，实现了UIImageView的图片加载功能</li>
+<li>FLAnimatedImage: 对FLAnimatedImage进行了扩展，可以加载动态图片</li>
+</ul>
+
+
+<h3>调用时序图</h3>
+
+<p>以官方Demo详情页加载图片为例，整理的时序图如下：</p>
+
+<p><a href="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg"><img src="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg" alt="" /></a></p>
+
+<h3>源码分析</h3>
+
+<p>在官方Demo中，有一个列表页和详情页，我们从更简单的详情页来分析，详情页只有一个FLAnimatedImage控件，功能就是加载了一张图片，代码如下：</p>
+
+<pre><code class="objective-c">__weak typeof(self) weakSelf = self;
+    [self.imageView sd_setImageWithURL:self.imageURL
+                      placeholderImage:nil
+                               options:SDWebImageProgressiveDownload
+                              progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL *targetURL) {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      float progress = 0;
+                                      if (expectedSize != 0) {
+                                          progress = (float)receivedSize / (float)expectedSize;
+                                      }
+                                      weakSelf.progressView.hidden = NO;
+                                      [weakSelf.progressView setProgress:progress animated:YES];
+                                  });
+                              }
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                 weakSelf.progressView.hidden = YES;
+                                 [weakSelf.activityIndicator stopAnimating];
+                                 weakSelf.activityIndicator.hidden = YES;
+                             }];
+</code></pre>
+
+<p>对外暴露的接口还是很简单的，传递加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock</p>
+
+<p>代码继续跟进，来到UIView+WebCache.m里</p>
+
+<pre><code class="objective-c">- (void)sd_internalSetImageWithURL:(nullable NSURL *)url
+                  placeholderImage:(nullable UIImage *)placeholder
+                           options:(SDWebImageOptions)options
+                      operationKey:(nullable NSString *)operationKey
+             internalSetImageBlock:(nullable SDInternalSetImageBlock)setImageBlock
+                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                         completed:(nullable SDExternalCompletionBlock)completedBlock
+                           context:(nullable NSDictionary&lt;NSString *, id&gt; *)context {
+}
+</code></pre>
+
+<p>在这个方法里，最关键的一行是</p>
+
+<pre><code class="objective-c">id &lt;SDWebImageOperation&gt; operation = [manager loadImageWithURL:url options:options progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+}
+</code></pre>
+
+<p>这里调用了SDWebImageManager的loadImageWithURL方法</p>
+
+<pre><code class="objective-c">- (id &lt;SDWebImageOperation&gt;)loadImageWithURL:(nullable NSURL *)url
+                                     options:(SDWebImageOptions)options
+                                    progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                                   completed:(nullable SDInternalCompletionBlock)completedBlock {
+    ……
+    SDWebImageCombinedOperation *operation = [SDWebImageCombinedOperation new];
+    operation.cacheOperation = [self.imageCache queryCacheOperationForKey:key options:cacheOptions done:^(UIImage *cachedImage, NSData *cachedData, SDImageCacheType cacheType) {
+        //从网络下载的操作
+    }];
+}
+</code></pre>
+
+<p>如上的代码，先用imageCache去查询缓存，如果没有，则进入done block，执行从网络下载的操作。</p>
+
+<pre><code class="objective-c">//SDImageCache.m
+- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options done:(nullable SDCacheQueryCompletedBlock)doneBlock {
+
+    // 读内存缓存操作
+    UIImage *image = [self imageFromMemoryCacheForKey:key];
+    BOOL shouldQueryMemoryOnly = (image &amp;&amp; !(options &amp; SDImageCacheQueryDataWhenInMemory));
+    if (shouldQueryMemoryOnly) {
+        if (doneBlock) {
+            doneBlock(image, nil, SDImageCacheTypeMemory);
+        }
+        return nil;
+    }
+
+    NSOperation *operation = [NSOperation new];
+    void(^queryDiskBlock)(void) =  ^{
+        //读磁盘缓操作  
+    };
+
+    if (options &amp; SDImageCacheQueryDiskSync) {
+        queryDiskBlock();
+    } else {
+        dispatch_async(self.ioQueue, queryDiskBlock);
+    }
+
+    return operation;
+}
+</code></pre>
+
+<p>再看下从网络下载的代码，生成NSOperation，然后加入downloadQueue执行</p>
+
+<pre><code class="objective-c">//SDWebImageDownloader.m
+- (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url
+                                                   options:(SDWebImageDownloaderOptions)options
+                                                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                                                 completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock {
+
+    LOCK(self.operationsLock);
+    NSOperation&lt;SDWebImageDownloaderOperationInterface&gt; *operation = [self.URLOperations objectForKey:url];
+    // There is a case that the operation may be marked as finished or cancelled, but not been removed from `self.URLOperations`.
+    if (!operation || operation.isFinished || operation.isCancelled) {
+        operation = [self createDownloaderOperationWithUrl:url options:options];
+        __weak typeof(self) wself = self;
+        operation.completionBlock = ^{
+            __strong typeof(wself) sself = wself;
+            if (!sself) {
+                return;
+            }
+            LOCK(sself.operationsLock);
+            [sself.URLOperations removeObjectForKey:url];
+            UNLOCK(sself.operationsLock);
+        };
+        [self.URLOperations setObject:operation forKey:url];
+        // Add operation to operation queue only after all configuration done according to Apple's doc.
+        // `addOperation:` does not synchronously execute the `operation.completionBlock` so this will not cause deadlock.
+        //执行下载操作
+        [self.downloadQueue addOperation:operation];
+    }
+    UNLOCK(self.operationsLock);
+
+    id downloadOperationCancelToken = [operation addHandlersForProgress:progressBlock completed:completedBlock];
+
+    SDWebImageDownloadToken *token = [SDWebImageDownloadToken new];
+    token.downloadOperation = operation;
+    token.url = url;
+    token.downloadOperationCancelToken = downloadOperationCancelToken;
+
+    return token;
+}
+</code></pre>
+
+<p>到这里流程结束。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Aspects源码解读]]></title>
@@ -283,37 +447,6 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
 <p><img src="https://jason5.cn/images/WX20181022-114418@2x.png" alt="" /></p>
 
 <p>以上图片是我们项目在苹果后台的证书配置，可以看到，有很多项，原因是每个开发的电脑上都生成了一对公钥L和私钥L，然后将公钥L上传到苹果后台生成了证书。更好的办法是，只用一台开发电脑生成公钥L和私钥L，然后到处p12文件，分享给别的电脑，这样苹果后台就只需要一个证书就可以了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS开发中支持实时UI调试的方法]]></title>
-    <link href="http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html"/>
-    <updated>2018-10-18T14:02:46+08:00</updated>
-    <id>http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa</id>
-    <content type="html"><![CDATA[<h3>背景</h3>
-
-<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
-
-<h3>使用方法</h3>
-
-<p>1.在App Store下载InjectionIII</p>
-
-<p>2.在应用启动函数 加入以下代码</p>
-
-<pre><code class="objective-c">#if DEBUG
-    NSBundle *bundle = [NSBundle bundleWithPath:@"/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle"];
-    [bundle load];
-#endif
-</code></pre>
-
-<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
-
-<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
-
-<h3>原理</h3>
-
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
 ]]></content>
   </entry>
   

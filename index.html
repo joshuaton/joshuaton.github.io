@@ -9,9 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。 调用方式 首先我们下载官方demo，从入口代码开始看： 1
-2
-3 &hellip;">
+  <meta name="description" content="SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。 源码目录 SDWebImage下分为以下几个目录 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +65,300 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码浅析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-01-28T16:21:16+08:00'><span class='date'>2019 年1 月28 日</span> <span class='time'>4:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是讲代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+
+<h3>源码目录</h3>
+
+<p>SDWebImage下分为以下几个目录</p>
+
+<ul>
+<li>Downloader: 负责图片的下载，基于NSURLSession实现。</li>
+<li>Cache: 负责图片的缓存，主要是对内存和磁盘进行读写，实现二级缓存功能</li>
+<li>Decoder: 负责图片的解码功能</li>
+<li>Utils: 封装的工具类，是对其他功能的调用入口，主要是SDWebImaegeManger这个类</li>
+<li>Categories: 一些扩展支持，比如对GIF图片的支持加载等</li>
+<li>WebCache Categories: 对UIView的扩展支持，最常用的是UIImageView+WebCache.h，实现了UIImageView的图片加载功能</li>
+<li>FLAnimatedImage: 对FLAnimatedImage进行了扩展，可以加载动态图片</li>
+</ul>
+
+
+<h3>调用时序图</h3>
+
+<p>以官方Demo详情页加载图片为例，整理的时序图如下：</p>
+
+<p><a href="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg"><img src="https://jason5.cn/images/2018-01/SDWebImage-Source-UML.jpg" alt="" /></a></p>
+
+<h3>源码分析</h3>
+
+<p>在官方Demo中，有一个列表页和详情页，我们从更简单的详情页来分析，详情页只有一个FLAnimatedImage控件，功能就是加载了一张图片，代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">__weak</span> <span class="k">typeof</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">imageView</span> <span class="nl">sd_setImageWithURL</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">imageURL</span>
+</span><span class='line'>                      <span class="nl">placeholderImage</span><span class="p">:</span><span class="nb">nil</span>
+</span><span class='line'>                               <span class="nl">options</span><span class="p">:</span><span class="n">SDWebImageProgressiveDownload</span>
+</span><span class='line'>                              <span class="nl">progress</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSInteger</span> <span class="n">receivedSize</span><span class="p">,</span> <span class="bp">NSInteger</span> <span class="n">expectedSize</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">targetURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>                                      <span class="kt">float</span> <span class="n">progress</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="k">if</span> <span class="p">(</span><span class="n">expectedSize</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                          <span class="n">progress</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">receivedSize</span> <span class="o">/</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">expectedSize</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="p">}</span>
+</span><span class='line'>                                      <span class="n">weakSelf</span><span class="p">.</span><span class="n">progressView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">NO</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">progressView</span> <span class="nl">setProgress</span><span class="p">:</span><span class="n">progress</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'>                                  <span class="p">});</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                             <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                 <span class="n">weakSelf</span><span class="p">.</span><span class="n">progressView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>                                 <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">activityIndicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
+</span><span class='line'>                                 <span class="n">weakSelf</span><span class="p">.</span><span class="n">activityIndicator</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>                             <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对外暴露的接口还是很简单的，传递加载图片的url，placeholder图片，加载选项options，加载过程回调progressBlock，完成回调completedBlock</p>
+
+<p>代码继续跟进，来到UIView+WebCache.m里</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sd_internalSetImageWithURL:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
+</span><span class='line'>                  <span class="nf">placeholderImage:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">placeholder</span>
+</span><span class='line'>                           <span class="nf">options:</span><span class="p">(</span><span class="n">SDWebImageOptions</span><span class="p">)</span><span class="nv">options</span>
+</span><span class='line'>                      <span class="nf">operationKey:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">operationKey</span>
+</span><span class='line'>             <span class="nf">internalSetImageBlock:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDInternalSetImageBlock</span><span class="p">)</span><span class="nv">setImageBlock</span>
+</span><span class='line'>                          <span class="nf">progress:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderProgressBlock</span><span class="p">)</span><span class="nv">progressBlock</span>
+</span><span class='line'>                         <span class="nf">completed:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDExternalCompletionBlock</span><span class="p">)</span><span class="nv">completedBlock</span>
+</span><span class='line'>                           <span class="nf">context:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSDictionary</span><span class="o">&lt;</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">,</span> <span class="kt">id</span><span class="o">&gt;</span> <span class="o">*</span><span class="p">)</span><span class="nv">context</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这个方法里，最关键的一行是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="kt">id</span> <span class="o">&lt;</span><span class="n">SDWebImageOperation</span><span class="o">&gt;</span> <span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="n">manager</span> <span class="nl">loadImageWithURL</span><span class="p">:</span><span class="n">url</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span> <span class="nl">progress</span><span class="p">:</span><span class="n">combinedProgressBlock</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里调用了SDWebImageManager的loadImageWithURL方法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span> <span class="o">&lt;</span><span class="n">SDWebImageOperation</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">loadImageWithURL:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
+</span><span class='line'>                                     <span class="nf">options:</span><span class="p">(</span><span class="n">SDWebImageOptions</span><span class="p">)</span><span class="nv">options</span>
+</span><span class='line'>                                    <span class="nf">progress:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderProgressBlock</span><span class="p">)</span><span class="nv">progressBlock</span>
+</span><span class='line'>                                   <span class="nf">completed:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDInternalCompletionBlock</span><span class="p">)</span><span class="nv">completedBlock</span> <span class="p">{</span>
+</span><span class='line'>  <span class="err">……</span>
+</span><span class='line'>  <span class="n">SDWebImageCombinedOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="n">SDWebImageCombinedOperation</span> <span class="n">new</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">operation</span><span class="p">.</span><span class="n">cacheOperation</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">imageCache</span> <span class="nl">queryCacheOperationForKey</span><span class="p">:</span><span class="n">key</span> <span class="nl">options</span><span class="p">:</span><span class="n">cacheOptions</span> <span class="nl">done</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">cachedImage</span><span class="p">,</span> <span class="bp">NSData</span> <span class="o">*</span><span class="n">cachedData</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//从网络下载的操作</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如上的代码，先用imageCache去查询缓存，如果没有，则进入done block，执行从网络下载的操作。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">//SDImageCache.m</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">nullable</span> <span class="bp">NSOperation</span> <span class="o">*</span><span class="p">)</span><span class="nf">queryCacheOperationForKey:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span> <span class="nf">options:</span><span class="p">(</span><span class="n">SDImageCacheOptions</span><span class="p">)</span><span class="nv">options</span> <span class="nf">done:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDCacheQueryCompletedBlock</span><span class="p">)</span><span class="nv">doneBlock</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 读内存缓存操作</span>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">imageFromMemoryCacheForKey</span><span class="p">:</span><span class="n">key</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">shouldQueryMemoryOnly</span> <span class="o">=</span> <span class="p">(</span><span class="n">image</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">options</span> <span class="o">&amp;</span> <span class="n">SDImageCacheQueryDataWhenInMemory</span><span class="p">));</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldQueryMemoryOnly</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">doneBlock</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">doneBlock</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">nil</span><span class="p">,</span> <span class="n">SDImageCacheTypeMemory</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSOperation</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSOperation</span> <span class="n">new</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">queryDiskBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span>  <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>      <span class="c1">//读磁盘缓操作  </span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">options</span> <span class="o">&amp;</span> <span class="n">SDImageCacheQueryDiskSync</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">queryDiskBlock</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">dispatch_async</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">ioQueue</span><span class="p">,</span> <span class="n">queryDiskBlock</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">operation</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再看下从网络下载的代码，生成NSOperation，然后加入downloadQueue执行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">//SDWebImageDownloader.m</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloadToken</span> <span class="o">*</span><span class="p">)</span><span class="nf">downloadImageWithURL:</span><span class="p">(</span><span class="n">nullable</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
+</span><span class='line'>                                                   <span class="nf">options:</span><span class="p">(</span><span class="n">SDWebImageDownloaderOptions</span><span class="p">)</span><span class="nv">options</span>
+</span><span class='line'>                                                  <span class="nf">progress:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderProgressBlock</span><span class="p">)</span><span class="nv">progressBlock</span>
+</span><span class='line'>                                                 <span class="nf">completed:</span><span class="p">(</span><span class="n">nullable</span> <span class="n">SDWebImageDownloaderCompletedBlock</span><span class="p">)</span><span class="nv">completedBlock</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">LOCK</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">operationsLock</span><span class="p">);</span>
+</span><span class='line'>    <span class="bp">NSOperation</span><span class="o">&lt;</span><span class="n">SDWebImageDownloaderOperationInterface</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">URLOperations</span> <span class="nl">objectForKey</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// There is a case that the operation may be marked as finished or cancelled, but not been removed from `self.URLOperations`.</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">operation</span> <span class="o">||</span> <span class="n">operation</span><span class="p">.</span><span class="n">isFinished</span> <span class="o">||</span> <span class="n">operation</span><span class="p">.</span><span class="n">isCancelled</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">operation</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">createDownloaderOperationWithUrl</span><span class="p">:</span><span class="n">url</span> <span class="nl">options</span><span class="p">:</span><span class="n">options</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">__weak</span> <span class="k">typeof</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="n">wself</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">operation</span><span class="p">.</span><span class="n">completionBlock</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="k">__strong</span> <span class="k">typeof</span><span class="p">(</span><span class="n">wself</span><span class="p">)</span> <span class="n">sself</span> <span class="o">=</span> <span class="n">wself</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sself</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="n">LOCK</span><span class="p">(</span><span class="n">sself</span><span class="p">.</span><span class="n">operationsLock</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">sself</span><span class="p">.</span><span class="n">URLOperations</span> <span class="nl">removeObjectForKey</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">UNLOCK</span><span class="p">(</span><span class="n">sself</span><span class="p">.</span><span class="n">operationsLock</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">URLOperations</span> <span class="nl">setObject</span><span class="p">:</span><span class="n">operation</span> <span class="nl">forKey</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>        <span class="c1">// Add operation to operation queue only after all configuration done according to Apple&#39;s doc.</span>
+</span><span class='line'>        <span class="c1">// `addOperation:` does not synchronously execute the `operation.completionBlock` so this will not cause deadlock.</span>
+</span><span class='line'>        <span class="c1">//执行下载操作</span>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">downloadQueue</span> <span class="nl">addOperation</span><span class="p">:</span><span class="n">operation</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">UNLOCK</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">operationsLock</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span> <span class="n">downloadOperationCancelToken</span> <span class="o">=</span> <span class="p">[</span><span class="n">operation</span> <span class="nl">addHandlersForProgress</span><span class="p">:</span><span class="n">progressBlock</span> <span class="nl">completed</span><span class="p">:</span><span class="n">completedBlock</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">SDWebImageDownloadToken</span> <span class="o">*</span><span class="n">token</span> <span class="o">=</span> <span class="p">[</span><span class="n">SDWebImageDownloadToken</span> <span class="n">new</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">token</span><span class="p">.</span><span class="n">downloadOperation</span> <span class="o">=</span> <span class="n">operation</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">token</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">token</span><span class="p">.</span><span class="n">downloadOperationCancelToken</span> <span class="o">=</span> <span class="n">downloadOperationCancelToken</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">token</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到这里流程结束。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -934,62 +1226,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">iOS开发中支持实时UI调试的方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-18T14:02:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>2:02 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>背景</h3>
-
-<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
-
-<h3>使用方法</h3>
-
-<p>1.在App Store下载InjectionIII</p>
-
-<p>2.在应用启动函数 加入以下代码</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
-
-<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
-
-<h3>原理</h3>
-
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1004,7 +1240,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (7)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (8)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
@@ -1015,6 +1251,10 @@
 </section><section>
   <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码浅析</a>
+      </li>
     
       <li class="post">
         <a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a>
@@ -1030,10 +1270,6 @@
     
       <li class="post">
         <a href="/blog/expressxue-xi-bi-ji.html">Express学习笔记(一)-开始</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html">TIP项目网络框架梳理</a>
       </li>
     
   </ul>
