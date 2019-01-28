@@ -122,7 +122,7 @@ static Class aspect_hookClass(NSObject *self, NSError **error) {
 
 到这里，Aspects的hook流程就执行完了，我们用下边这个图来描述下当前类和方法实现之间的关系。
 
-![](http://km.oa.com/files/photos/pictures/201901/1546852701_51_w1338_h361.png)
+[![](https://jason5.cn/images/2018-01/Aspects.png)](https://jason5.cn/images/2018-01/Aspects.png)
 
 Aspects的实现为什么要生成一个原有类的子类，个人理解是为了对原有类产生的影响尽可能小。
 
