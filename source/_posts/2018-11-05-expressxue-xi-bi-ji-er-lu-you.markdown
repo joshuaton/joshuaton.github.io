@@ -93,7 +93,7 @@ var birds = require('./birds');
 app.use('/birds', birds);
 ```
 
-此时，可以相应`/birds`和`/birds/about`
+此时，可以响应`/birds`和`/birds/about`
 
 
 

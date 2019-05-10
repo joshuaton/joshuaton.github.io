@@ -8,6 +8,14 @@ categories: web
 Express是一个基于nodejs的web开发框架。
 
 ###Hello World
+0.安装nodejs环境
+
+以腾讯云的centOS云服务器为例，先运行
+
+```
+yum install nodejs
+```
+
 1.安装
 
 ```
@@ -21,7 +29,7 @@ $ npm install express --save
 ```
 $ node app.js
 ```
-打开浏览器，可以看到运行结果了
+打开浏览器，访问http://localhost:3000，可以看到运行结果了
 
 ###脚手架工程
 
