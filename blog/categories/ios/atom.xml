@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-05-10T18:06:56+08:00</updated>
+  <updated>2019-05-10T18:10:40+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -53,34 +53,34 @@
 
 <p>首先在mac上安装usbmuxd</p>
 
-<pre><code>brew install usbmuxd
+<pre><code class="bash">brew install usbmuxd
 </code></pre>
 
 <p>usbmuxd自带了一个工具iproxy，这个工具的作用是，在mac和手机之间架上一个代理，mac ssh手机本来是走22端口，需要用这个工具将其他端口，比如5678，转发到22端口上。运行命令</p>
 
-<pre><code>iproxy 5678 22
+<pre><code class="bash">iproxy 5678 22
 </code></pre>
 
 <p>运行后正常情况下会显示</p>
 
-<pre><code>waiting for connection
+<pre><code class="bash">waiting for connection
 </code></pre>
 
 <p>这是后，在mac上打开另一个终端窗口，输入命令</p>
 
-<pre><code>ssh -p 5678 root@127.0.0.1
+<pre><code class="bash">ssh -p 5678 root@127.0.0.1
 </code></pre>
 
 <p>输入默认的root密码alpine，就能成功ssh到手机上了。关于如何不每次都输入密码，这里可以自行搜索下其他相关资料，这里不再累述。</p>
 
 <p>除了能够使用ssh，还可以使用scp向手机传文件，这里需要注意同样需要指定端口号，例如</p>
 
-<pre><code>scp -P 5678 filexxx root@127.0.0.1:/tmp
+<pre><code class="bash">scp -P 5678 filexxx root@127.0.0.1:/tmp
 </code></pre>
 
 <p>ssh到手机上之后，如果我们需要其他的软件，可以使用apt-get，例如安装vim</p>
 
-<pre><code>apt-get install vim
+<pre><code class="bash">apt-get install vim
 </code></pre>
 
 <h3>4. cycript的安装和使用</h3>
@@ -101,7 +101,7 @@
 
 <p>通常情况下，会报错<code>Unknown jailbrek</code>。我们通过查看bfinject的代码，可以发现问题。</p>
 
-<pre><code>#
+<pre><code class="bash">#
 # Detect LiberiOS vs Electra
 #
 if [ -f /bootstrap/inject_criticald ]; then
@@ -125,7 +125,7 @@ fi
 
 <p>由以上代码第1个if分支可以判断，/bootstrap/inject_criticald目录不存在，这个是由于软件的目录变了，在不改变bfinject代码的前提下，需要修改一下目录，执行以下命令</p>
 
-<pre><code>ln -s /electra /bootstrap
+<pre><code class="bash">ln -s /electra /bootstrap
 mkdir /bootstrap/usr
 mkdir /bootstrap/usr/local
 mkdir /bootstrap/usr/local/bin
@@ -137,12 +137,12 @@ mkdir /bootstrap/usr/local/bin
 
 <p>要查看哪个App，需要先在手机上启动，然后找到App的进程号，例如我们要查看微信的进程号，可以用以下命令</p>
 
-<pre><code>ps aux | grep containers | grep WeChat
+<pre><code class="bash">ps aux | grep containers | grep WeChat
 </code></pre>
 
 <p>假设微信的进程号为1026，运行</p>
 
-<pre><code>bash bfinject -p 1026 -L decrypt
+<pre><code class="bash">bash bfinject -p 1026 -L decrypt
 </code></pre>
 
 <p>成功的话，在微信App的页面内会弹出一个框，上边的意思是正在监听xx.xx.xx.xx:1337端口(xx.xx.xx.xx为手机的ip地址)，可以连接这个端口来进行cycript调试了。</p>
@@ -151,19 +151,19 @@ mkdir /bootstrap/usr/local/bin
 
 <p>首先去<a href="http://www.cycript.org/">http://www.cycript.org/</a>下载代码，运行./cycript的时候，会报错，仔细查看是缺少ruby2.0的库，在mac上先安装ruby2.0</p>
 
-<pre><code>brew install ruby@2.0
+<pre><code class="bash">brew install ruby@2.0
 </code></pre>
 
 <p>安装后将libruby.dylib拷贝到<code>/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib</code>目录下。顺利的话就可以用了。</p>
 
 <p>在mac上执行</p>
 
-<pre><code>cycript -r xx.xx.xx.xx:1337
+<pre><code class="bash">cycript -r xx.xx.xx.xx:1337
 </code></pre>
 
 <p>xx.xx.xx.xx为手机的ip，这里注意一下，因为是以无线连接的，所以手机和电脑需要在同一个局域网里，如果出现</p>
 
-<pre><code>cy#
+<pre><code class="bash">cy#
 </code></pre>
 
 <p>代表cycript运行成功，可以通过写cycript脚本执行命令了。</p>

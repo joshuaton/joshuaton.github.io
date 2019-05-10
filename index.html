@@ -125,40 +125,46 @@ mac电脑
 
 <p>首先在mac上安装usbmuxd</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>brew install usbmuxd</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>brew install usbmuxd
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>usbmuxd自带了一个工具iproxy，这个工具的作用是，在mac和手机之间架上一个代理，mac ssh手机本来是走22端口，需要用这个工具将其他端口，比如5678，转发到22端口上。运行命令</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>iproxy 5678 22</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>iproxy <span class="m">5678</span> 22
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>运行后正常情况下会显示</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>waiting for connection</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>waiting <span class="k">for</span> connection
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>这是后，在mac上打开另一个终端窗口，输入命令</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -p 5678 root@127.0.0.1</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh -p <span class="m">5678</span> root@127.0.0.1
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>输入默认的root密码alpine，就能成功ssh到手机上了。关于如何不每次都输入密码，这里可以自行搜索下其他相关资料，这里不再累述。</p>
 
 <p>除了能够使用ssh，还可以使用scp向手机传文件，这里需要注意同样需要指定端口号，例如</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>scp -P 5678 filexxx root@127.0.0.1:/tmp</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>scp -P <span class="m">5678</span> filexxx root@127.0.0.1:/tmp
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>ssh到手机上之后，如果我们需要其他的软件，可以使用apt-get，例如安装vim</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>apt-get install vim</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>apt-get install vim
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>4. cycript的安装和使用</h3>
@@ -179,7 +185,7 @@ mac电脑
 
 <p>通常情况下，会报错<code>Unknown jailbrek</code>。我们通过查看bfinject的代码，可以发现问题。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -199,38 +205,40 @@ mac电脑
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#
-</span><span class='line'># Detect LiberiOS vs Electra
-</span><span class='line'>#
-</span><span class='line'>if [ -f /bootstrap/inject_criticald ]; then
-</span><span class='line'>    # This is Electra
-</span><span class='line'>    echo "[+] Electra detected."
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Detect LiberiOS vs Electra</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> -f /bootstrap/inject_criticald <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class='line'>    <span class="c"># This is Electra</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[+] Electra detected.&quot;</span>
 </span><span class='line'>    cp jtool.liberios /bootstrap/usr/local/bin/
 </span><span class='line'>    chmod +x /bootstrap/usr/local/bin/jtool.liberios
-</span><span class='line'>    JTOOL=/bootstrap/usr/local/bin/jtool.liberios
+</span><span class='line'>    <span class="nv">JTOOL</span><span class="o">=</span>/bootstrap/usr/local/bin/jtool.liberios
 </span><span class='line'>    cp bfinject4realz /bootstrap/usr/local/bin/
-</span><span class='line'>    INJECTOR=/bootstrap/usr/local/bin/bfinject4realz
-</span><span class='line'>elif [ -f /jb/usr/local/bin/jtool ]; then
-</span><span class='line'>    # This is LiberiOS
-</span><span class='line'>    echo "[+] Liberios detected"
-</span><span class='line'>    JTOOL=jtool
-</span><span class='line'>    INJECTOR=`pwd`/bfinject4realz
-</span><span class='line'>else
-</span><span class='line'>    echo "[!] Unknown jailbreak. Aborting."
-</span><span class='line'>    exit 1
-</span><span class='line'>fi</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    <span class="nv">INJECTOR</span><span class="o">=</span>/bootstrap/usr/local/bin/bfinject4realz
+</span><span class='line'><span class="k">elif</span> <span class="o">[</span> -f /jb/usr/local/bin/jtool <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class='line'>    <span class="c"># This is LiberiOS</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[+] Liberios detected&quot;</span>
+</span><span class='line'>    <span class="nv">JTOOL</span><span class="o">=</span>jtool
+</span><span class='line'>    <span class="nv">INJECTOR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/bfinject4realz
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>    <span class="nb">echo</span> <span class="s2">&quot;[!] Unknown jailbreak. Aborting.&quot;</span>
+</span><span class='line'>    <span class="nb">exit </span>1
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>由以上代码第1个if分支可以判断，/bootstrap/inject_criticald目录不存在，这个是由于软件的目录变了，在不改变bfinject代码的前提下，需要修改一下目录，执行以下命令</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ln -s /electra /bootstrap
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ln -s /electra /bootstrap
 </span><span class='line'>mkdir /bootstrap/usr
 </span><span class='line'>mkdir /bootstrap/usr/local
-</span><span class='line'>mkdir /bootstrap/usr/local/bin</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>mkdir /bootstrap/usr/local/bin
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>重新执行<code>bash bfinject</code>，还会出现一个错误<code>md5: command not found</code>，这个是由于需要运行md5程序，但是ios系统自带的程序叫md5sum，所以简单的办法是修改bfinject代码，将其中的md5改成md5sum就可以了。</p>
@@ -239,14 +247,16 @@ mac电脑
 
 <p>要查看哪个App，需要先在手机上启动，然后找到App的进程号，例如我们要查看微信的进程号，可以用以下命令</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ps aux | grep containers | grep WeChat</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ps aux <span class="p">|</span> grep containers <span class="p">|</span> grep WeChat
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>假设微信的进程号为1026，运行</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>bash bfinject -p 1026 -L decrypt</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>bash bfinject -p <span class="m">1026</span> -L decrypt
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>成功的话，在微信App的页面内会弹出一个框，上边的意思是正在监听xx.xx.xx.xx:1337端口(xx.xx.xx.xx为手机的ip地址)，可以连接这个端口来进行cycript调试了。</p>
@@ -255,22 +265,25 @@ mac电脑
 
 <p>首先去<a href="http://www.cycript.org/">http://www.cycript.org/</a>下载代码，运行./cycript的时候，会报错，仔细查看是缺少ruby2.0的库，在mac上先安装ruby2.0</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>brew install ruby@2.0</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>brew install ruby@2.0
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>安装后将libruby.dylib拷贝到<code>/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib</code>目录下。顺利的话就可以用了。</p>
 
 <p>在mac上执行</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cycript -r xx.xx.xx.xx:1337</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cycript -r xx.xx.xx.xx:1337
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>xx.xx.xx.xx为手机的ip，这里注意一下，因为是以无线连接的，所以手机和电脑需要在同一个局域网里，如果出现</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>cy#</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>cy#
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>代表cycript运行成功，可以通过写cycript脚本执行命令了。</p>
