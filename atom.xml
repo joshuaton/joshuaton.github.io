@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-01-29T13:21:43+08:00</updated>
+  <updated>2019-05-10T18:06:56+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,202 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS越狱以及cycript的安装]]></title>
+    <link href="http://jason5.cn/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html"/>
+    <updated>2019-05-10T18:01:04+08:00</updated>
+    <id>http://jason5.cn/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang</id>
+    <content type="html"><![CDATA[<p>本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。</p>
+
+<h3>1. 准备</h3>
+
+<ul>
+<li><p>1台iOS越狱手机</p></li>
+<li><p>mac电脑</p></li>
+<li><p>苹果开发者账号</p></li>
+</ul>
+
+
+<h3>2. 手机如何越狱</h3>
+
+<p>根据当前网上查到的资料，iOS 12.1.4以下（包含）是可以越狱的，如果你的手机系统版本升级到了12.1.4之上，目前来讲没有办法，可以去淘宝买一部越狱手机。</p>
+
+<p>笔者的手机系统版本是iOS 11.2.5，这个版本是可以非完美越狱的。非完美越狱的意思是，手机越狱成功后，如果重启，则会恢复到未越狱状态，需要重新越狱。不过这个是可以接受的，毕竟可以用了不是。以下以iOS 11.2.5为例，介绍越狱步骤。</p>
+
+<h4>2.1 越狱工具的选择</h4>
+
+<p>笔者越狱的时候尝试了两个工具Unc0ver和Electra，用了之后发现Electra好用一点，Unc0ver的问题是，越狱之后Cydia总是出现网络问题连接不上。用Electra越狱后Cydia可以使用，打开Cydia后会提示升级，正常升级后Cydia会变成Sileo，这个可以理解为新版的Cydia。</p>
+
+<h4>2.2 如何安装Electra</h4>
+
+<p>首先要在mac上安装Cydia Impactor。Cydia Impactor安装后，用数据线连接手机和电脑，将Electra.ipa拖入Impactor。安装的时候会要求输入账号名和密码。这里需要输入苹果开发者账号（每年699元那个），输入的密码并不是开发者账号的密码，而是临时生成的密码，需要到<a href="https://appleid.apple.com/">https://appleid.apple.com</a>生成App专用密码。这样Electra就顺利安装到手机上了。</p>
+
+<h4>2.3 越狱</h4>
+
+<p>打开手机上的Electra App，点击Jailbroken按钮，注意底下会有个开关选项"Tweaks"，这里需要把选项关掉，否则后边使用cycript会出错。顺利的话，手机会黑屏，然后重新启动桌面。再打开Electra App，刚才的Jailbroken按钮变成了Already Jailbroken，说明越狱已经成功了。手机桌面应该也出现了Cydia或Sileo图标。</p>
+
+<h3>3. 如何ssh到手机</h3>
+
+<p>有两种方式可以使mac ssh到手机上，一种是通过同一局域网WIFI，另一种是通过手机直接连接到mac。为了获取更快的连接速度和更稳定，笔者选择了后一种方式。</p>
+
+<p>首先在mac上安装usbmuxd</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew install usbmuxd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>usbmuxd自带了一个工具iproxy，这个工具的作用是，在mac和手机之间架上一个代理，mac ssh手机本来是走22端口，需要用这个工具将其他端口，比如5678，转发到22端口上。运行命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>iproxy 5678 22</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行后正常情况下会显示</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>waiting for connection</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这是后，在mac上打开另一个终端窗口，输入命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -p 5678 root@127.0.0.1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输入默认的root密码alpine，就能成功ssh到手机上了。关于如何不每次都输入密码，这里可以自行搜索下其他相关资料，这里不再累述。</p>
+
+<p>除了能够使用ssh，还可以使用scp向手机传文件，这里需要注意同样需要指定端口号，例如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>scp -P 5678 filexxx root@127.0.0.1:/tmp</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ssh到手机上之后，如果我们需要其他的软件，可以使用apt-get，例如安装vim</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>apt-get install vim</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. cycript的安装和使用</h3>
+
+<p>能够以root身份ssh到手机之后，就可以做很多事情了，比如查看当前手机正在运行的App的进程号，以及各个App的沙盒路径，以及随意浏览里边的文件，很多有趣的事情可以去探索和尝试。这篇文章主要介绍cycirpt工具的使用。</p>
+
+<h4>4.1 cycript介绍</h4>
+
+<p>cycript是一个脚本语言，通过编写脚本代码，可以在任意第三方App运行的时候，执行任何逻辑，通常情况下可以用来查看App的UI结构，某个页面的实现方式。其他的使用目的等待你去探索和发现。</p>
+
+<h4>4.2 安装和使用cycript</h4>
+
+<p>在网上查了些资料，说cycript可以直接安装在iOS手机上的，这样只要ssh到手机上，执行cycript命令，就可以使用了。但是经过尝试，iOS 11.2.5版本不能直接安装cycript，取而代之的是一个叫bfinject的工具。bfinject工具先安装到手机上，然后启动cycript监听服务，然后mac上安装cycript客户端，通过无线的方式连接手机暴露出来的ip和端口，就可以使用cycript编写和执行脚本了。</p>
+
+<h5>4.2.1 在手机上安装bfinject</h5>
+
+<p>去<a href="https://github.com/BishopFox/bfinject">https://github.com/BishopFox/bfinject</a>下载bfinject，scp到手机上，然后解压，在解压目录运行<code>bash bfinject</code>启动服务。</p>
+
+<p>通常情况下，会报错<code>Unknown jailbrek</code>。我们通过查看bfinject的代码，可以发现问题。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#
+</span><span class='line'># Detect LiberiOS vs Electra
+</span><span class='line'>#
+</span><span class='line'>if [ -f /bootstrap/inject_criticald ]; then
+</span><span class='line'>    # This is Electra
+</span><span class='line'>    echo "[+] Electra detected."
+</span><span class='line'>    cp jtool.liberios /bootstrap/usr/local/bin/
+</span><span class='line'>    chmod +x /bootstrap/usr/local/bin/jtool.liberios
+</span><span class='line'>    JTOOL=/bootstrap/usr/local/bin/jtool.liberios
+</span><span class='line'>    cp bfinject4realz /bootstrap/usr/local/bin/
+</span><span class='line'>    INJECTOR=/bootstrap/usr/local/bin/bfinject4realz
+</span><span class='line'>elif [ -f /jb/usr/local/bin/jtool ]; then
+</span><span class='line'>    # This is LiberiOS
+</span><span class='line'>    echo "[+] Liberios detected"
+</span><span class='line'>    JTOOL=jtool
+</span><span class='line'>    INJECTOR=`pwd`/bfinject4realz
+</span><span class='line'>else
+</span><span class='line'>    echo "[!] Unknown jailbreak. Aborting."
+</span><span class='line'>    exit 1
+</span><span class='line'>fi</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由以上代码第1个if分支可以判断，/bootstrap/inject_criticald目录不存在，这个是由于软件的目录变了，在不改变bfinject代码的前提下，需要修改一下目录，执行以下命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ln -s /electra /bootstrap
+</span><span class='line'>mkdir /bootstrap/usr
+</span><span class='line'>mkdir /bootstrap/usr/local
+</span><span class='line'>mkdir /bootstrap/usr/local/bin</span></code></pre></td></tr></table></div></figure>
+
+
+<p>重新执行<code>bash bfinject</code>，还会出现一个错误<code>md5: command not found</code>，这个是由于需要运行md5程序，但是ios系统自带的程序叫md5sum，所以简单的办法是修改bfinject代码，将其中的md5改成md5sum就可以了。</p>
+
+<h5>4.2.2 在手机上启动bfinject服务</h5>
+
+<p>要查看哪个App，需要先在手机上启动，然后找到App的进程号，例如我们要查看微信的进程号，可以用以下命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ps aux | grep containers | grep WeChat</span></code></pre></td></tr></table></div></figure>
+
+
+<p>假设微信的进程号为1026，运行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bash bfinject -p 1026 -L decrypt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>成功的话，在微信App的页面内会弹出一个框，上边的意思是正在监听xx.xx.xx.xx:1337端口(xx.xx.xx.xx为手机的ip地址)，可以连接这个端口来进行cycript调试了。</p>
+
+<h5>4.2.3 在mac上安装cycript客户端</h5>
+
+<p>首先去<a href="http://www.cycript.org/">http://www.cycript.org/</a>下载代码，运行./cycript的时候，会报错，仔细查看是缺少ruby2.0的库，在mac上先安装ruby2.0</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew install ruby@2.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>安装后将libruby.dylib拷贝到<code>/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib</code>目录下。顺利的话就可以用了。</p>
+
+<p>在mac上执行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cycript -r xx.xx.xx.xx:1337</span></code></pre></td></tr></table></div></figure>
+
+
+<p>xx.xx.xx.xx为手机的ip，这里注意一下，因为是以无线连接的，所以手机和电脑需要在同一个局域网里，如果出现</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cy#</span></code></pre></td></tr></table></div></figure>
+
+
+<p>代表cycript运行成功，可以通过写cycript脚本执行命令了。</p>
+
+<h3>5. 总结</h3>
+
+<p>本篇文章介绍了如何越狱iOS手机，以及逆向工具cycript的安装。关于cycript的详细使用，限于篇幅原因不介绍了，请自行查看相关资料。总之，这个工具非常强大，可以更深入的分析目标App的实现方式。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SDWebImage源码解读]]></title>
@@ -803,7 +999,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>此时，可以相应<code>/birds</code>和<code>/birds/about</code></p>
+<p>此时，可以响应<code>/birds</code>和<code>/birds/about</code></p>
 ]]></content>
   </entry>
   
@@ -815,6 +1011,14 @@
     <content type="html"><![CDATA[<p>Express是一个基于nodejs的web开发框架。</p>
 
 <h3>Hello World</h3>
+
+<p>0.安装nodejs环境</p>
+
+<p>以腾讯云的centOS云服务器为例，先运行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>yum install nodejs</span></code></pre></td></tr></table></div></figure>
+
 
 <p>1.安装</p>
 
@@ -834,7 +1038,7 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ node app.js</span></code></pre></td></tr></table></div></figure>
 
 
-<p>打开浏览器，可以看到运行结果了</p>
+<p>打开浏览器，访问<a href="http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86">http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86</a></p>
 
 <h3>脚手架工程</h3>
 
@@ -2244,17 +2448,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 
 
 <blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Mobike体验续]]></title>
-    <link href="http://jason5.cn/blog/mobiketi-yan-xu.html"/>
-    <updated>2016-11-15T14:49:07+08:00</updated>
-    <id>http://jason5.cn/blog/mobiketi-yan-xu</id>
-    <content type="html"><![CDATA[<p>这两天出差全靠mobike了，总共骑了大概有10趟吧，lite版的单车骑着确实轻松不少，价钱还更便宜。</p>
-
-<p>昨天去了陆家嘴，逛了ifc，在黄浦江边吹了下风，是个高大上的地方。</p>
 ]]></content>
   </entry>
   
