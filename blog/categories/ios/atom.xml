@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-05-10T18:10:40+08:00</updated>
+  <updated>2019-05-12T10:18:01+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -66,7 +66,7 @@
 <pre><code class="bash">waiting for connection
 </code></pre>
 
-<p>这是后，在mac上打开另一个终端窗口，输入命令</p>
+<p>这时候，在mac上打开另一个终端窗口，输入命令</p>
 
 <pre><code class="bash">ssh -p 5678 root@127.0.0.1
 </code></pre>
@@ -142,7 +142,7 @@ mkdir /bootstrap/usr/local/bin
 
 <p>假设微信的进程号为1026，运行</p>
 
-<pre><code class="bash">bash bfinject -p 1026 -L decrypt
+<pre><code class="bash">bash bfinject -p 1026 -L cycript
 </code></pre>
 
 <p>成功的话，在微信App的页面内会弹出一个框，上边的意思是正在监听xx.xx.xx.xx:1337端口(xx.xx.xx.xx为手机的ip地址)，可以连接这个端口来进行cycript调试了。</p>
@@ -154,7 +154,7 @@ mkdir /bootstrap/usr/local/bin
 <pre><code class="bash">brew install ruby@2.0
 </code></pre>
 
-<p>安装后将libruby.dylib拷贝到<code>/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib</code>目录下。顺利的话就可以用了。</p>
+<p>安装后将<code>/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib</code>拷贝到<code>cycript/Cycript.lib</code>目录下。顺利的话就可以用了。</p>
 
 <p>在mac上执行</p>
 
