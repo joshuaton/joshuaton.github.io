@@ -56,7 +56,7 @@ iproxy 5678 22
 waiting for connection
 ```
 
-这是后，在mac上打开另一个终端窗口，输入命令
+这时候，在mac上打开另一个终端窗口，输入命令
 
 ```bash
 ssh -p 5678 root@127.0.0.1
@@ -139,7 +139,7 @@ ps aux | grep containers | grep WeChat
 假设微信的进程号为1026，运行
 
 ```bash
-bash bfinject -p 1026 -L decrypt
+bash bfinject -p 1026 -L cycript
 ```
 
 成功的话，在微信App的页面内会弹出一个框，上边的意思是正在监听xx.xx.xx.xx:1337端口(xx.xx.xx.xx为手机的ip地址)，可以连接这个端口来进行cycript调试了。
@@ -152,7 +152,7 @@ bash bfinject -p 1026 -L decrypt
 brew install ruby@2.0
 ```
 
-安装后将libruby.dylib拷贝到`/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib`目录下。顺利的话就可以用了。
+安装后将`/usr/local/Cellar/ruby@2.0/2.0.0-p648_2/lib/libruby.2.0.0.dylib`拷贝到`cycript/Cycript.lib`目录下。顺利的话就可以用了。
 
 在mac上执行
 
