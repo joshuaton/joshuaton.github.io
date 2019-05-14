@@ -9,9 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。 1. 准备 1台iOS越狱手机
-mac电脑
-苹果开发者账号 2. 手机如何越狱 根据当前网上查到的资料，iOS 12.1.4以下（包含）是可以越狱的，如果你的手机系统版本升级到了12.1.4之上， &hellip;">
+  <meta name="description" content="1. 问题出现 之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。 登录服务器后一看，发现数据库里的表被删掉了， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +66,145 @@ mac电脑
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-05-14T15:05:33+08:00'><span class='date'>2019 年5 月14 日</span> <span class='time'>3:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1. 问题出现</h3>
+
+<p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+<p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190514154008.png" alt="" /></p>
+
+<p>猜测warning是警告信息，Bitcoin_Address是比特币钱包地址，Email是黑客联系邮箱。不过发现这个表里并没有数据，真不知道黑客是什么目的，还是只是恶作剧。上网搜索关键字“PLEASE_READ_ME_XMG”也印证了跟比特币勒索相关。</p>
+
+<h3>2. 查找问题</h3>
+
+<p>然后开始查找问题，先去mysql数据文件夹查看表文件<code>WARNING.frm</code>和<code>WARNING.ibd</code>的生成时间，确定了攻击发生的时间点。</p>
+
+<p>用命令查看linux机器登录记录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>who /var/log/wtmp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发现在攻击发生的时间点，没有登录日志。那就怀疑用户是远程登录mysql直接操作数据库。于是登录数据库查看授权情况</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>show grants<span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>显示</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>GRANT ALL PRIVILEGES ON *.* TO <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;%&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>%代表可疑从任意机器登录。</p>
+
+<h3>3. 解决问题</h3>
+
+<h4>3.1 修改mysql权限</h4>
+
+<p>首先把数据库授权改为localhost。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>grant all privileges on *.* to <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;localhost&#39;</span> with grant option
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.2 增加binlog</h4>
+
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+
+<p>找到mysql配置文件<code>my.cnf</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>mysqld<span class="o">]</span>
+</span><span class='line'>log-bin<span class="o">=</span>/***/***/logs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+
+<p>设置之后重新启动mysql</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>systemctl restart mysqld
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysqlbinlog -d xxx logs.000001
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中xxx是数据库名。</p>
+
+<h4>3.3 定时备份数据</h4>
+
+<p>除此之外，为了更加保险，写了备份脚本，通过mysqldump进行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#! /bin/sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">time</span><span class="o">=</span><span class="k">$(</span>date <span class="s2">&quot;+%Y%m%d-%H%M&quot;</span><span class="k">)</span>
+</span><span class='line'>mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/<span class="nv">$time</span>.sql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="m">0</span> * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 总结</h3>
+
+<p>通过这次的攻击，数据全部丢失，虽然通过其他途径找回了信息，但是mysql数据本身并没有得到恢复。得到的教训如下：</p>
+
+<ol>
+<li><p>mysql操作权限要严格限制，通过白名单的方式放开，其他全部拒绝</p></li>
+<li><p>mysql要打开binlog功能，可以用来恢复数据和查看操作记录</p></li>
+<li><p>数据要定时备份，以防丢失后能够恢复</p></li>
+</ol>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1423,37 +1560,6 @@ mac电脑
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html">Github Pages支持https的方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-20T19:38:41+08:00'><span class='date'>2018 年10 月20 日</span> <span class='time'>7:38 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>到Github Pages项目里，点击Setting，勾选Enforce HTTPS</p>
-
-<p><img src="https://jason5.cn/images/WX20181020-194050@2x.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1471,7 +1577,7 @@ mac电脑
 <li class='category'><a href='/blog/categories/ios/'>ios (9)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
-<li class='category'><a href='/blog/categories/security/'>security (3)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (3)</a></li>
 <li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
 
@@ -1479,6 +1585,10 @@ mac电脑
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a>
+      </li>
     
       <li class="post">
         <a href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html">iOS越狱以及cycript的安装</a>
@@ -1494,10 +1604,6 @@ mac电脑
     
       <li class="post">
         <a href="/blog/dui-jspatchyuan-li-de-li-jie.html">对JSPatch原理的理解</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/expressxue-xi-bi-ji-er-lu-you.html">Express学习笔记(二)-路由</a>
       </li>
     
   </ul>

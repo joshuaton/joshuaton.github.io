@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-05-12T10:18:01+08:00</updated>
+  <updated>2019-05-14T16:23:26+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,125 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[记一次数据库被攻击的经历]]></title>
+    <link href="http://jason5.cn/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html"/>
+    <updated>2019-05-14T15:05:33+08:00</updated>
+    <id>http://jason5.cn/blog/ji-[?]-ci-shu-ju-ku-bei-gong-ji-de-jing-li</id>
+    <content type="html"><![CDATA[<h3>1. 问题出现</h3>
+
+<p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+<p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190514154008.png" alt="" /></p>
+
+<p>猜测warning是警告信息，Bitcoin_Address是比特币钱包地址，Email是黑客联系邮箱。不过发现这个表里并没有数据，真不知道黑客是什么目的，还是只是恶作剧。上网搜索关键字“PLEASE_READ_ME_XMG”也印证了跟比特币勒索相关。</p>
+
+<h3>2. 查找问题</h3>
+
+<p>然后开始查找问题，先去mysql数据文件夹查看表文件<code>WARNING.frm</code>和<code>WARNING.ibd</code>的生成时间，确定了攻击发生的时间点。</p>
+
+<p>用命令查看linux机器登录记录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>who /var/log/wtmp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发现在攻击发生的时间点，没有登录日志。那就怀疑用户是远程登录mysql直接操作数据库。于是登录数据库查看授权情况</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>show grants<span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>显示</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>GRANT ALL PRIVILEGES ON *.* TO <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;%&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>%代表可疑从任意机器登录。</p>
+
+<h3>3. 解决问题</h3>
+
+<h4>3.1 修改mysql权限</h4>
+
+<p>首先把数据库授权改为localhost。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>grant all privileges on *.* to <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;localhost&#39;</span> with grant option
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.2 增加binlog</h4>
+
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+
+<p>找到mysql配置文件<code>my.cnf</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>mysqld<span class="o">]</span>
+</span><span class='line'>log-bin<span class="o">=</span>/***/***/logs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+
+<p>设置之后重新启动mysql</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>systemctl restart mysqld
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysqlbinlog -d xxx logs.000001
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中xxx是数据库名。</p>
+
+<h4>3.3 定时备份数据</h4>
+
+<p>除此之外，为了更加保险，写了备份脚本，通过mysqldump进行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#! /bin/sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">time</span><span class="o">=</span><span class="k">$(</span>date <span class="s2">&quot;+%Y%m%d-%H%M&quot;</span><span class="k">)</span>
+</span><span class='line'>mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/<span class="nv">$time</span>.sql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="m">0</span> * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 总结</h3>
+
+<p>通过这次的攻击，数据全部丢失，虽然通过其他途径找回了信息，但是mysql数据本身并没有得到恢复。得到的教训如下：</p>
+
+<ol>
+<li><p>mysql操作权限要严格限制，通过白名单的方式放开，其他全部拒绝</p></li>
+<li><p>mysql要打开binlog功能，可以用来恢复数据和查看操作记录</p></li>
+<li><p>数据要定时备份，以防丢失后能够恢复</p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS越狱以及cycript的安装]]></title>
@@ -2383,84 +2502,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 </pre></td><td class='code'><pre><code class=''><span class='line'>sudo gem uninstall cocoapods
 </span><span class='line'>sudo gem install -n /usr/local/bin cocoapods</span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[转]到底什么时候才需要在ObjC的Block中使用weakSelf/strongSelf]]></title>
-    <link href="http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself.html"/>
-    <updated>2017-06-16T15:01:32+08:00</updated>
-    <id>http://jason5.cn/blog/zhuan-dao-di-shi-yao-shi-hou-cai-xu-yao-zai-objcde-blockzhong-shi-yong-weakself-slash-strongself</id>
-    <content type="html"><![CDATA[<p>Objective C 的 Block 是一个很实用的语法，特别是与GCD结合使用，可以很方便地实现并发、异步任务。但是，如果使用不当，Block 也会引起一些循环引用问题(retain cycle)—— Block 会 retain ‘self’，而 ‘self‘ 又 retain 了 Block。因为在 ObjC 中，直接调用一个实例变量，会被编译器处理成 ‘self->theVar’，’self’ 是一个 strong 类型的变量，引用计数会加 1，于是，self retains queue， queue retains block，block retains self。</p>
-
-<!--more-->
-
-
-<h2>解决 retain circle</h2>
-
-<p>Apple 官方的建议是，传进 Block 之前，把 ‘self’ 转换成 weak automatic 的变量，这样在 Block 中就不会出现对 self 的强引用。如果在 Block 执行完成之前，self 被释放了，weakSelf 也会变为 nil。</p>
-
-<p>示例代码：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
-</span><span class='line'>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-</span><span class='line'>    [weakSelf doSomething];
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>clang 的文档表示，在 doSomething 内，weakSelf 不会被释放。但，下面的情况除外：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
-</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-</span><span class='line'>    [weakSelf doSomething];
-</span><span class='line'>    [weakSelf doOtherThing];
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在 doSomething 中，weakSelf 不会变成 nil，不过在 doSomething 执行完成，调用第二个方法 doOtherThing 的时候，weakSelf 有可能被释放，于是，strongSelf 就派上用场了：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>__weak __typeof__(self) weakSelf = self;
-</span><span class='line'>    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-</span><span class='line'>    __strong __typeof(self) strongSelf = weakSelf;
-</span><span class='line'>    [strongSelf doSomething];
-</span><span class='line'>    [strongSelf doOtherThing];
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>__strong 确保在 Block 内，strongSelf 不会被释放。</p>
-
-<h2>总结</h2>
-
-<ul>
-<li>在 Block 内如果需要访问 self 的方法、变量，建议使用 weakSelf。</li>
-<li>如果在 Block 内需要多次 访问 self，则需要使用 strongSelf。</li>
-</ul>
-
-
-<h2>参考</h2>
-
-<ul>
-<li><a href="https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself">I finally figured out weakSelf and strongSelf</a></li>
-<li><a href="https://stackoverflow.com/questions/21113963/is-the-weakself-strongself-dance-really-necessary-when-referencing-self-inside-a?rq=1">Is the weakSelf/strongSelf dance really necessary when referencing self inside a non-retained completion called from a UIViewController?</a></li>
-</ul>
-
-
-<blockquote><p> 原文链接： <a href="http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/">http://blog.lessfun.com/blog/2014/11/22/when-should-use-weakself-and-strongself-in-objc-block/</a></p></blockquote>
 ]]></content>
   </entry>
   

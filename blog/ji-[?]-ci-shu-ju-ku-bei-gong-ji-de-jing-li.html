@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>记一次数据库被攻击的经历 - 移动开发技术</title>
+  <meta name="author" content="jason">
+
+  
+  <meta name="description" content="1. 问题出现 之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。 登录服务器后一看，发现数据库里的表被删掉了， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jason5.cn/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">移动开发技术</a></h1>
+  
+    <h2>Jason's Blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com.hk/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jason5.cn">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">记一次数据库被攻击的经历</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-05-14T15:05:33+08:00'><span class='date'>2019 年5 月14 日</span> <span class='time'>3:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>1. 问题出现</h3>
+
+<p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+<p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190514154008.png" alt="" /></p>
+
+<p>猜测warning是警告信息，Bitcoin_Address是比特币钱包地址，Email是黑客联系邮箱。不过发现这个表里并没有数据，真不知道黑客是什么目的，还是只是恶作剧。上网搜索关键字“PLEASE_READ_ME_XMG”也印证了跟比特币勒索相关。</p>
+
+<h3>2. 查找问题</h3>
+
+<p>然后开始查找问题，先去mysql数据文件夹查看表文件<code>WARNING.frm</code>和<code>WARNING.ibd</code>的生成时间，确定了攻击发生的时间点。</p>
+
+<p>用命令查看linux机器登录记录</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>who /var/log/wtmp
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发现在攻击发生的时间点，没有登录日志。那就怀疑用户是远程登录mysql直接操作数据库。于是登录数据库查看授权情况</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>show grants<span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>显示</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>GRANT ALL PRIVILEGES ON *.* TO <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;%&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>%代表可疑从任意机器登录。</p>
+
+<h3>3. 解决问题</h3>
+
+<h4>3.1 修改mysql权限</h4>
+
+<p>首先把数据库授权改为localhost。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>grant all privileges on *.* to <span class="s1">&#39;root&#39;</span>@<span class="s1">&#39;localhost&#39;</span> with grant option
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.2 增加binlog</h4>
+
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+
+<p>找到mysql配置文件<code>my.cnf</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>mysqld<span class="o">]</span>
+</span><span class='line'>log-bin<span class="o">=</span>/***/***/logs
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+
+<p>设置之后重新启动mysql</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>systemctl restart mysqld
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mysqlbinlog -d xxx logs.000001
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中xxx是数据库名。</p>
+
+<h4>3.3 定时备份数据</h4>
+
+<p>除此之外，为了更加保险，写了备份脚本，通过mysqldump进行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#! /bin/sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">time</span><span class="o">=</span><span class="k">$(</span>date <span class="s2">&quot;+%Y%m%d-%H%M&quot;</span><span class="k">)</span>
+</span><span class='line'>mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/<span class="nv">$time</span>.sql
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="m">0</span> * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 总结</h3>
+
+<p>通过这次的攻击，数据全部丢失，虽然通过其他途径找回了信息，但是mysql数据本身并没有得到恢复。得到的教训如下：</p>
+
+<ol>
+<li><p>mysql操作权限要严格限制，通过白名单的方式放开，其他全部拒绝</p></li>
+<li><p>mysql要打开binlog功能，可以用来恢复数据和查看操作记录</p></li>
+<li><p>数据要定时备份，以防丢失后能够恢复</p></li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">jason</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2019-05-14T15:05:33+08:00'><span class='date'>2019 年5 月14 日</span> <span class='time'>3:05 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/security/'>security</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html" title="Previous Post: iOS越狱以及cycript的安装">&laquo; iOS越狱以及cycript的安装</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  <h1>Comments</h1>
+  <div id="container"></div>
+</section>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+    id: '记一次数据库被攻击的经历',
+    owner: 'joshuaton',
+    repo: 'joshuaton.github.io',
+    oauth: {
+        client_id: 'eec868eaacadc00f17c0',
+        client_secret: '9840ef585828127e5f235ff6d2b28141ae182f98',
+    },
+});
+gitment.render('container');
+</script>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (9)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
+<li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (3)</a></li>
+<li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
+
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html">iOS越狱以及cycript的安装</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/dui-jspatchyuan-li-de-li-jie.html">对JSPatch原理的理解</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+<script>
+var _mtac = {};
+(function() {
+    var mta = document.createElement("script");
+    mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.2";
+    mta.setAttribute("name", "MTAH5");
+    mta.setAttribute("sid", "500600841");
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(mta, s);
+})();
+</script>
+            
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

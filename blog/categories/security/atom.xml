@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-05-12T10:18:01+08:00</updated>
+  <updated>2019-05-14T16:23:26+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[记一次数据库被攻击的经历]]></title>
+    <link href="http://jason5.cn/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html"/>
+    <updated>2019-05-14T15:05:33+08:00</updated>
+    <id>http://jason5.cn/blog/ji-[?]-ci-shu-ju-ku-bei-gong-ji-de-jing-li</id>
+    <content type="html"><![CDATA[<h3>1. 问题出现</h3>
+
+<p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+<p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190514154008.png" alt="" /></p>
+
+<p>猜测warning是警告信息，Bitcoin_Address是比特币钱包地址，Email是黑客联系邮箱。不过发现这个表里并没有数据，真不知道黑客是什么目的，还是只是恶作剧。上网搜索关键字“PLEASE_READ_ME_XMG”也印证了跟比特币勒索相关。</p>
+
+<h3>2. 查找问题</h3>
+
+<p>然后开始查找问题，先去mysql数据文件夹查看表文件<code>WARNING.frm</code>和<code>WARNING.ibd</code>的生成时间，确定了攻击发生的时间点。</p>
+
+<p>用命令查看linux机器登录记录</p>
+
+<pre><code class="bash">who /var/log/wtmp
+</code></pre>
+
+<p>发现在攻击发生的时间点，没有登录日志。那就怀疑用户是远程登录mysql直接操作数据库。于是登录数据库查看授权情况</p>
+
+<pre><code class="bash">show grants;
+</code></pre>
+
+<p>显示</p>
+
+<pre><code class="bash">GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'
+</code></pre>
+
+<p>%代表可疑从任意机器登录。</p>
+
+<h3>3. 解决问题</h3>
+
+<h4>3.1 修改mysql权限</h4>
+
+<p>首先把数据库授权改为localhost。</p>
+
+<pre><code class="bash">grant all privileges on *.* to 'root'@'localhost' with grant option
+</code></pre>
+
+<h4>3.2 增加binlog</h4>
+
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+
+<p>找到mysql配置文件<code>my.cnf</code></p>
+
+<pre><code>[mysqld]
+log-bin=/***/***/logs
+</code></pre>
+
+<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+
+<p>设置之后重新启动mysql</p>
+
+<pre><code class="bash">systemctl restart mysqld
+</code></pre>
+
+<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+
+<pre><code class="bash">mysqlbinlog -d xxx logs.000001
+</code></pre>
+
+<p>其中xxx是数据库名。</p>
+
+<h4>3.3 定时备份数据</h4>
+
+<p>除此之外，为了更加保险，写了备份脚本，通过mysqldump进行备份</p>
+
+<pre><code class="bash">#! /bin/sh
+
+time=$(date "+%Y%m%d-%H%M")
+mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/$time.sql
+</code></pre>
+
+<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+
+<pre><code class="bash">0 * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;&amp;1 &amp;
+</code></pre>
+
+<h3>4. 总结</h3>
+
+<p>通过这次的攻击，数据全部丢失，虽然通过其他途径找回了信息，但是mysql数据本身并没有得到恢复。得到的教训如下：</p>
+
+<ol>
+<li><p>mysql操作权限要严格限制，通过白名单的方式放开，其他全部拒绝</p></li>
+<li><p>mysql要打开binlog功能，可以用来恢复数据和查看操作记录</p></li>
+<li><p>数据要定时备份，以防丢失后能够恢复</p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[存储型XSS应用-微博刷粉]]></title>
