@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-05-14T16:23:26+08:00</updated>
+  <updated>2019-05-14T16:30:22+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -47,7 +47,7 @@
 <pre><code class="bash">GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'
 </code></pre>
 
-<p>%代表可疑从任意机器登录。</p>
+<p>%代表可以从任意机器登录。</p>
 
 <h3>3. 解决问题</h3>
 
@@ -60,7 +60,7 @@
 
 <h4>3.2 增加binlog</h4>
 
-<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将binlog打开。</p>
 
 <p>找到mysql配置文件<code>my.cnf</code></p>
 
@@ -68,14 +68,14 @@
 log-bin=/***/***/logs
 </code></pre>
 
-<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+<p>在mysqld项下增加log-bin的配置，指定binlog的输出路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
 
-<p>设置之后重新启动mysql</p>
+<p>然后重新启动mysql</p>
 
 <pre><code class="bash">systemctl restart mysqld
 </code></pre>
 
-<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+<p>再尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
 
 <pre><code class="bash">mysqlbinlog -d xxx logs.000001
 </code></pre>
@@ -92,7 +92,7 @@ time=$(date "+%Y%m%d-%H%M")
 mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/$time.sql
 </code></pre>
 
-<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+<p> 将脚本保存，修改执行权限，加入crontab中定时每个小时执行备份</p>
 
 <pre><code class="bash">0 * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;&amp;1 &amp;
 </code></pre>

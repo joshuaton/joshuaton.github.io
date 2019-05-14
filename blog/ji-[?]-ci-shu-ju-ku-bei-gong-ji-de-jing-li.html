@@ -120,7 +120,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>%代表可疑从任意机器登录。</p>
+<p>%代表可以从任意机器登录。</p>
 
 <h3>3. 解决问题</h3>
 
@@ -135,7 +135,7 @@
 
 <h4>3.2 增加binlog</h4>
 
-<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将bin-log打开。</p>
+<p>其次，由于mysql没有开启binlog，所以无法查看数据库的改动记录，也就无法看到删除数据库表的那条命令信息，经过这次教训，将binlog打开。</p>
 
 <p>找到mysql配置文件<code>my.cnf</code></p>
 
@@ -146,16 +146,16 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>在mysqld项下增加log-bin的配置，指定binlog的输入路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
+<p>在mysqld项下增加log-bin的配置，指定binlog的输出路径，注意这里要修改下logs文件夹的权限，保证可以正常写入。</p>
 
-<p>设置之后重新启动mysql</p>
+<p>然后重新启动mysql</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>systemctl restart mysqld
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>然后尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
+<p>再尝试进行mysql update操作，通过命令查看binlog，发现日志正常写入。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>mysqlbinlog -d xxx logs.000001
@@ -179,7 +179,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p> 将脚本保存，修改执行权限，加入crontab中定时没小时执行备份</p>
+<p> 将脚本保存，修改执行权限，加入crontab中定时每个小时执行备份</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="m">0</span> * * * * /path/to/back/bak_db.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
