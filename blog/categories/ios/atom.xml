@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-02T18:16:09+08:00</updated>
+  <updated>2019-06-02T19:59:32+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -401,7 +401,7 @@ static AutoreleasePoolPage *pageForPointer(uintptr_t p)
 <li><p>Autorelease Pool 是由多个 AutoreleasePoolPage 对象以双向链表的方式组织起来的数据结构。</p></li>
 <li><p>每个 AutoreleasePoolPage 只能存储有限个对象指针。当新的对象加入 Autorelease Pool 的时候，如果当前的 AutoreleasePoolPage 存储空间不够，会新初始化一个 AutoreleasePoolPage，加入到链表末端。</p></li>
 <li><p>Autorelease Pool 可以被嵌套创建。创建一个新的 Autorelease Pool 的时候，会在当前 AutoreleasePoolPage 中插入边界对象 POOL_BOUNDARY，以和上一个 Autorelease Pool 以区分。</p></li>
-<li><p>当 Autorelease Pool 销毁的时候，对 AutoreleasePoolPage 里存储的所有对象依次从后往前调用 release，直到遇到对象 POOL_BOUNDARY，表面当前 Autorelease Pool 中的对象已经被全部释放。</p></li>
+<li><p>当 Autorelease Pool 销毁的时候，对 AutoreleasePoolPage 里存储的所有对象依次从后往前调用 release，直到遇到对象 POOL_BOUNDARY，表明当前 Autorelease Pool 中的对象已经被全部释放。</p></li>
 </ol>
 
 
