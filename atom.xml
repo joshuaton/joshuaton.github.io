@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-02T18:00:10+08:00</updated>
+  <updated>2019-06-02T18:16:09+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -631,6 +631,10 @@
 <li><p>当 Autorelease Pool 销毁的时候，对 AutoreleasePoolPage 里存储的所有对象依次从后往前调用 release，直到遇到对象 POOL_BOUNDARY，表面当前 Autorelease Pool 中的对象已经被全部释放。</p></li>
 </ol>
 
+
+<h2>5. 参考资料</h2>
+
+<p><a href="https://juejin.im/post/5a66e28c6fb9a01cbf387da1">https://juejin.im/post/5a66e28c6fb9a01cbf387da1</a></p>
 ]]></content>
   </entry>
   
