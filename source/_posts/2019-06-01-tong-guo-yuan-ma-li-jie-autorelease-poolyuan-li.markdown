@@ -413,7 +413,7 @@ void releaseUntil(id *stop)
 
 3. Autorelease Pool 可以被嵌套创建。创建一个新的 Autorelease Pool 的时候，会在当前 AutoreleasePoolPage 中插入边界对象 POOL_BOUNDARY，以和上一个 Autorelease Pool 以区分。
 
-4. 当 Autorelease Pool 销毁的时候，对 AutoreleasePoolPage 里存储的所有对象依次从后往前调用 release，直到遇到对象 POOL_BOUNDARY，表面当前 Autorelease Pool 中的对象已经被全部释放。
+4. 当 Autorelease Pool 销毁的时候，对 AutoreleasePoolPage 里存储的所有对象依次从后往前调用 release，直到遇到对象 POOL_BOUNDARY，表明当前 Autorelease Pool 中的对象已经被全部释放。
 
 ## 5. 参考资料
 
