@@ -9,7 +9,8 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="到Github Pages项目里，点击Setting，勾选Enforce HTTPS ">
+  <meta name="description" content="DNS配置中有两种常见的类型，A和CNAME。 A是name到ip的配置，用于域名解析到最终的接入IP。 CNAME是name到name的配置，用于配置域名的别名。 参考Differences between the A and CNAME records
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +67,41 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/dnspei-zhi-zhong-ahe-cnamede-qu-bie.html">DNS配置中A和CNAME的区别</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-10-20T19:57:40+08:00'><span class='date'>2018 年10 月20 日</span> <span class='time'>7:57 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>DNS配置中有两种常见的类型，A和CNAME。</p>
+
+<p>A是name到ip的配置，用于域名解析到最终的接入IP。</p>
+
+<p>CNAME是name到name的配置，用于配置域名的别名。</p>
+
+<p>参考<a href="https://support.dnsimple.com/articles/differences-a-cname-records/">Differences between the A and CNAME records</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -412,49 +448,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/sheng-ji-dao-macos-high-sierra-podbu-neng-zhi-xing-de-jie-jue-ban-fa.html">升级到macOS High Sierra Pod不能执行的解决办法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-11-22T10:42:20+08:00'><span class='date'>2017 年11 月22 日</span> <span class='time'>10:42 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>JUNSHAO-MC0:~ junshao$ pod
-</span><span class='line'>-bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby: bad interpreter: No such file or directory</span></code></pre></td></tr></table></div></figure>
-
-
-<p>解决办法是重装cocoapods</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gem uninstall cocoapods
-</span><span class='line'>sudo gem install -n /usr/local/bin cocoapods</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -471,7 +464,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (9)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (10)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
@@ -482,6 +475,10 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/tong-guo-yuan-ma-li-jie-autorelease-poolyuan-li.html">通过源码理解Autorelease Pool原理</a>
+      </li>
     
       <li class="post">
         <a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a>
@@ -497,10 +494,6 @@
     
       <li class="post">
         <a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/dui-jspatchyuan-li-de-li-jie.html">对JSPatch原理的理解</a>
       </li>
     
   </ul>
