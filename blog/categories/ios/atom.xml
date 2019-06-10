@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-10T20:07:32+08:00</updated>
+  <updated>2019-06-10T20:17:41+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jason5.cn/blog/ios-zhong-de-nsproxy.html"/>
     <updated>2019-06-10T20:03:28+08:00</updated>
     <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
-    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。</p>
+    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。</p>
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
 
@@ -29,7 +29,7 @@
 <p>先定义一个类 MyProxy 继承自 NSProxy：</p>
 
 <pre><code class="objectivec">//MyProxy.h
-#import 
+#import &lt;Foundation/Foundation.h&gt; 
 
 @interface MyProxy : NSProxy
 -(instancetype)init;
@@ -38,7 +38,7 @@
 
 <pre><code class="objectivec">//MyProxy.m
 #import "MyProxy.h"
-#import 
+#import &lt;objc/runtime.h&gt;
 #import "Real.h"
 
 @interface MyProxy()
@@ -75,7 +75,7 @@
 <p>在 forwardInvocation: 方法中，将真实的实现转发给了 Real 的实例，由其去实现。</p>
 
 <pre><code class="objectivec">//Real.h
-#import 
+#import &lt;Foundation/Foundation.h&gt;
 
 @interface Real : NSObject
 -(void)hello;

@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-10T20:07:32+08:00</updated>
+  <updated>2019-06-10T20:17:41+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jason5.cn/blog/ios-zhong-de-nsproxy.html"/>
     <updated>2019-06-10T20:03:28+08:00</updated>
     <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
-    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。</p>
+    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。</p>
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
 
@@ -35,7 +35,7 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.h</span>
-</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt; </span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span> : <span class="bp">NSProxy</span>
 </span><span class='line'><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
@@ -79,7 +79,7 @@
 <span class='line-number'>32</span>
 </pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.m</span>
 </span><span class='line'><span class="cp">#import &quot;MyProxy.h&quot;</span>
-</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'><span class="cp">#import &lt;objc/runtime.h&gt;</span>
 </span><span class='line'><span class="cp">#import &quot;Real.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span><span class="p">()</span>
@@ -123,7 +123,7 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//Real.h</span>
-</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">Real</span> : <span class="bp">NSObject</span>
 </span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hello</span><span class="p">;</span>
