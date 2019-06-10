@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://jason5.cn/blog/ios-zhong-de-nsproxy.html</loc>
+<lastmod>2019-06-10T20:03:28+08:00</lastmod>
+</url>
+<url>
 <loc>http://jason5.cn/blog/tong-guo-yuan-ma-li-jie-autorelease-poolyuan-li.html</loc>
 <lastmod>2019-06-01T20:52:49+08:00</lastmod>
 </url>
@@ -175,14 +179,5 @@
 </url>
 <url>
 <loc>http://jason5.cn/blog/categories/weex/</loc>
-</url>
-<url>
-<loc>http://jason5.cn/posts/2/</loc>
-</url>
-<url>
-<loc>http://jason5.cn/posts/3/</loc>
-</url>
-<url>
-<loc>http://jason5.cn/posts/4/</loc>
 </url>
 </urlset>

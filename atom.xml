@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-02T19:59:32+08:00</updated>
+  <updated>2019-06-10T20:07:32+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,164 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 中的 NSProxy]]></title>
+    <link href="http://jason5.cn/blog/ios-zhong-de-nsproxy.html"/>
+    <updated>2019-06-10T20:03:28+08:00</updated>
+    <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
+    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
+
+<p>如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 ClassA 或者 ClassB。需要说明的是，NSProxy 不能直接使用，需要自己写一个类继承它。</p>
+
+<p>接下来我们来看实例代码。</p>
+
+<p>先定义一个类 MyProxy 继承自 NSProxy：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.h</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span> : <span class="bp">NSProxy</span>
+</span><span class='line'><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.m</span>
+</span><span class='line'><span class="cp">#import &quot;MyProxy.h&quot;</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'><span class="cp">#import &quot;Real.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="n">Real</span> <span class="o">*</span><span class="n">real</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">MyProxy</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Real</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forwardInvocation:</span><span class="p">(</span><span class="bp">NSInvocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">anInvocation</span><span class="p">{</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">sel</span> <span class="o">=</span> <span class="n">anInvocation</span><span class="p">.</span><span class="n">selector</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">]){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">invokeWithTarget</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="p">)</span><span class="nf">methodSignatureForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">sel</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">]){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">methodSignatureForSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>MyProxy 需要实现两个方法 forwardInvocation: 和 methodSignatureForSelector:</p>
+
+<p>在 forwardInvocation: 方法中，将真实的实现转发给了 Real 的实例，由其去实现。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//Real.h</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Real</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hello</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//Real.m</span>
+</span><span class='line'><span class="cp">#import &quot;Real.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Real</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hello</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hello11&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下边是调用方代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">MyProxy</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyProxy</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">proxy</span> <span class="nl">performSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">hello</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行后，在控制台输出 hello11，表明 Real 实例的 hello 方法得到执行。</p>
+
+<p>NSProxy 可以用来实现双继承，更多好玩的玩法可以去探索。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[通过源码理解Autorelease Pool原理]]></title>
@@ -3091,19 +3249,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 <li>如何构建发布流程</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[如何查看p12文件的信息]]></title>
-    <link href="http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html"/>
-    <updated>2017-12-16T14:37:21+08:00</updated>
-    <id>http://jason5.cn/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi</id>
-    <content type="html"><![CDATA[<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes</span></code></pre></td></tr></table></div></figure>
-
-
-<p>pem文件可以直接用文本工具打开</p>
 ]]></content>
   </entry>
   

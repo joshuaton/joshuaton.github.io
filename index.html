@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="1. Autorelease Pool 是什么 iOS 的内存管理使用引用计数机制。当对象被初始化或者被强引用赋值时，对象的引用计数 +1，当对象离开所在函数作用域或者被设置为 nil 后，引用计数 -1。当对象的引用计数为 0 时，操作系统会释放掉对象所占用的内存。 我们先来看一下这段代码： 1 &hellip;">
+  <meta name="description" content="在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。 如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,184 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-06-10T20:03:28+08:00'><span class='date'>2019 年6 月10 日</span> <span class='time'>8:03 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
+
+<p>如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 ClassA 或者 ClassB。需要说明的是，NSProxy 不能直接使用，需要自己写一个类继承它。</p>
+
+<p>接下来我们来看实例代码。</p>
+
+<p>先定义一个类 MyProxy 继承自 NSProxy：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.h</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span> : <span class="bp">NSProxy</span>
+</span><span class='line'><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//MyProxy.m</span>
+</span><span class='line'><span class="cp">#import &quot;MyProxy.h&quot;</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'><span class="cp">#import &quot;Real.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MyProxy</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="n">Real</span> <span class="o">*</span><span class="n">real</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">MyProxy</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Real</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forwardInvocation:</span><span class="p">(</span><span class="bp">NSInvocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">anInvocation</span><span class="p">{</span>
+</span><span class='line'>    <span class="kt">SEL</span> <span class="n">sel</span> <span class="o">=</span> <span class="n">anInvocation</span><span class="p">.</span><span class="n">selector</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">]){</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">invokeWithTarget</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="p">)</span><span class="nf">methodSignatureForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">sel</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">]){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">real</span> <span class="nl">methodSignatureForSelector</span><span class="p">:</span><span class="n">sel</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>MyProxy 需要实现两个方法 forwardInvocation: 和 methodSignatureForSelector:</p>
+
+<p>在 forwardInvocation: 方法中，将真实的实现转发给了 Real 的实例，由其去实现。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//Real.h</span>
+</span><span class='line'><span class="cp">#import </span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Real</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hello</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="c1">//Real.m</span>
+</span><span class='line'><span class="cp">#import &quot;Real.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Real</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hello</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hello11&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下边是调用方代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="n">MyProxy</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyProxy</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">proxy</span> <span class="nl">performSelector</span><span class="p">:</span><span class="k">@selector</span><span class="p">(</span><span class="n">hello</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行后，在控制台输出 hello11，表明 Real 实例的 hello 方法得到执行。</p>
+
+<p>NSProxy 可以用来实现双继承，更多好玩的玩法可以去探索。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2122,54 +2300,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/dui-ios-appqian-ming-de-li-jie.html">对iOS App签名的理解</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-22T11:23:43+08:00'><span class='date'>2018 年10 月22 日</span> <span class='time'>11:23 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。</p>
-
-<p><a href="http://blog.cnbang.net/tech/3386/">iOS App 签名的原理</a></p>
-
-<p>这里按照我的理解角度复述一下：</p>
-
-<ol>
-<li>为了不让每次开发App，都将App上传到苹果后台，用苹果后台的私钥A签名，需要本地生成一对公私钥。这样每次签名就在本地Mac机器上，用私钥L签名就可以了。</li>
-<li>那么苹果如果验证公钥L的合法性呢，就需要开发者将公钥L上传到苹果的后台，苹果用私钥A进行一次签名，签名+公钥L就是证书了。（这里实际上用一次对公钥L的签名替代了每次对App的签名，省去了App每次修改都上传签名的麻烦，很巧妙）</li>
-<li>第2步中的证书+一些额外信息（AppId，设备列表，push权限等）全部都在苹果的后台用私钥A签名，打包成的东西叫Provisioning Profile，下载到本地Mac后，打包在App中。安装在iOS设备的时候，用公钥A对其进行解密，验证证书+一些额外信息（AppId，设备列表，push权限等。证书验证后拿到公钥L，对App数据进行解密验证（App是用私钥L签名的）。</li>
-</ol>
-
-
-<p>好了，上边的文字其实看着还是有点乱和绕，权当我自己的思路做参考吧。</p>
-
-<p>回到我们的项目，其实有一点是可以改进的。</p>
-
-<p><img src="https://jason5.cn/images/WX20181022-114418@2x.png" alt="" /></p>
-
-<p>以上图片是我们项目在苹果后台的证书配置，可以看到，有很多项，原因是每个开发的电脑上都生成了一对公钥L和私钥L，然后将公钥L上传到苹果后台生成了证书。更好的办法是，只用一台开发电脑生成公钥L和私钥L，然后到处p12文件，分享给别的电脑，这样苹果后台就只需要一个证书就可以了。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -2184,7 +2314,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (10)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (11)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
@@ -2195,6 +2325,10 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
+      </li>
     
       <li class="post">
         <a href="/blog/tong-guo-yuan-ma-li-jie-autorelease-poolyuan-li.html">通过源码理解Autorelease Pool原理</a>
@@ -2210,10 +2344,6 @@
     
       <li class="post">
         <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a>
       </li>
     
   </ul>

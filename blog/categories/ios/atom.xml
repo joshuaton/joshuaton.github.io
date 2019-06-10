@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-02T19:59:32+08:00</updated>
+  <updated>2019-06-10T20:07:32+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,99 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 中的 NSProxy]]></title>
+    <link href="http://jason5.cn/blog/ios-zhong-de-nsproxy.html"/>
+    <updated>2019-06-10T20:03:28+08:00</updated>
+    <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
+    <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
+
+<p>如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 ClassA 或者 ClassB。需要说明的是，NSProxy 不能直接使用，需要自己写一个类继承它。</p>
+
+<p>接下来我们来看实例代码。</p>
+
+<p>先定义一个类 MyProxy 继承自 NSProxy：</p>
+
+<pre><code class="objectivec">//MyProxy.h
+#import 
+
+@interface MyProxy : NSProxy
+-(instancetype)init;
+@end
+</code></pre>
+
+<pre><code class="objectivec">//MyProxy.m
+#import "MyProxy.h"
+#import 
+#import "Real.h"
+
+@interface MyProxy()
+
+@property (nonatomic, strong) Real *real;
+
+@end
+@implementation MyProxy
+
+-(instancetype)init{
+    self.real = [[Real alloc] init];
+    return self;
+}
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation{
+    SEL sel = anInvocation.selector;
+    if([self.real respondsToSelector:sel]){
+        [anInvocation invokeWithTarget:self.real];
+    }
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel{
+    if([self.real respondsToSelector:sel]){
+        return [self.real methodSignatureForSelector:sel];
+    }
+    return NULL;
+}
+
+@end
+</code></pre>
+
+<p>MyProxy 需要实现两个方法 forwardInvocation: 和 methodSignatureForSelector:</p>
+
+<p>在 forwardInvocation: 方法中，将真实的实现转发给了 Real 的实例，由其去实现。</p>
+
+<pre><code class="objectivec">//Real.h
+#import 
+
+@interface Real : NSObject
+-(void)hello;
+@end
+</code></pre>
+
+<pre><code class="objectivec">//Real.m
+#import "Real.h"
+
+@implementation Real
+
+-(void)hello{
+    NSLog(@"hello11");
+}
+
+@end
+</code></pre>
+
+<p>下边是调用方代码：</p>
+
+<pre><code class="objectivec">MyProxy *proxy = [[MyProxy alloc] init];
+[proxy performSelector:@selector(hello)];
+</code></pre>
+
+<p>运行后，在控制台输出 hello11，表明 Real 实例的 hello 方法得到执行。</p>
+
+<p>NSProxy 可以用来实现双继承，更多好玩的玩法可以去探索。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[通过源码理解Autorelease Pool原理]]></title>
@@ -932,40 +1025,6 @@ static void __ASPECTS_ARE_BEING_CALLED__(__unsafe_unretained NSObject *self, SEL
 <h2>总结</h2>
 
 <p>oc语言的runtime是黑魔法，运用起来可以做很多强大的功能。总的来讲，Aspects利用了method swizzling和消息转发机制forwordInvocation，实现了对函数进行切面hook。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[对JSPatch原理的理解]]></title>
-    <link href="http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie.html"/>
-    <updated>2018-11-08T15:08:47+08:00</updated>
-    <id>http://jason5.cn/blog/dui-jspatchyuan-li-de-li-jie</id>
-    <content type="html"><![CDATA[<p>JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。</p>
-
-<p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
-
-<p>1.补丁下发阶段</p>
-
-<p>应用启动的时候，会加载下发的补丁js文件，以下这一段热更新代码会被执行。</p>
-
-<pre><code class="javascript">replaceMethod("IGTabBarController", "onNaviBarTaskBoxClick:", false, function (invocation) {
-    log("origin method");
-    callOriginMethod(invocation, "origin_onNaviBarTaskBoxClick:");
-});
-</code></pre>
-
-<p>OC中的JSContext在初始化的时候加载过replaceMethod函数，所以会调用到OC代码</p>
-
-<pre><code>ocReplaceMethod:(NSString *)className selectorName:(NSString *)selectorName isClass:(BOOL)isClass func:(JSValue *)func
-</code></pre>
-
-<p>这个函数里，做了一个重要的逻辑（这里参考了JSPatch的实现方式），将IGTabBarController的实例方法onNaviBarTaskBoxClick:指向了forwardInvocation:，然后自定义实现PMDForwardInvocation替换forwardInvocation:的行为</p>
-
-<p>2.用户调用阶段</p>
-
-<p>用户操作点击后，IGTabBarController的onNaviBarTaskBoxClick:会被执行，从而PMDForwardInvocation被执行，根据OC的函数转发特性，PMDForwardInvocation会拿到所有的函数参数信息invocation。然后调用<code>jsfunc(@[invocation])</code>。这样就将所有原生参数通过invocation对象传回给了js代码。js代码拿到这些参数就可以去实现任何逻辑了，以达到替换原方法的目的。</p>
-
-<p>总结：这里是一个很重要的技巧，如何将需要动态更新的OC方法的参数全部传给js代码，JSPatch是利用了forwardInvocation的特性。</p>
 ]]></content>
   </entry>
   

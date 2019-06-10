@@ -9,10 +9,9 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="macOS 升级到 High Sierra 后，执行pod命令出错，出错信息如下： 1
-2
-JUNSHAO-MC0:~ junshao$ pod
--bash: /usr/local/bin/pod: /System/Library/Frameworks/Ruby.framework/ &hellip;">
+  <meta name="description" content="1
+openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工具打开
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +68,39 @@ JUNSHAO-MC0:~ junshao$ pod
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ru-he-cha-kan-p12wen-jian-de-xin-xi.html">如何查看p12文件的信息</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-12-16T14:37:21+08:00'><span class='date'>2017 年12 月16 日</span> <span class='time'>2:37 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes</span></code></pre></td></tr></table></div></figure>
+
+
+<p>pem文件可以直接用文本工具打开</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -425,40 +457,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">如何用charles进行https抓包</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-07-21T19:20:44+08:00'><span class='date'>2016 年7 月21 日</span> <span class='time'>7:20 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>项目由http转成了https，遇到个问题是用charles不能抓包的问题。按照抓取http包的方式搭好了环境后，在浏览器里出现了这样的提示。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/ru-he-yong-charlesjin-xing-httpszhua-bao.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -475,7 +473,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (10)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (11)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
@@ -486,6 +484,10 @@ compile 'com.android.support:cardview-v7:23.1.1'
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
+      </li>
     
       <li class="post">
         <a href="/blog/tong-guo-yuan-ma-li-jie-autorelease-poolyuan-li.html">通过源码理解Autorelease Pool原理</a>
@@ -501,10 +503,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
     
       <li class="post">
         <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a>
       </li>
     
   </ul>
