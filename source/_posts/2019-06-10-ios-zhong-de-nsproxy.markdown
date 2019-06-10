@@ -6,7 +6,7 @@ comments: true
 categories: ios
 ---
 
-在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，在指向具体的实现。
+在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。
 
 ![](https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png)
 
@@ -18,7 +18,7 @@ categories: ios
 
 ```objectivec
 //MyProxy.h
-#import 
+#import <Foundation/Foundation.h> 
 
 @interface MyProxy : NSProxy
 -(instancetype)init;
@@ -28,7 +28,7 @@ categories: ios
 ```objectivec
 //MyProxy.m
 #import "MyProxy.h"
-#import 
+#import <objc/runtime.h>
 #import "Real.h"
 
 @interface MyProxy()
@@ -66,7 +66,7 @@ MyProxy 需要实现两个方法 forwardInvocation: 和 methodSignatureForSelect
 
 ```objectivec
 //Real.h
-#import 
+#import <Foundation/Foundation.h>
 
 @interface Real : NSObject
 -(void)hello;
