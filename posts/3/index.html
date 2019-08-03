@@ -9,9 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="1
-openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工具打开
-">
+  <meta name="description" content="最近看了一下weex，将weex集成到了现有的iOS APP里，并且实现了一个静态页面的展示，做下记录。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -68,6 +66,40 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html">集成Weex到现有应用-iOS篇</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-03-26T11:48:50+08:00'><span class='date'>2018 年3 月26 日</span> <span class='time'>11:48 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近看了一下weex，将weex集成到了现有的iOS APP里，并且实现了一个静态页面的展示，做下记录。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -394,69 +426,6 @@ openssl pkcs12 -in xxx.p12 -out xxx.pem -nodes pem文件可以直接用文本工
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">CardView在API 21以下的圆角效果处理</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-07-21T19:48:15+08:00'><span class='date'>2016 年7 月21 日</span> <span class='time'>7:48 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>CardView是Android5.0（API 21）加入的新控件，当然，在API 21以下也能用，在build.gradle的依赖里加入下边一行就可以用了</p>
-
-<p><code>
-compile 'com.android.support:cardview-v7:23.1.1'
-</code></p>
-
-<p>项目中要做一个卡片浏览的程序，卡片需要有5dp的圆角，圆角效果CardView自带属性就可以支持，加上app:cardCornerRadius属性就好了，如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;android.support.v7.widget.CardView</span>
-</span><span class='line'>  <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
-</span><span class='line'>  <span class="na">xmlns:app=</span><span class="s">&quot;http://schemas.android.com/apk/res-auto&quot;</span>
-</span><span class='line'>  <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
-</span><span class='line'>  <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
-</span><span class='line'>  <span class="na">app:cardUseCompatPadding=</span><span class="s">&quot;true&quot;</span>
-</span><span class='line'>  <span class="na">app:cardCornerRadius=</span><span class="s">&quot;5dp&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  ...
-</span><span class='line'><span class="nt">&lt;/android.support.v7.widget.CardView&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/cardviewzai-api-21yi-xia-de-yuan-jiao-xiao-guo-chu-li.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -486,6 +455,10 @@ compile 'com.android.support:cardview-v7:23.1.1'
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
       </li>
     
@@ -499,10 +472,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
     
       <li class="post">
         <a href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html">iOS越狱以及cycript的安装</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a>
       </li>
     
   </ul>

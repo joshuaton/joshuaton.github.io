@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。 如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 &hellip;">
+  <meta name="description" content="iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,139 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-08-03T10:25:04+08:00'><span class='date'>2019 年8 月3 日</span> <span class='time'>10:25 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。转换的话主要会用到以下3个方法：</p>
+
+<ul>
+<li>__bridge,</li>
+<li>__bridge_retained</li>
+<li>__bridge_transfer</li>
+</ul>
+
+
+<p>__bridge可以用于OC对象和CF对象互转，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>    <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span> <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>       <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这种转换方式下，如果是OC对象转换成CF对象，引用计数不变，如果是CF对象转换成OC对象，引用计数会+1。</p>
+
+<p>__bridge_retained用于OC对象转换为CF对象，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//等价写法</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">CFTypeRef</span><span class="p">)</span><span class="n">CFBridgingRetain</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>    <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种情况下，obj的引用计数会+1，obj的释放不会影响到cfObj1的使用</p>
+
+<p>__bridge_transfer用于CF对象转换为OC对象，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge_transfer</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>          <span class="c1">//retain count 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//等价写法</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                  <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>      <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="p">)</span><span class="n">CFBridgingRelease</span><span class="p">(</span><span class="n">cfObj1</span><span class="p">);</span>   <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后来做个练习，看下以下代码输出什么</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>     <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>             <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj2</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 3</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge_transfer</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>          <span class="c1">//retain count 3</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj2</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj2</span><span class="p">;</span>                   <span class="c1">//retain count 4</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;obj retainCount %ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">CFGetRetainCount</span><span class="p">(</span><span class="n">cfObj</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSString</span> <span class="nl">stringWithFormat</span><span class="p">:</span><span class="s">@&quot;testStr&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">CFStringRef</span> <span class="n">cfStr</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFStringRef</span><span class="p">)</span><span class="n">str</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;str retainCount %ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">CFGetRetainCount</span><span class="p">(</span><span class="n">cfStr</span><span class="p">));</span>   <span class="c1">//retain count 9223372036854775807 = 0x7FFFFFFFFFFFFFFF</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>答案是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">obj</span> <span class="n">retainCount</span> <span class="mi">4</span>
+</span><span class='line'><span class="n">str</span> <span class="n">retainCount</span> <span class="mi">9223372036854775807</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>str会被当做是字符串常量，retainCount是一个最大值，保证不会被系统回收。</p>
+
+<p>个人认为苹果的这套API设计得不是很好，比如__bridge，并不是说引用计数不增加，而是看是转换的关系是什么，需要理解记忆一下才行。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2243,63 +2376,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html">TIP项目网络框架梳理</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-23T16:07:12+08:00'><span class='date'>2018 年10 月23 日</span> <span class='time'>4:07 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。</p>
-
-<p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
-
-<p><a href="https://jason5.cn/images/tip-network-uml.jpg"><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></a></p>
-
-<ul>
-<li>IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。</li>
-<li>PMDNetworking是发起网络请求的类，这里首先要用PMDCallFactory工厂类，生成一个实现PMDCall协议的对象，然后调用makeCallWithRequest方法进行网络请求。</li>
-<li>PMDCallFactory用于生成PMDCall协议对象</li>
-<li>PMDCall协议对象为了避免被回收，放到了PMDCallPool里进行管理</li>
-<li>PMDBaseCall实现了PMDCall协议，完成了主要的网络请求逻辑。分为以下几个步骤</li>
-</ul>
-
-
-<p>1.callWithRequest准备发起网络请求</p>
-
-<p>2.dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
-
-<p>3.realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
-
-<p>4.convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p>
-
-<ul>
-<li>PMDInterceptor和PMDConverter协议分别是需要在网络请求发出之前和之后要处理的逻辑，只要实现此协议，加入到PMDBaseCall中就可以了。</li>
-</ul>
-
-
-<p>基本的结构就是这样了，除此之外，框架还实现了取消发送，重新发送等逻辑，这里不再详细介绍。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -2327,6 +2403,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
       </li>
     
@@ -2340,10 +2420,6 @@
     
       <li class="post">
         <a href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html">iOS越狱以及cycript的安装</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a>
       </li>
     
   </ul>

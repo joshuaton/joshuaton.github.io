@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-06-10T20:17:41+08:00</updated>
+  <updated>2019-08-03T15:30:13+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,119 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[__bridge __bridge retained __bridge transfer的区别]]></title>
+    <link href="http://jason5.cn/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html"/>
+    <updated>2019-08-03T10:25:04+08:00</updated>
+    <id>http://jason5.cn/blog/bridge-bridge-retained-bridge-transferde-qu-bie</id>
+    <content type="html"><![CDATA[<p>iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。转换的话主要会用到以下3个方法：</p>
+
+<ul>
+<li>__bridge,</li>
+<li>__bridge_retained</li>
+<li>__bridge_transfer</li>
+</ul>
+
+
+<p>__bridge可以用于OC对象和CF对象互转，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>    <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span> <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>       <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这种转换方式下，如果是OC对象转换成CF对象，引用计数不变，如果是CF对象转换成OC对象，引用计数会+1。</p>
+
+<p>__bridge_retained用于OC对象转换为CF对象，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//等价写法</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">CFTypeRef</span><span class="p">)</span><span class="n">CFBridgingRetain</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>    <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种情况下，obj的引用计数会+1，obj的释放不会影响到cfObj1的使用</p>
+
+<p>__bridge_transfer用于CF对象转换为OC对象，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge_transfer</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>          <span class="c1">//retain count 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//等价写法</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                  <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>      <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="p">)</span><span class="n">CFBridgingRelease</span><span class="p">(</span><span class="n">cfObj1</span><span class="p">);</span>   <span class="c1">//retain count 2</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后来做个练习，看下以下代码输出什么</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>                <span class="c1">//retain count 1</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>     <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>             <span class="c1">//retain count 2</span>
+</span><span class='line'><span class="n">CFTypeRef</span> <span class="n">cfObj2</span> <span class="o">=</span> <span class="p">(</span><span class="n">__bridge_retained</span> <span class="n">CFTypeRef</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span>    <span class="c1">//retain count 3</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge_transfer</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>          <span class="c1">//retain count 3</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj2</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj2</span><span class="p">;</span>                   <span class="c1">//retain count 4</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;obj retainCount %ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">CFGetRetainCount</span><span class="p">(</span><span class="n">cfObj</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSString</span> <span class="nl">stringWithFormat</span><span class="p">:</span><span class="s">@&quot;testStr&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">CFStringRef</span> <span class="n">cfStr</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="n">CFStringRef</span><span class="p">)</span><span class="n">str</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;str retainCount %ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">CFGetRetainCount</span><span class="p">(</span><span class="n">cfStr</span><span class="p">));</span>   <span class="c1">//retain count 9223372036854775807 = 0x7FFFFFFFFFFFFFFF</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>答案是</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">obj</span> <span class="n">retainCount</span> <span class="mi">4</span>
+</span><span class='line'><span class="n">str</span> <span class="n">retainCount</span> <span class="mi">9223372036854775807</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>str会被当做是字符串常量，retainCount是一个最大值，保证不会被系统回收。</p>
+
+<p>个人认为苹果的这套API设计得不是很好，比如__bridge，并不是说引用计数不增加，而是看是转换的关系是什么，需要理解记忆一下才行。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS 中的 NSProxy]]></title>
@@ -2973,282 +3086,6 @@ Debugger用来调试js代码。在里边可以给代码设置断点，观察变�
 <h2>总结</h2>
 
 <p>本文介绍了Weex中js与Native的交互方式。通过此方法，界面部分完全可以在js里实现，iOS和Android双端只写一份，原生部分只需要提供负责网络请求的module就可以了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[集成Weex到现有应用-iOS篇]]></title>
-    <link href="http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian.html"/>
-    <updated>2018-03-26T11:48:50+08:00</updated>
-    <id>http://jason5.cn/blog/ji-cheng-weexdao-xian-you-ying-yong-iospian</id>
-    <content type="html"><![CDATA[<p>最近看了一下weex，将weex集成到了现有的iOS APP里，并且实现了一个静态页面的展示，做下记录。</p>
-
-<!--more-->
-
-
-<h2>一. 现有iOS应用的修改</h2>
-
-<h3>1. 用cocopods引入WeexSDK</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>pod <span class="s1">&#39;WeexSDK&#39;</span>, <span class="s1">&#39;0.18.0&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. 在iOS APP里初始化Weex</h3>
-
-<p>didFinishLaunchingWithOptions里添加代码</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//business configuration</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppGroup</span><span class="p">:</span><span class="s">@&quot;TencentApp&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppName</span><span class="p">:</span><span class="s">@&quot;TIP&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXAppConfiguration</span> <span class="nl">setAppVersion</span><span class="p">:</span><span class="s">@&quot;1.0.0&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//init sdk environment</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="n">initSDKEnvironment</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//register custom module and component，optional</span>
-</span><span class='line'><span class="c1">//这里暂时用不到，之后再说</span>
-</span><span class='line'><span class="c1">//[WXSDKEngine registerComponent:@&quot;MyView&quot; withClass:[MyViewComponent class]];</span>
-</span><span class='line'><span class="c1">//[WXSDKEngine registerModule:@&quot;event&quot; withClass:[WXEventModule class]];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//register the implementation of protocol, optional</span>
-</span><span class='line'><span class="c1">//如果在weex页面里需要下载网络图片，需要自己实现协议，如果没有，可以注释掉</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="nl">registerHandler</span><span class="p">:[</span><span class="n">WXImgLoaderDefaultImpl</span> <span class="n">new</span><span class="p">]</span> <span class="nl">withProtocol</span><span class="p">:@</span><span class="n">protocol</span><span class="p">(</span><span class="n">WXImgLoaderProtocol</span><span class="p">)];</span>
-</span><span class='line'><span class="c1">//set the log level</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXLog</span> <span class="nl">setLogLevel</span><span class="p">:</span> <span class="n">WXLogLevelAll</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. 在业务相关页面用weex渲染原生View</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">IGWeexDemoViewController</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="n">WXSDKInstance</span> <span class="o">*</span><span class="n">instance</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">weexView</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">url</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">IGWeexDemoViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//    self.url = @&quot;http://10.66.212.209:8081/dist/index.js&quot;;</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span> <span class="s">@&quot;http://weex-1251917893.cosgz.myqcloud.com/index.js&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_instance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WXSDKInstance</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">viewController</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">__weak</span> <span class="k">typeof</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">onCreate</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span> <span class="o">=</span> <span class="n">view</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">weakSelf</span><span class="p">.</span><span class="n">weexView</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">onFailed</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//process failure</span>
-</span><span class='line'>    <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_instance</span><span class="p">.</span><span class="n">renderFinish</span> <span class="o">=</span> <span class="o">^</span> <span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//process renderFinish</span>
-</span><span class='line'>    <span class="p">};</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_instance</span> <span class="nl">renderWithURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">url</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">dealloc</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_instance</span> <span class="n">destroyInstance</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4. 运行效果</h3>
-
-<p><img src="http://jason5.cn/images/QQ20180326-114148.png" alt="" /></p>
-
-<h2>二. 生成js文件</h2>
-
-<p>在第一张的第3节中，原生View通过加载一个js文件，然后用Weex SDK进行渲染。这一章介绍js文件的生成方法。</p>
-
-<h3>1. 安装node</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>brew install node
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. 安装weex-toolkit</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install -g weex-toolkit
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. 初始化weex工程</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>weex create awesome-project
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后在项目根目录运行</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>安装项目依赖</p>
-
-<h3>4. 生成原生用到的js文件</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm run serve
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>运行这个命令，会在本地启动一个http server，原生终端用到的js文件就可以通过url访问了。生成的js在dist目录下，找到之后就可以拼出js的url了，例如
-<a href="http://10.66.212.209:8081/dist/index.js%E3%80%82">http://10.66.212.209:8081/dist/index.js%E3%80%82</a></p>
-
-<h2>三. 如何显示网络图片</h2>
-
-<p>运行demo后，会发现网络图片不能展示。原来weex初始并没有集成网络图片下载功能，需要自己去实现。方法如下</p>
-
-<h3>1.自定义图片下载协议WXImgLoaderProtocol</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@protocol</span> <span class="nc">WXImgLoaderProtocol</span> <span class="o">&lt;</span><span class="n">WXModuleProtocol</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">downloadImageWithURL</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">url</span> <span class="nl">imageFrame</span><span class="p">:(</span><span class="bp">CGRect</span><span class="p">)</span><span class="n">imageFrame</span> <span class="nl">userInfo</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">options</span> <span class="nl">completed</span><span class="p">:(</span><span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span>  <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">))</span><span class="n">completedBlock</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2.协议的实现类WXImgLoaderDefaultImpl</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//WXImgLoaderDefaultImpl.h文件</span>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">WXImgLoaderDefaultImpl</span> : <span class="bp">NSObject</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//WXImgLoaderDefaultImpl.m文件</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">WXImgLoaderDefaultImpl</span>
-</span><span class='line'><span class="cp">#pragma mark WXImgLoaderProtocol</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">downloadImageWithURL:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span> <span class="nf">imageFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">imageFrame</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span> <span class="nf">completed:</span><span class="p">(</span><span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span>  <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">))</span><span class="nv">completedBlock</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">url</span> <span class="nl">hasPrefix</span><span class="p">:</span><span class="s">@&quot;//&quot;</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="s">@&quot;http:&quot;</span> <span class="nl">stringByAppendingString</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">WXImageOperationProtocol</span><span class="o">&gt;</span><span class="p">)[[</span><span class="n">SDWebImageManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">downloadImageWithURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="n">url</span><span class="p">]</span> <span class="nl">options</span><span class="p">:</span><span class="mi">0</span> <span class="nl">progress</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSInteger</span> <span class="n">receivedSize</span><span class="p">,</span> <span class="bp">NSInteger</span> <span class="n">expectedSize</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">}</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="n">SDImageCacheType</span> <span class="n">cacheType</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">finished</span><span class="p">,</span> <span class="bp">NSURL</span> <span class="o">*</span><span class="n">imageURL</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">completedBlock</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">completedBlock</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">finished</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3.在weex初始化的时候注册协议</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">WXSDKEngine</span> <span class="nl">registerHandler</span><span class="p">:[</span><span class="n">WXImgLoaderDefaultImpl</span> <span class="n">new</span><span class="p">]</span> <span class="nl">withProtocol</span><span class="p">:@</span><span class="n">protocol</span><span class="p">(</span><span class="n">WXImgLoaderProtocol</span><span class="p">)];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>四. todo</h2>
-
-<p>后续还有一些问题要研究</p>
-
-<ol>
-<li>weex页面里，如何调用native的网络模块获取到数据</li>
-<li>多页面的跳转</li>
-<li>调试工具weex devtool的使用方法</li>
-<li>如何构建发布流程</li>
-</ol>
-
 ]]></content>
   </entry>
   
