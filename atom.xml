@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-08-03T15:31:16+08:00</updated>
+  <updated>2019-08-03T18:43:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -299,14 +299,14 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">-(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">getStr</span><span class="p">{</span>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSString</span> <span class="nl">stringWithFormat</span><span class="p">:</span><span class="s">@&quot;12&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">str</span><span class="p">;</span>
+</pre></td><td class='code'><pre><code class='objectivec'><span class='line'><span class="p">-(</span><span class="bp">NSObject</span> <span class="o">*</span><span class="p">)</span><span class="nf">getObj</span><span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSObject</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">obj</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>在 getStr 执行完后，str 的作用域已经结束，str 的引用计数为 0，应该马上被系统回收。那么问题就出现了，str 是作为函数的返回给调用者的，被回收后调用者拿到的对象就是nil了，明显不符合调用者的预期。这时候 Autorelease Pool 就派上用场了，当 getStr 函数结束时，str 并没有进行引用计数 -1 操作，而是将 str 放入了 Autorelease Pool。Autorelease Pool 是一个可以存放多个对象指针的对象池，当 Autorelease Pool 被销毁时，会对所有 Autorelease Pool 中的对象执行引用计数 -1 操作，这时候才会回收 str。相当于放入 Autorelease Pool 的对象被延迟释放了。这样的机制能够保证调用者能够正常拿取到 str 的引用。</p>
+<p>在 getObj 执行完后，obj 的作用域已经结束，obj 的引用计数为 0，应该马上被系统回收。那么问题就出现了，obj 是作为函数的返回给调用者的，被回收后调用者拿到的对象就是nil了，明显不符合调用者的预期。这时候 Autorelease Pool 就派上用场了，当 getObj 函数结束时，obj 并没有进行引用计数 -1 操作，而是将 obj 放入了 Autorelease Pool。Autorelease Pool 是一个可以存放多个对象指针的对象池，当 Autorelease Pool 被销毁时，会对所有 Autorelease Pool 中的对象执行引用计数 -1 操作，这时候才会回收 obj。相当于放入 Autorelease Pool 的对象被延迟释放了。这样的机制能够保证调用者能够正常拿取到 obj 的引用。</p>
 
 <p>那么 Autorelease Pool 是什么时候被创建和销毁的呢？对于 ARC 来讲，大多数情况下，是不需要开发人员自己创建和销毁 Autorelease Pool 的（后面再讲少数情况）。Autorelease Pool 是在 Runloop 的一次循环中，被创建和释放的，是系统自己做的，开发人员不能控制创建和释放的时机，所以开发人员也不能知道 Autorelease Pool 里的对象什么时候被释放的。下边是网上看到的一个图，说明了 Autorelease Pool 创建和释放的时机。</p>
 
