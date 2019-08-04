@@ -105,7 +105,14 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>在这种转换方式下，如果是OC对象转换成CF对象，引用计数不变，如果是CF对象转换成OC对象，引用计数会+1。</p>
+<p>在这种转换方式下，如果是OC对象转换成CF对象，引用计数不变。如果是CF对象转换成OC对象，因为OC对象的默认修饰符是__strong，引用计数会+1，即以下两种写法是一样的。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>
+</span><span class='line'><span class="bp">NSObject</span> <span class="k">__strong</span> <span class="o">*</span><span class="n">obj1</span> <span class="o">=</span> <span class="p">(</span><span class="k">__bridge</span> <span class="kt">id</span><span class="p">)</span><span class="n">cfObj1</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>__bridge_retained用于OC对象转换为CF对象，例如</p>
 
@@ -187,9 +194,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>str会被当做是字符串常量，retainCount是一个最大值，保证不会被系统回收。</p>
-
-<p>个人认为苹果的这套API设计得不是很好，比如__bridge，并不是说引用计数不增加，而是看是转换的关系是什么，需要理解记忆一下才行。</p>
+<p>str特殊一点，会被当做是字符串常量，retainCount是一个最大值，保证不会被系统回收。</p>
 </div>
 
 
