@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。 &hellip;">
+  <meta name="description" content="在现有项目中继承Flutter，可以用module的模式，官方已经支持。详细见文章Add Flutter to existing apps 官方文章中的集成有一个问题，native工程和flutter工程耦合性很强，导致如果一个项目组负责原生开发和flutter开发是不同人的话， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,83 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/zai-xian-you-iosxiang-mu-zhong-ji-cheng-flutterfang-an.html">在现有iOS项目中集成Flutter方案</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-09-13T22:09:38+08:00'><span class='date'>2019 年9 月13 日</span> <span class='time'>10:09 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在现有项目中继承Flutter，可以用module的模式，官方已经支持。详细见文章<a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">Add Flutter to existing apps</a></p>
+
+<p>官方文章中的集成有一个问题，native工程和flutter工程耦合性很强，导致如果一个项目组负责原生开发和flutter开发是不同人的话，原生开发必须安装flutter环境，才能跑起来原生工程。所以更好的办法是将flutter工程生成的framework集成进native工程里，这样native工程可以脱离flutter环境执行。有赞用了这样的方法，详见文章<a href="https://tech.youzan.com/you-zan-flutter-hun-bian-fang-an/">有赞 Flutter 混编方案</a></p>
+
+<p>看了有赞的文章，知道了这样的事情，需要将App.framework和Flutter.framework这两个文件集成到native工程里，就可以跑起来了，并且Flutter.framework有分不同的版本，jit和aot，所以要根据需要集成不同的framework。但是这篇文章还是没有将清楚，从哪里获取这两个framework，通过实践提取验证了下，所以有了这篇文章。</p>
+
+<p>有赞的文章还给了一个非常重要的灵感，framework可以放入pod私有库里进行管理，这样方便切换不同的framework库。于是我们的项目有了这样的架构。</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190913222429.png" alt="" /></p>
+
+<p>Natvie分别依赖两个私有库，FlutterFrameworkDebug和FlutterFrameworkRelease，两个私有库分别包含debug和release版本的App.framework和Flutter.framework。</p>
+
+<p>下边说一下这些Framework从哪里取。</p>
+
+<ul>
+<li>Flutter.framework</li>
+</ul>
+
+
+<p>（1）Debug版本</p>
+
+<p>[Flutter工程Path]/.ios/Flutter/engine/Flutter.framework</p>
+
+<p>（2）Release版本</p>
+
+<p>[Flutter安装版本Path]/bin/cache/artifacts/engine/ios-release/Flutter.framework</p>
+
+<ul>
+<li>App.framework</li>
+</ul>
+
+
+<p>（1）Debug版本</p>
+
+<p>[Flutter工程Path]/.ios/Flutter/App.framework</p>
+
+<p>（2）Release版本(先运行flutter build ios)</p>
+
+<p>[Flutter工程Path]/build/ios/iphoneos/Runner.app/Frameworks/App.framework</p>
+
+<p>取到相应的framework后，就可以部署好FlutterFrameworkDebug和FlutterFrameworkRelease私有库。搞好之后在native工程里修改Podfile</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#pod 'FlutterFrameworkDebug',  '0.1.1'    #在模拟器上和真机上都能运行
+</span><span class='line'>pod 'FlutterFrameworkRelease',  '0.1.1'   #只能在真机上运行</span></code></pre></td></tr></table></div></figure>
+
+
+<p>切换一下重新pod install就可以了。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2270,117 +2347,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/expressxue-xi-bi-ji.html">Express学习笔记(一)-开始</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-11-05T15:57:02+08:00'><span class='date'>2018 年11 月5 日</span> <span class='time'>3:57 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Express是一个基于nodejs的web开发框架。</p>
-
-<h3>Hello World</h3>
-
-<p>0.安装nodejs环境</p>
-
-<p>以腾讯云的centOS云服务器为例，先运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>yum install nodejs</span></code></pre></td></tr></table></div></figure>
-
-
-<p>1.安装</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir myapp
-</span><span class='line'>$ cd myapp
-</span><span class='line'>$ npm init
-</span><span class='line'>$ npm install express --save</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.修改app.js，然后运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ node app.js</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打开浏览器，访问<a href="http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86">http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86</a></p>
-
-<h3>脚手架工程</h3>
-
-<p>1.安装express-generator</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install express-generator -g</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.生成脚手架工程</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ express --view=pug myapp</span></code></pre></td></tr></table></div></figure>
-
-
-<p>pug是使用的模板引擎</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd myapp
-</span><span class='line'>$ npm install</span></code></pre></td></tr></table></div></figure>
-
-
-<p>3.运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm start</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在浏览器里访问。</p>
-
-<h3>路由</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>表示根目录相应http get方法</p>
-
-<h3>静态文件</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/static&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/public&#39;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>public目录下的所有文件可以作为静态资源访问。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -2395,7 +2361,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
-<li class='category'><a href='/blog/categories/ios/'>ios (12)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (13)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
@@ -2406,6 +2372,10 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/zai-xian-you-iosxiang-mu-zhong-ji-cheng-flutterfang-an.html">在现有iOS项目中集成Flutter方案</a>
+      </li>
     
       <li class="post">
         <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
@@ -2421,10 +2391,6 @@
     
       <li class="post">
         <a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang.html">iOS越狱以及cycript的安装</a>
       </li>
     
   </ul>
