@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="在现有项目中继承Flutter，可以用module的模式，官方已经支持。详细见文章Add Flutter to existing apps 官方文章中的集成有一个问题，native工程和flutter工程耦合性很强，导致如果一个项目组负责原生开发和flutter开发是不同人的话， &hellip;">
+  <meta name="description" content="1. 集成方式选择 官方提供了源码集成方式，详细见文章Add Flutter to existing apps。 该方式有一个问题，Native工程和Flutter工程耦合性强，Native开发人员必须安装Flutter运行环境，才能运行真个工程，CI构建机上也要求有Flutter环境。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,55 +85,162 @@
   </header>
 
 
-<div class="entry-content"><p>在现有项目中继承Flutter，可以用module的模式，官方已经支持。详细见文章<a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">Add Flutter to existing apps</a></p>
+<div class="entry-content"><h2>1. 集成方式选择</h2>
 
-<p>官方文章中的集成有一个问题，native工程和flutter工程耦合性很强，导致如果一个项目组负责原生开发和flutter开发是不同人的话，原生开发必须安装flutter环境，才能跑起来原生工程。所以更好的办法是将flutter工程生成的framework集成进native工程里，这样native工程可以脱离flutter环境执行。有赞用了这样的方法，详见文章<a href="https://tech.youzan.com/you-zan-flutter-hun-bian-fang-an/">有赞 Flutter 混编方案</a></p>
+<p>官方提供了源码集成方式，详细见文章<a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">Add Flutter to existing apps</a>。</p>
 
-<p>看了有赞的文章，知道了这样的事情，需要将App.framework和Flutter.framework这两个文件集成到native工程里，就可以跑起来了，并且Flutter.framework有分不同的版本，jit和aot，所以要根据需要集成不同的framework。但是这篇文章还是没有将清楚，从哪里获取这两个framework，通过实践提取验证了下，所以有了这篇文章。</p>
+<p>该方式有一个问题，Native工程和Flutter工程耦合性强，Native开发人员必须安装Flutter运行环境，才能运行真个工程，CI构建机上也要求有Flutter环境。更好的办法是将Flutter工程生成的产物集成进Native工程里，这样Native工程可以脱离Flutter环境运行。</p>
 
-<p>有赞的文章还给了一个非常重要的灵感，framework可以放入pod私有库里进行管理，这样方便切换不同的framework库。于是我们的项目有了这样的架构。</p>
+<p>经过调研和参考，我们的项目用了源码集成和私有库相结合的方式：</p>
 
-<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190913222429.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20191111122438.png" alt="" /></p>
 
-<p>Natvie分别依赖两个私有库，FlutterFrameworkDebug和FlutterFrameworkRelease，两个私有库分别包含debug和release版本的App.framework和Flutter.framework。</p>
-
-<p>下边说一下这些Framework从哪里取。</p>
-
-<ul>
-<li>Flutter.framework</li>
-</ul>
+<ol>
+<li><p>Flutter开发阶段，以源码方式引入，方便代码调试和快速查看效果。</p></li>
+<li><p>编写构建脚本，脚本根据环境生成Debug和Release两个不同版本的构建产物，分别放在FlutterFrameworkDebug和FlutterFrameworkRelease私有库中。</p></li>
+<li><p>Native开发人员以Pod私有库方式，将Flutter产物引入原生工程，线上版本同样以Pod私有库方式引入。</p></li>
+</ol>
 
 
-<p>（1）Debug版本</p>
+<p>该集成方式很好的弥补了代码集成方式的缺点。Podflie的编写如下：</p>
 
-<p>[Flutter工程Path]/.ios/Flutter/engine/Flutter.framework</p>
-
-<p>（2）Release版本</p>
-
-<p>[Flutter安装版本Path]/bin/cache/artifacts/engine/ios-release/Flutter.framework</p>
-
-<ul>
-<li>App.framework</li>
-</ul>
-
-
-<p>（1）Debug版本</p>
-
-<p>[Flutter工程Path]/.ios/Flutter/App.framework</p>
-
-<p>（2）Release版本(先运行flutter build ios)</p>
-
-<p>[Flutter工程Path]/build/ios/iphoneos/Runner.app/Frameworks/App.framework</p>
-
-<p>取到相应的framework后，就可以部署好FlutterFrameworkDebug和FlutterFrameworkRelease私有库。搞好之后在native工程里修改Podfile</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#pod 'FlutterFrameworkDebug',  '0.1.1'    #在模拟器上和真机上都能运行
-</span><span class='line'>pod 'FlutterFrameworkRelease',  '0.1.1'   #只能在真机上运行</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c"># 是否源码集成, 0:否 / 1:是</span>
+</span><span class='line'><span class="n">IsFlutterSourceCode</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">IsFlutterSourceCode</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="c"># 需设置tip-flutter路径的环境变量</span>
+</span><span class='line'>  <span class="c"># 如：export TIP_FLUTTER_HOME=/Users/xxx/code/tip-flutter</span>
+</span><span class='line'>  <span class="n">flutter_application_path</span> <span class="o">=</span> <span class="n">ENV</span><span class="p">[</span><span class="s">&quot;TIP_FLUTTER_HOME&quot;</span><span class="p">]</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">flutter_application_path</span><span class="o">.</span><span class="n">to_s</span> <span class="o">==</span> <span class="s">&#39;&#39;</span>
+</span><span class='line'>    <span class="n">puts</span> <span class="s">&quot;flutter_application_path not found! Please set ENV[</span><span class="se">\&quot;</span><span class="s">TIP_FLUTTER_HOME</span><span class="se">\&quot;</span><span class="s">].&quot;</span>
+</span><span class='line'>    <span class="nb">exit</span>
+</span><span class='line'>  <span class="n">end</span>
+</span><span class='line'>  <span class="n">load</span> <span class="n">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flutter_application_path</span><span class="p">,</span> <span class="s">&#39;.ios&#39;</span><span class="p">,</span> <span class="s">&#39;Flutter&#39;</span><span class="p">,</span> <span class="s">&#39;podhelper.rb&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">target</span> <span class="s">&#39;IGame&#39;</span> <span class="n">do</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">IsFlutterSourceCode</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="n">install_all_flutter_pods</span><span class="p">(</span><span class="n">flutter_application_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="n">pod</span> <span class="s">&#39;FlutterFrameworkDebug&#39;</span><span class="p">,</span>  <span class="s">&#39;0.1.68&#39;</span><span class="p">,</span> <span class="p">:</span><span class="n">configurations</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&#39;Debug&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">pod</span> <span class="s">&#39;FlutterFrameworkRelease&#39;</span><span class="p">,</span>  <span class="s">&#39;0.1.60&#39;</span><span class="p">,</span> <span class="p">:</span><span class="n">configurations</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&#39;Release&#39;</span><span class="p">,</span> <span class="s">&#39;Test&#39;</span><span class="p">]</span>
+</span><span class='line'>  <span class="n">end</span>
+</span><span class='line'><span class="n">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>切换一下重新pod install就可以了。</p>
+<p>通过修改IsFlutterSourceCode开关配置集成方式。</p>
+
+<p>接下来介绍私有库产物的收集方法。</p>
+
+<h2>2. Flutter产物收集</h2>
+
+<p>产物收集分为三个部分，App.framework、Flutter.framework、Plugin（包括Plugin.h和Plugin.a文件）。</p>
+
+<p>framework的收集分为Debug版本和Release版本，收集Debug版本前需要以源码模式先运行工程一次，收集Release版本前需要先执行<code>flutter build ios</code>，这样对应的产物才能生成。</p>
+
+<h3>2.1 App.framework</h3>
+
+<p>App.framework是逻辑代码。</p>
+
+<p>文件位置：</p>
+
+<ul>
+<li><p>Debug版本：$TIP_FLUTTER_HOME/.ios/Flutter/App.framework</p></li>
+<li><p>Release版本：$TIP_FLUTTER_HOME/build/ios/iphoneos/Runner.app/Frameworks/App.framework</p></li>
+</ul>
+
+
+<h3>2.2 Flutter.framework</h3>
+
+<p>Flutter.framework是引擎代码。</p>
+
+<p>文件位置：</p>
+
+<ul>
+<li><p>Debug版本：$TIP_FLUTTER_HOME/.ios/Flutter/engine/Flutter.framework</p></li>
+<li><p>Release版本：$FLUTTER_HOME/bin/cache/artifacts/engine/ios-release/Flutter.framework</p></li>
+</ul>
+
+
+<h3>2.3 Plugin</h3>
+
+<p>为了减少复杂度，Plugin产物没有区分Debug版本和Release版本。</p>
+
+<p>根据<code>.flutter-plugins</code>文件的内容分析用到了哪些plugin。</p>
+
+<p>例如文件内容如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">flutter_mmkv_cache</span><span class="o">=</span>/Users/junshao/Documents/Code/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_mmkv_cache-0.0.2/
+</span><span class='line'><span class="nv">path_provider</span><span class="o">=</span>/Users/junshao/Documents/Code/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.3.0/
+</span><span class='line'><span class="nv">sqflite</span><span class="o">=</span>/Users/junshao/Documents/Code/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.1.7+1/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以分析出来三个plugin，分别是<code>flutter_mmkv_cache</code>，<code>path_provider</code>，<code>sqflite</code>。</p>
+
+<p>还不止这些，plugin可能会依赖native库，还需要进一步分析。</p>
+
+<p>以<code>flutter_mmkv_cache</code>为例，查看podspec文件，位置在<code>/Users/junshao/Documents/Code/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_mmkv_cache-0.0.2/ios</code>，文件中有依赖的native库：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>  <span class="n">s</span><span class="o">.</span><span class="n">dependency</span> <span class="s">&#39;Flutter&#39;</span>
+</span><span class='line'>  <span class="n">s</span><span class="o">.</span><span class="n">dependency</span> <span class="s">&#39;MMKV&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>除去<code>Flutter</code>本身，<code>MMKV</code>就是需要依赖的native库。</p>
+
+<p>分析完所有plugin和依赖库后，开始构建plugin。需要针对模拟器和真机分别构建.a文件，然后将两个.a文件合并。相关命令如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/usr/bin/env xcrun xcodebuild build -configuration Debug <span class="nv">ARCHS</span><span class="o">=</span><span class="s1">&#39;x86_64&#39;</span> -target <span class="nv">$plugin_name</span> <span class="nv">BUILD_DIR</span><span class="o">=</span><span class="nv">$TIP_FLUTTER_HOME</span>/build/ios -sdk iphonesimulator &gt; /dev/null 2&gt;<span class="p">&amp;</span>1
+</span><span class='line'>/usr/bin/env xcrun xcodebuild build -configuration Release <span class="nv">ARCHS</span><span class="o">=</span><span class="s1">&#39;arm64 armv7&#39;</span> -target <span class="nv">$plugin_name</span> <span class="nv">BUILD_DIR</span><span class="o">=</span><span class="nv">$TIP_FLUTTER_HOME</span>/build/ios -sdk iphoneos &gt; /dev/null 2&gt;<span class="p">&amp;</span>1
+</span><span class='line'>lipo -create <span class="nv">$TIP_FLUTTER_HOME</span>/build/ios/Debug-iphonesimulator/<span class="nv">$plugin_name</span>/lib<span class="nv">$plugin_name</span>.a <span class="nv">$TIP_FLUTTER_HOME</span>/build/ios/Release-iphoneos/<span class="nv">$plugin_name</span>/lib<span class="nv">$plugin_name</span>.a -o <span class="nv">$TIP_FLUTTER_HOME</span>/build/ios/Release-iphoneos/<span class="nv">$plugin_name</span>/lib<span class="nv">$plugin_name</span>.a &gt; /dev/null 2&gt;<span class="p">&amp;</span>1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就得到了plugin的产物.h和.a文件。</p>
+
+<h2>3. 遗留问题</h2>
+
+<p>分析Plugin的依赖时，如果native工程里已有，会造成冲突。例如<code>flutter_mmkv_cache</code>需要依赖<code>MMKV</code>，但是以前的native工程也依赖了<code>MMKV</code>，会导致库重复编译不过。目前我们的做法是，去掉native工程的<code>MMKV</code>。有更好的方法欢迎指正。</p>
+
+<h2>4. 参考资料</h2>
+
+<ul>
+<li><p><a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps</a></p></li>
+<li><p><a href="https://tech.youzan.com/you-zan-flutter-hun-bian-fang-an/">https://tech.youzan.com/you-zan-flutter-hun-bian-fang-an/</a></p></li>
+</ul>
+
 </div>
 
 
