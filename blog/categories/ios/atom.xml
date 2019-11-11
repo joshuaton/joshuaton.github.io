@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:13:07+08:00</updated>
+  <updated>2019-11-11T16:20:28+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -26,7 +26,7 @@
 
 <p>经过调研和参考，我们的项目用了源码集成和私有库相结合的方式：</p>
 
-<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20191111122438.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20191111161133.png" alt="" /></p>
 
 <ol>
 <li><p>Flutter开发阶段，以源码方式引入，方便代码调试和快速查看效果。</p></li>
