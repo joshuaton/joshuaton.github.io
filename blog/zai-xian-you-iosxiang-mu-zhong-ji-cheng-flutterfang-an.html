@@ -91,6 +91,9 @@
 
 <p>该方式有一个问题，Native工程和Flutter工程耦合性强，Native开发人员必须安装Flutter运行环境，才能运行真个工程，CI构建机上也要求有Flutter环境。更好的办法是将Flutter工程生成的产物集成进Native工程里，这样Native工程可以脱离Flutter环境运行。</p>
 
+<!--more-->
+
+
 <p>经过调研和参考，我们的项目用了源码集成和私有库相结合的方式：</p>
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20191111161133.png" alt="" /></p>

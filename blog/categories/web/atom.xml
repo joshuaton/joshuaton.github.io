@@ -4,7 +4,7 @@
   <title><![CDATA[分类：web | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:20:28+08:00</updated>
+  <updated>2019-11-15T14:22:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -19,6 +19,9 @@
     <updated>2018-11-05T16:08:45+08:00</updated>
     <id>http://jason5.cn/blog/expressxue-xi-bi-ji-er-lu-you</id>
     <content type="html"><![CDATA[<p>这一篇主要介绍路由的用法</p>
+
+<!--more-->
+
 
 <h3>基本用法</h3>
 
@@ -117,6 +120,9 @@ app.use('/birds', birds);
     <updated>2018-11-05T15:57:02+08:00</updated>
     <id>http://jason5.cn/blog/expressxue-xi-bi-ji</id>
     <content type="html"><![CDATA[<p>Express是一个基于nodejs的web开发框架。</p>
+
+<!--more-->
+
 
 <h3>Hello World</h3>
 

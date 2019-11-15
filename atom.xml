@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:20:28+08:00</updated>
+  <updated>2019-11-15T14:22:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -23,6 +23,9 @@
 <p>官方提供了源码集成方式，详细见文章<a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">Add Flutter to existing apps</a>。</p>
 
 <p>该方式有一个问题，Native工程和Flutter工程耦合性强，Native开发人员必须安装Flutter运行环境，才能运行真个工程，CI构建机上也要求有Flutter环境。更好的办法是将Flutter工程生成的产物集成进Native工程里，这样Native工程可以脱离Flutter环境运行。</p>
+
+<!--more-->
+
 
 <p>经过调研和参考，我们的项目用了源码集成和私有库相结合的方式：</p>
 
@@ -184,6 +187,9 @@
     <id>http://jason5.cn/blog/bridge-bridge-retained-bridge-transferde-qu-bie</id>
     <content type="html"><![CDATA[<p>iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。转换的话主要会用到以下3个方法：</p>
 
+<!--more-->
+
+
 <ul>
 <li>__bridge,</li>
 <li>__bridge_retained</li>
@@ -301,6 +307,9 @@
     <updated>2019-06-10T20:03:28+08:00</updated>
     <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
     <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。</p>
+
+<!--more-->
+
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
 
@@ -461,6 +470,9 @@
     <content type="html"><![CDATA[<h2>1. Autorelease Pool 是什么</h2>
 
 <p>iOS 的内存管理使用引用计数机制。当对象被初始化或者被强引用赋值时，对象的引用计数 +1，当对象离开所在函数作用域或者被设置为 nil 后，引用计数 -1。当对象的引用计数为 0 时，操作系统会释放掉对象所占用的内存。</p>
+
+<!--more-->
+
 
 <p>我们先来看一下这段代码：</p>
 
@@ -1087,6 +1099,9 @@
 
 <p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
 
+<!--more-->
+
+
 <p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190514154008.png" alt="" /></p>
@@ -1203,6 +1218,9 @@
     <updated>2019-05-10T18:01:04+08:00</updated>
     <id>http://jason5.cn/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang</id>
     <content type="html"><![CDATA[<p>本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。</p>
+
+<!--more-->
+
 
 <h3>1. 准备</h3>
 
@@ -1412,6 +1430,9 @@
     <updated>2019-01-28T16:21:16+08:00</updated>
     <id>http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi</id>
     <content type="html"><![CDATA[<p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+
+<!--more-->
+
 
 <h3>源码目录</h3>
 
@@ -1721,6 +1742,9 @@
     <id>http://jason5.cn/blog/acpectsyuan-ma-jie-du</id>
     <content type="html"><![CDATA[<p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
 
+<!--more-->
+
+
 <h2>调用方式</h2>
 
 <p>首先我们下载官方demo，从入口代码开始看：</p>
@@ -2008,6 +2032,9 @@
 
 <p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
 
+<!--more-->
+
+
 <p>1.补丁下发阶段</p>
 
 <p>应用启动的时候，会加载下发的补丁js文件，以下这一段热更新代码会被执行。</p>
@@ -2046,6 +2073,9 @@
     <updated>2018-11-05T16:08:45+08:00</updated>
     <id>http://jason5.cn/blog/expressxue-xi-bi-ji-er-lu-you</id>
     <content type="html"><![CDATA[<p>这一篇主要介绍路由的用法</p>
+
+<!--more-->
+
 
 <h3>基本用法</h3>
 
@@ -2207,6 +2237,9 @@
     <id>http://jason5.cn/blog/expressxue-xi-bi-ji</id>
     <content type="html"><![CDATA[<p>Express是一个基于nodejs的web开发框架。</p>
 
+<!--more-->
+
+
 <h3>Hello World</h3>
 
 <p>0.安装nodejs环境</p>
@@ -2298,6 +2331,9 @@
     <id>http://jason5.cn/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li</id>
     <content type="html"><![CDATA[<p>前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。</p>
 
+<!--more-->
+
+
 <p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
 
 <p><a href="https://jason5.cn/images/tip-network-uml.jpg"><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></a></p>
@@ -2334,6 +2370,9 @@
     <updated>2018-10-22T11:23:43+08:00</updated>
     <id>http://jason5.cn/blog/dui-ios-appqian-ming-de-li-jie</id>
     <content type="html"><![CDATA[<p>关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。</p>
+
+<!--more-->
+
 
 <p><a href="http://blog.cnbang.net/tech/3386/">iOS App 签名的原理</a></p>
 
@@ -2417,6 +2456,9 @@
 
 <p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
 
+<!--more-->
+
+
 <h3>使用方法</h3>
 
 <p>1.在App Store下载InjectionIII</p>
@@ -2452,6 +2494,9 @@
     <content type="html"><![CDATA[<p>基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：</p>
 
 <p><a href="http://jason5.cn/images/weex-http-proxy.png"><img src="http://jason5.cn/images/weex-http-proxy.png" alt="" /></a></p>
+
+<!--more-->
+
 
 <p>1.iOS和Android客户端维持tcp+pb方式不变</p>
 

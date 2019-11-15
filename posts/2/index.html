@@ -9,15 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="Express是一个基于nodejs的web开发框架。 Hello World 0.安装nodejs环境 以腾讯云的centOS云服务器为例，先运行 1
-yum install nodejs 1.安装 1
-2
-3
-4
-$ mkdir myapp
-$ cd myapp
-$ npm init
-$ &hellip;">
+  <meta name="description" content="Express是一个基于nodejs的web开发框架。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -98,89 +90,12 @@ $ &hellip;">
 
   <div class="entry-content"><p>Express是一个基于nodejs的web开发框架。</p>
 
-<h3>Hello World</h3>
-
-<p>0.安装nodejs环境</p>
-
-<p>以腾讯云的centOS云服务器为例，先运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>yum install nodejs</span></code></pre></td></tr></table></div></figure>
-
-
-<p>1.安装</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir myapp
-</span><span class='line'>$ cd myapp
-</span><span class='line'>$ npm init
-</span><span class='line'>$ npm install express --save</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.修改app.js，然后运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ node app.js</span></code></pre></td></tr></table></div></figure>
-
-
-<p>打开浏览器，访问<a href="http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86">http://localhost:3000%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%86</a></p>
-
-<h3>脚手架工程</h3>
-
-<p>1.安装express-generator</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install express-generator -g</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.生成脚手架工程</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ express --view=pug myapp</span></code></pre></td></tr></table></div></figure>
-
-
-<p>pug是使用的模板引擎</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd myapp
-</span><span class='line'>$ npm install</span></code></pre></td></tr></table></div></figure>
-
-
-<p>3.运行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm start</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在浏览器里访问。</p>
-
-<h3>路由</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>表示根目录相应http get方法</p>
-
-<h3>静态文件</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/static&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/public&#39;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>public目录下的所有文件可以作为静态资源访问。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/expressxue-xi-bi-ji.html">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -209,35 +124,12 @@ $ &hellip;">
 
   <div class="entry-content"><p>前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。</p>
 
-<p>整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。</p>
-
-<p><a href="https://jason5.cn/images/tip-network-uml.jpg"><img src="https://jason5.cn/images/tip-network-uml.jpg" alt="" /></a></p>
-
-<ul>
-<li>IGNetworkManager作为项目中使用网络层的入口类，不多做介绍。</li>
-<li>PMDNetworking是发起网络请求的类，这里首先要用PMDCallFactory工厂类，生成一个实现PMDCall协议的对象，然后调用makeCallWithRequest方法进行网络请求。</li>
-<li>PMDCallFactory用于生成PMDCall协议对象</li>
-<li>PMDCall协议对象为了避免被回收，放到了PMDCallPool里进行管理</li>
-<li>PMDBaseCall实现了PMDCall协议，完成了主要的网络请求逻辑。分为以下几个步骤</li>
-</ul>
-
-
-<p>1.callWithRequest准备发起网络请求</p>
-
-<p>2.dealWithInterceptResult遍历所有PMDIntercept，在真正发起网络请求前进行逻辑处理，处理的过程中可以中断。</p>
-
-<p>3.realCallWithRequest真正发起网络请求，这里的实现交给继承类IGCall来实现，具体的实现可以是http，也可以是tcp，在TIP项目中用到了IGNetworkObject去发网路请求。</p>
-
-<p>4.convertResponse将请求回来的数据，遍历PMDConverter进行处理。</p>
-
-<ul>
-<li>PMDInterceptor和PMDConverter协议分别是需要在网络请求发出之前和之后要处理的逻辑，只要实现此协议，加入到PMDBaseCall中就可以了。</li>
-</ul>
-
-
-<p>基本的结构就是这样了，除此之外，框架还实现了取消发送，重新发送等逻辑，这里不再详细介绍。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/tipxiang-mu-wang-luo-kuang-jia-shu-li.html">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -266,26 +158,12 @@ $ &hellip;">
 
   <div class="entry-content"><p>关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。</p>
 
-<p><a href="http://blog.cnbang.net/tech/3386/">iOS App 签名的原理</a></p>
-
-<p>这里按照我的理解角度复述一下：</p>
-
-<ol>
-<li>为了不让每次开发App，都将App上传到苹果后台，用苹果后台的私钥A签名，需要本地生成一对公私钥。这样每次签名就在本地Mac机器上，用私钥L签名就可以了。</li>
-<li>那么苹果如果验证公钥L的合法性呢，就需要开发者将公钥L上传到苹果的后台，苹果用私钥A进行一次签名，签名+公钥L就是证书了。（这里实际上用一次对公钥L的签名替代了每次对App的签名，省去了App每次修改都上传签名的麻烦，很巧妙）</li>
-<li>第2步中的证书+一些额外信息（AppId，设备列表，push权限等）全部都在苹果的后台用私钥A签名，打包成的东西叫Provisioning Profile，下载到本地Mac后，打包在App中。安装在iOS设备的时候，用公钥A对其进行解密，验证证书+一些额外信息（AppId，设备列表，push权限等。证书验证后拿到公钥L，对App数据进行解密验证（App是用私钥L签名的）。</li>
-</ol>
-
-
-<p>好了，上边的文字其实看着还是有点乱和绕，权当我自己的思路做参考吧。</p>
-
-<p>回到我们的项目，其实有一点是可以改进的。</p>
-
-<p><img src="https://jason5.cn/images/WX20181022-114418@2x.png" alt="" /></p>
-
-<p>以上图片是我们项目在苹果后台的证书配置，可以看到，有很多项，原因是每个开发的电脑上都生成了一对公钥L和私钥L，然后将公钥L上传到苹果后台生成了证书。更好的办法是，只用一台开发电脑生成公钥L和私钥L，然后到处p12文件，分享给别的电脑，这样苹果后台就只需要一个证书就可以了。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/dui-ios-appqian-ming-de-li-jie.html">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -428,32 +306,12 @@ $ &hellip;">
 
 <p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
 
-<h3>使用方法</h3>
-
-<p>1.在App Store下载InjectionIII</p>
-
-<p>2.在应用启动函数 加入以下代码</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
-
-<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
-
-<h3>原理</h3>
-
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">阅读全文 &rarr;</a>
+    </footer>
   
 
 
@@ -484,17 +342,12 @@ $ &hellip;">
 
 <p><a href="http://jason5.cn/images/weex-http-proxy.png"><img src="http://jason5.cn/images/weex-http-proxy.png" alt="" /></a></p>
 
-<p>1.iOS和Android客户端维持tcp+pb方式不变</p>
-
-<p>2.新增http proxy模块，提供http接口给Weex h5访问</p>
-
-<p>职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。目前http proxy用java实现，与Android客户端网络层复用代码。</p>
-
-<p>3.改造svr接入层，验证Weex h5登录态，进行openid转换</p>
-
-<p>以微信登录为例，之前iOS和Android用的是App授权登录，由于Weex h5是微信公众号授权登录，两者appid不同，授权得到的openid和accesstoken都不一样，需要支持对公众号进行登录校验。校验完登录态后，将公众号openid转换为App openid，再与svr逻辑层进行通信。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html">阅读全文 &rarr;</a>
+    </footer>
   
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[分类：weex | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/weex/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:20:28+08:00</updated>
+  <updated>2019-11-15T14:22:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p>基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：</p>
 
 <p><a href="http://jason5.cn/images/weex-http-proxy.png"><img src="http://jason5.cn/images/weex-http-proxy.png" alt="" /></a></p>
+
+<!--more-->
+
 
 <p>1.iOS和Android客户端维持tcp+pb方式不变</p>
 

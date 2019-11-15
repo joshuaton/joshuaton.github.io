@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:20:28+08:00</updated>
+  <updated>2019-11-15T14:22:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<h3>1. 问题出现</h3>
 
 <p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+<!--more-->
+
 
 <p>登录服务器后一看，发现数据库里的表被删掉了，新建了一个库叫PLEASE_READ_ME_XMG，里边有个表叫WARNING，WARNING表的结构如下图</p>
 

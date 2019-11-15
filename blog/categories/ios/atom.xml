@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-11T16:20:28+08:00</updated>
+  <updated>2019-11-15T14:22:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -23,6 +23,9 @@
 <p>官方提供了源码集成方式，详细见文章<a href="https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps">Add Flutter to existing apps</a>。</p>
 
 <p>该方式有一个问题，Native工程和Flutter工程耦合性强，Native开发人员必须安装Flutter运行环境，才能运行真个工程，CI构建机上也要求有Flutter环境。更好的办法是将Flutter工程生成的产物集成进Native工程里，这样Native工程可以脱离Flutter环境运行。</p>
+
+<!--more-->
+
 
 <p>经过调研和参考，我们的项目用了源码集成和私有库相结合的方式：</p>
 
@@ -150,6 +153,9 @@ lipo -create $TIP_FLUTTER_HOME/build/ios/Debug-iphonesimulator/$plugin_name/lib$
     <id>http://jason5.cn/blog/bridge-bridge-retained-bridge-transferde-qu-bie</id>
     <content type="html"><![CDATA[<p>iOS开发中，经常会接触到两种对象，Objective-C对象和Core Foundation对象，他们之间有所不同，可以互相转换。最大的不同之处在于，在ARC模式下，前者不用开发者手动管理内存，后者需要开发者手动管理内存，即调用CFRelease方法释放对象，否则会造成内存泄漏。转换的话主要会用到以下3个方法：</p>
 
+<!--more-->
+
+
 <ul>
 <li>__bridge,</li>
 <li>__bridge_retained</li>
@@ -227,6 +233,9 @@ str retainCount 9223372036854775807
     <updated>2019-06-10T20:03:28+08:00</updated>
     <id>http://jason5.cn/blog/ios-zhong-de-nsproxy</id>
     <content type="html"><![CDATA[<p>在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。</p>
+
+<!--more-->
+
 
 <p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png" alt="" /></p>
 
@@ -322,6 +331,9 @@ str retainCount 9223372036854775807
     <content type="html"><![CDATA[<h2>1. Autorelease Pool 是什么</h2>
 
 <p>iOS 的内存管理使用引用计数机制。当对象被初始化或者被强引用赋值时，对象的引用计数 +1，当对象离开所在函数作用域或者被设置为 nil 后，引用计数 -1。当对象的引用计数为 0 时，操作系统会释放掉对象所占用的内存。</p>
+
+<!--more-->
+
 
 <p>我们先来看一下这段代码：</p>
 
@@ -718,6 +730,9 @@ static AutoreleasePoolPage *pageForPointer(uintptr_t p)
     <updated>2019-05-10T18:01:04+08:00</updated>
     <id>http://jason5.cn/blog/iosyue-yu-yi-ji-cycriptde-an-zhuang</id>
     <content type="html"><![CDATA[<p>本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。</p>
+
+<!--more-->
+
 
 <h3>1. 准备</h3>
 
