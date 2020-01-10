@@ -6,7 +6,7 @@ comments: true
 categories: iOS
 ---
 前段时间小伙伴重构了项目的网络层代码，将之前的过程式的代码，面向对象化了，职责分离，更易维护。不过也增加了理解成本，这里记录一下。
-
+<!--more-->
 整个网络模块的类图如下。PMD开头的类下沉到了基础库，IG开头的类仍然在项目中。
 
 [![](https://jason5.cn/images/tip-network-uml.jpg)](https://jason5.cn/images/tip-network-uml.jpg)

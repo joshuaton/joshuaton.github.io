@@ -6,7 +6,7 @@ comments: true
 categories: iOS
 ---
 关于iOS设备签名的原理，这篇文章说的比较清楚了。如果忘了的话可以重新阅读以下。
-
+<!--more-->
 [iOS App 签名的原理](http://blog.cnbang.net/tech/3386/)
 
 这里按照我的理解角度复述一下：

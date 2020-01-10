@@ -6,7 +6,7 @@ comments: true
 categories: web
 ---
 Express是一个基于nodejs的web开发框架。
-
+<!--more-->
 ###Hello World
 0.安装nodejs环境
 

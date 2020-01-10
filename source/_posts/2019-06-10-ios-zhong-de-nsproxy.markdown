@@ -7,7 +7,7 @@ categories: ios
 ---
 
 在日常开发中，NSObject 经常会被使用到。但是 NSProxy 却很少用。这个类顾名思义，是用来做代理的，任何消息都可以对它发送，在它内部，再指向具体的实现。
-
+<!--more-->
 ![](https://raw.githubusercontent.com/joshuaton/img/master/20190610195500.png)
 
 如上图所示，调用者可以给 NSProxy 发送消息，而不用关心内部实现，NSProxy 则可以根据具体的 SEL 去调用真正的实现着 ClassA 或者 ClassB。需要说明的是，NSProxy 不能直接使用，需要自己写一个类继承它。

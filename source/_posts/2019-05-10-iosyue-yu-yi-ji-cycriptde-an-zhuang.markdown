@@ -7,7 +7,7 @@ categories: ios
 ---
 
 本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。
-
+<!--more-->
 ### 1. 准备
 
 - 1台iOS越狱手机

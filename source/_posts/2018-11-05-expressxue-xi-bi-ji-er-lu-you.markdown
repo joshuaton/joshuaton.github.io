@@ -6,7 +6,7 @@ comments: true
 categories: web
 ---
 这一篇主要介绍路由的用法
-
+<!--more-->
 ###基本用法
 ```javascript
 var express = require('express');
