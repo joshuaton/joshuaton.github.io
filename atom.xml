@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2020-07-27T19:45:46+08:00</updated>
+  <updated>2020-07-27T19:47:30+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -29,6 +29,9 @@
 
 
 <p>以上两个问题虽然不大，但是一定程度上影响了项目的开发效率和质量。通过typescript来改写公共库，有利于解决上述两个问题。</p>
+
+<!--more-->
+
 
 <h3>2. 操作步骤</h3>
 
