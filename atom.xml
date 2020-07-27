@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2019-11-15T14:26:31+08:00</updated>
+  <updated>2020-07-27T19:45:46+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,370 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[将现有js库改成ts库]]></title>
+    <link href="http://jason5.cn/blog/jiang-xian-you-jsku-gai-cheng-tsku.html"/>
+    <updated>2020-07-27T17:48:48+08:00</updated>
+    <id>http://jason5.cn/blog/jiang-xian-you-jsku-gai-cheng-tsku</id>
+    <content type="html"><![CDATA[<h3>1. 背景</h3>
+
+<p>现在的公共库用js来书写，有两个问题：</p>
+
+<ol>
+<li><p>调用方无法获得语法提示，且对调用函数的参数类型不明</p></li>
+<li><p>公共库中的一些变量类型模糊不清</p></li>
+</ol>
+
+
+<p>以上两个问题虽然不大，但是一定程度上影响了项目的开发效率和质量。通过typescript来改写公共库，有利于解决上述两个问题。</p>
+
+<h3>2. 操作步骤</h3>
+
+<h4>2.1 命令行安装Typescript</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install --save-dev typescript
+</span><span class='line'>npm install --save-dev @vue/cli-plugin-typescript
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2.2 编写typescript配置</h3>
+
+<p>在根目录下新建文件tsconfig.json，以下边的内容为例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;compilerOptions&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;target&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;module&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;strict&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;importHelpers&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;moduleResolution&quot;</span><span class="o">:</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;experimentalDecorators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;esModuleInterop&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;allowSyntheticDefaultImports&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;sourceMap&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;baseUrl&quot;</span><span class="o">:</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;allowJs&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;noEmit&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;types&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="s2">&quot;webpack-env&quot;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="s2">&quot;paths&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;@/*&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;src/*&quot;</span>
+</span><span class='line'>      <span class="p">]</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="s2">&quot;lib&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;dom&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;dom.iterable&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;scripthost&quot;</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="s2">&quot;exclude&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="s2">&quot;node_modules&quot;</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于实际项目中改写的工作量比较多，暂时先将<code>"strict": true</code>改为<code>"strict": false</code>，如果设置为true的话，<code>npm run dev</code>的时候会有很多告警，会提示函数定义的时候没有指定参数类型。</p>
+
+<h4>2.3 新增shims-vue.d.ts</h4>
+
+<p>根目录下新建文件<code>shims-vue.d.ts</code>，让 <code>ts</code> 识别 <code>*.vue</code> 文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">declare</span> <span class="nx">module</span> <span class="s1">&#39;*.vue&#39;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">import</span> <span class="nx">Vue</span> <span class="nx">from</span> <span class="s1">&#39;vue&#39;</span>
+</span><span class='line'>  <span class="kr">export</span> <span class="k">default</span> <span class="nx">Vue</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果vue文件的script段需要用ts来写，需要这一步操作。由于我这次是改写公共js库，所以暂时跟这里不相关。</p>
+
+<h4>2.4 修改公共库文件后缀</h4>
+
+<p>将js文件改为ts文件后缀。这个时候会报很多错误，大部分是类型不匹配相关的，这里需要逐一解决。</p>
+
+<h3>3. 转ts代码时遇到的问题和改写方法</h3>
+
+<h4>3.1 类型“{}”上不存在属性“get”</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Cookies</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'><span class="nx">Cookies</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">defaultval</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//省略若干代码</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>.get方法的定义会报错，这里是js转ts最常见的错误，解决方法是将Cookies定义为class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">class</span> <span class="nx">Cookies</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="o">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">defaultval</span><span class="o">?:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//省略若干代码</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里需要将get方法定义成static，这样才可以以<code>Cookies.get</code>的形式调用，和之前保持不变。</p>
+
+<p>如果要使用的对象{}里只包含属性，不包含方法，也可以将{}定义为接口interface，例如</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">interface</span> <span class="nx">Env</span><span class="p">{</span>
+</span><span class='line'>  <span class="nx">ua</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">currPage</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isWeixin</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isWorkWeixin</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isQQ</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isPvpApp</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isTipApp</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isAndroid</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isIos</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isMsdk</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isSlugSdk</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isInGame</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isGHelper</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isGHelper20004</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isMiniProgram</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isWindowsPhone</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isSymbian</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">isPc</span><span class="o">:</span> <span class="kr">boolean</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">version</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">loginType</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">authQuery</span><span class="o">:</span> <span class="nb">Object</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">urlmodule</span><span class="o">:</span> <span class="nx">string</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">vconsole</span><span class="o">:</span> <span class="nx">any</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用的时候如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">env</span> <span class="o">=</span> <span class="p">{}</span> <span class="nx">as</span> <span class="nx">Env</span><span class="p">;</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">ua</span> <span class="o">=</span> <span class="nx">useragent</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isWeixin</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;micromessenger&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isWorkWeixin</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;micromessenger&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;wxwork&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isQQ</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39; qq/&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isPvpApp</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39; igameapp/&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isTipApp</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39; gamelife/&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isAndroid</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;android&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isIos</span> <span class="o">=</span> <span class="p">(</span><span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;iphone&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;ipad&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isMsdk</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39; msdk/&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1">// msdk</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isSlugSdk</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;ingame&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1">// 微社区sdk</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isInGame</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">isMsdk</span> <span class="o">||</span> <span class="nx">env</span><span class="p">.</span><span class="nx">isSlugSdk</span> <span class="c1">// 是否游戏内</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isGHelper</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;gamehelper&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isGHelper20004</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;gamehelper_20004&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isMiniProgram</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/miniprogram/i</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">||</span> <span class="nb">window</span><span class="p">.</span><span class="nx">__wxjs_environment</span> <span class="o">===</span> <span class="s1">&#39;miniprogram&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.2 typeof后边的内容未定义</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">node_cookie</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">cookie</span> <span class="o">=</span> <span class="nx">node_cookie</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里node_cookie是未定义的内容，可能是在其他环境里载入的变量，目前因为用不到，所以暂时是去掉了</p>
+
+<h4>3.3 window下的属性不存在</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">__wxjs_environment</span> <span class="o">===</span> <span class="s1">&#39;miniprogram&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这行代码会报错，类型“Window &amp; typeof globalThis”上不存在属性“__wxjs_environment”，解决方法是声明一个Window下的全局变量</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">declare</span> <span class="nx">global</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">interface</span> <span class="nx">Window</span> <span class="p">{</span> <span class="nx">__wxjs_environment</span><span class="o">:</span> <span class="nx">any</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.4 赋值时类型不匹配</h4>
+
+<h5>3.4.1 第一个例子</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isMiniProgram</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/miniprogram/i</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不能将类型“RegExpMatchArray”分配给类型“boolean”。这里就是typescript的好处，会提示隐示的类型转换，避免可能出现的bug。字符串的match方法，可能返回Array或者null，所以这里的解决方案是改成</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">env</span><span class="p">.</span><span class="nx">isMiniProgram</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">ua</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/miniprogram/i</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">null</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>3.4.2 第二个例子</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">tmpd</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">timestamp</span><span class="p">).</span><span class="nx">toLocaleDateString</span><span class="p">())</span><span class="c1">// 今日0点</span>
+</span><span class='line'><span class="nx">tmpd</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">tmpd</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">tmpd</span> <span class="o">+</span> <span class="mi">86400</span> <span class="o">-</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>错误提示：不能将类型“number”分配给类型“Date”。出错在第2行，右边计算出来是number，但是tmpd是Date类型，出现类型不匹配，可以简单粗暴的将tmpd改为any类型</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">tmpd</span> <span class="o">:</span> <span class="nx">any</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">timestamp</span><span class="p">).</span><span class="nx">toLocaleDateString</span><span class="p">())</span><span class="c1">// 今日0点</span>
+</span><span class='line'><span class="nx">tmpd</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">tmpd</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">tmpd</span> <span class="o">+</span> <span class="mi">86400</span> <span class="o">-</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>3.4.3 第三个例子</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">mistiming</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="nx">timestamp</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>错误提示：算术运算左侧必须是 &ldquo;any"、"number"、"bigint&rdquo; 或枚举类型。原因是Date类型和number类型做除法运算，需要修改为</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">mistiming</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="nx">timestamp</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.5 类型“Object”上不存在属性“tipmdl”</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">.</span><span class="nx">tipmdl</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">.</span><span class="nx">tipmdl</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">env</span><span class="p">.</span><span class="nx">urlmodule</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">.</span><span class="nx">tipmdl</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里authQuery是一个Object，里边存储了url的参数对，可能有任意key，所以修改成</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">[</span><span class="s1">&#39;tipmdl&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">[</span><span class="s1">&#39;tipmdl&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">env</span><span class="p">.</span><span class="nx">urlmodule</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">authQuery</span><span class="p">[</span><span class="s1">&#39;tipmdl&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 给typescript代码加上注释</h3>
+
+<p>待补充</p>
+
+<h3>5. 参考资料</h3>
+
+<ul>
+<li>Vue-cli3项目引入Typescript <a href="https://juejin.im/post/5da6e5c1f265da5b8c03c58f">https://juejin.im/post/5da6e5c1f265da5b8c03c58f</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[在现有iOS项目中集成Flutter方案]]></title>
@@ -2995,90 +3359,6 @@
 <li><a href="https://www.jianshu.com/p/e9bbd8a2244a">Weex系列（1）-App端自定义导航条</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[利用Weex DevTool调试Native应用-iOS篇]]></title>
-    <link href="http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian.html"/>
-    <updated>2018-04-03T17:48:04+08:00</updated>
-    <id>http://jason5.cn/blog/li-yong-weex-devtooldiao-shi-nativeying-yong-iospian</id>
-    <content type="html"><![CDATA[<p>官方的文档里说提供了一个工具DevTool，用来调试原生应用，但是写得比较简略，一直跑不起来，经过几天折腾和查资料，基本上是可以调试了，记录一下步骤和问题。</p>
-
-<!--more-->
-
-
-<h3>1. 先在本机安装iOS的调试工具</h3>
-
-<p>工具地址是 <a href="https://github.com/weexteam/weex-devtool-iOS">https://github.com/weexteam/weex-devtool-iOS</a></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">weex</span><span class="o">-</span><span class="nx">devtool</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>运行调试工具weex-devtool，启动成功后，在终端命令行里会显示如下两行信息。</p>
-
-<p><a href="http://jason5.cn/images/QQ20180403-181423.png"><img src="http://jason5.cn/images/QQ20180403-181423.png" alt="" /></a></p>
-
-<p>Websocket Address For Native是调试工具暴露的一个websocket地址，用于和Native之间的双向通信，之后Native中的代码会用到。
-Debug Server是调试工具提供的一个web服务地址，开发者通过这个网页可以像调试web页面一样，来调试Native应用。</p>
-
-<h3>2. 将WXDevTool集成到项目工程中</h3>
-
-<p>增加podfile文件，只在Debug模式下集成WXDevtool</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">pod</span> <span class="s1">&#39;WXDevtool&#39;</span><span class="p">,</span>   <span class="s1">&#39;0.15.3&#39;</span><span class="p">,</span> <span class="o">:</span><span class="nx">configurations</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">&#39;Debug&#39;</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里遇到两个问题</p>
-
-<p>（1）集成后编不过，根据提示发现这个库和项目里用到的FLEX有冲突，所以暂时去掉了FLEX。希望后续升级版本能解决这两个库之间的冲突。</p>
-
-<p>（2）发现还编不过，是需要再集成一个依赖库SocketRocket</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">pod</span> <span class="s1">&#39;SocketRocket&#39;</span><span class="p">,</span> <span class="s1">&#39;0.4.2&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. 在App启动的时候加入如下代码</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">WXDevTool</span> <span class="nl">setDebug</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">WXDevTool</span> <span class="nl">launchDevToolDebugWithUrl</span><span class="p">:</span><span class="s">@&quot;ws://10.32.194.33:8088/debugProxy/native&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-这里launchDevToolDebugWithUrl函数需要传一个参数，就是在第一步中的websocket地址。</p>
-
-<h3>4. 开始调试</h3>
-
-<p>如果之前一切顺利的话，现在就可以调试了。网页打开调试地址<a href="http://10.32.194.33:8088">http://10.32.194.33:8088</a>  <br/>
-启动Native App，然后会看到我们的App信息出现在网页中。</p>
-
-<p><a href="http://jason5.cn/images/QQ20180403-182830.png"><img src="http://jason5.cn/images/QQ20180403-182830.png" alt="" /></a></p>
-
-<p>可以看到下边两个黑色的大按钮，是调试工具提供的两个功能，Debugger和Inspector。
-Debugger用来调试js代码。在里边可以给代码设置断点，观察变量值，查看console.log的输出，跟Web开发一样的体验。</p>
-
-<p><a href="http://jason5.cn/images/QQ20180403-193719.png"><img src="http://jason5.cn/images/QQ20180403-193719.png" alt="" /></a></p>
-
-<p>Inspector用来调试UI界面。这里可以看到界面的树形结构，可以直接修改位置等属性，可以实时看到效果。这里如果在终端操作页面，浏览器里的页面也是会实时刷新的。</p>
-
-<p><a href="http://jason5.cn/images/QQ20180403-193917.png"><img src="http://jason5.cn/images/QQ20180403-193917.png" alt="" /></a></p>
-
-<p>这里遇到了一个问题，启动App后，必须首先进入Debugger页面打开调试工具，Native里的weex页面才能被正常渲染和执行，暂时还没搞清楚原因。</p>
-
-<h3>5.总结</h3>
-
-<p>调试工具可以让开发Native的时候，像Web开发一样去调试，一定程度上提高了效率，对熟悉Web开发的同学来讲，应该能很快上手。</p>
-
-<p>PS：下一篇文章会讲一下原生页面和weex页面之间的跳转以及在weex中如何自定义导航栏。</p>
 ]]></content>
   </entry>
   
