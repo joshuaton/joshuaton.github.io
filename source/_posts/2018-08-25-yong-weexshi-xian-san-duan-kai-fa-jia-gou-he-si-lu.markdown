@@ -8,7 +8,7 @@ categories: weex
 基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：
 
 [![](http://jason5.cn/images/weex-http-proxy.png)](http://jason5.cn/images/weex-http-proxy.png)
-
+<!--more-->
 1.iOS和Android客户端维持tcp+pb方式不变
 
 2.新增http proxy模块，提供http接口给Weex h5访问

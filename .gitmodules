@@ -1,9 +1,0 @@
-[submodule ".themes/CleanerPress"]
-	path = .themes/CleanerPress
-	url = https://github.com/pera/cleanerpress.git
-[submodule ".themes/Whitespace"]
-	path = .themes/Whitespace
-	url = https://github.com/lucaslew/whitespace.git
-[submodule ".themes/Abacus"]
-	path = .themes/Abacus
-	url = https://github.com/bhrigu123/abacus.git

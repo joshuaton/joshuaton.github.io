@@ -53,16 +53,16 @@ server_port     服务器端口
 local_port      本地端端口  
 password        用来加密的密码  
 timeout         超时时间（秒）  
-method          加密方法，可选择 "bf-cfb", "aes-256-cfb", "des-cfb", "rc4", 等等。默认是一种不安全的加密，推荐用 "aes-256-cfb"。这里我用的是bf-cfb，因为aes-256-cfb默认不支持  
+method          加密方法，可选择 "bf-cfb", "aes-256-cfb", "des-cfb", "rc4", 等等。默认是一种不安全的加密，推荐用 "aes-256-cfb"。  
 
 （3）启动Shadowsocks
+
 ```javascript
-nohup ssserver -c /etc/shadowsocks/config.json &gt; log &amp;
+nohup ssserver -c /etc/shadowsocks/config.json > log &
 ```
 
 ##4. 在客户端使用Shadowsocks
 以iMac为例，下载Shadowsocks，运行后点击小飞机的图标，然后点击“打开服务器设定”，按照服务器配置就好了
-![](http://i1.tietuku.com/12f7418860175172.jpg)
 
 到这里KX上网搭建工作完成，开始愉快的享受吧！
 
