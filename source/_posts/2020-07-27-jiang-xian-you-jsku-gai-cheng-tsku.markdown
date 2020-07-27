@@ -20,7 +20,7 @@ categories:
 
 #### 2.1 命令行安装Typescript
 
-```shell
+```bash
 npm install --save-dev typescript
 npm install --save-dev @vue/cli-plugin-typescript
 ```
@@ -97,7 +97,7 @@ Cookies.get = function(key, defaultval) {
 
 .get方法的定义会报错，这里是js转ts最常见的错误，解决方法是将Cookies定义为class
 
-```typescript
+```javascript
 class Cookies {
   static get(key: string, defaultval?: string) {
     //省略若干代码
@@ -109,7 +109,7 @@ class Cookies {
 
 如果要使用的对象{}里只包含属性，不包含方法，也可以将{}定义为接口interface，例如
 
-```typescript
+```javascript
 interface Env{
   ua: string;
   currPage: string;
@@ -139,7 +139,7 @@ interface Env{
 
 使用的时候如下
 
-```typescript
+```javascript
 var env = {} as Env;
 env.ua = useragent.toLowerCase()
 env.isWeixin = env.ua.indexOf('micromessenger') != -1
@@ -175,7 +175,7 @@ window.__wxjs_environment === 'miniprogram'
 
 这行代码会报错，类型“Window & typeof globalThis”上不存在属性“__wxjs_environment”，解决方法是声明一个Window下的全局变量
 
-```typescript
+```javascript
 declare global {
   interface Window { __wxjs_environment: any; }
 }
@@ -191,7 +191,7 @@ env.isMiniProgram = env.ua.match(/miniprogram/i)
 
 不能将类型“RegExpMatchArray”分配给类型“boolean”。这里就是typescript的好处，会提示隐示的类型转换，避免可能出现的bug。字符串的match方法，可能返回Array或者null，所以这里的解决方案是改成
 
-```typescript
+```javascript
 env.isMiniProgram = env.ua.match(/miniprogram/i) != null
 ```
 
@@ -205,7 +205,7 @@ return tmpd + 86400 - 1
 
 错误提示：不能将类型“number”分配给类型“Date”。出错在第2行，右边计算出来是number，但是tmpd是Date类型，出现类型不匹配，可以简单粗暴的将tmpd改为any类型
 
-```typescript
+```javascript
 let tmpd : any = new Date(new Date(timestamp).toLocaleDateString())// 今日0点
 tmpd = Math.floor(tmpd.getTime() / 1000)
 return tmpd + 86400 - 1
@@ -219,7 +219,7 @@ var mistiming = Math.round(new Date() / 1000) - timestamp
 
 错误提示：算术运算左侧必须是 "any"、"number"、"bigint" 或枚举类型。原因是Date类型和number类型做除法运算，需要修改为
 
-```typescript
+```javascript
 var mistiming = Math.round(new Date().getTime() / 1000) - timestamp
 ```
 
@@ -233,7 +233,7 @@ if (typeof env.authQuery.tipmdl !== 'undefined' && env.authQuery.tipmdl != '') {
 
 这里authQuery是一个Object，里边存储了url的参数对，可能有任意key，所以修改成
 
-```typescript
+```javascript
 if (typeof env.authQuery['tipmdl'] !== 'undefined' && env.authQuery['tipmdl'] != '') {
     env.urlmodule = env.authQuery['tipmdl']
 }
