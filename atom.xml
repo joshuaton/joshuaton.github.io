@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2020-07-28T11:58:56+08:00</updated>
+  <updated>2020-07-28T18:51:21+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -36,6 +36,8 @@
 <h3>2. 操作步骤</h3>
 
 <h4>2.1 命令行安装Typescript</h4>
+
+<p>vue项目如果要想使用ts，需要先安装typescript和@vue/cli-plugin-typescript</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -110,8 +112,6 @@
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>由于实际项目中改写的工作量比较多，暂时先将<code>"strict": true</code>改为<code>"strict": false</code>，如果设置为true的话，<code>npm run dev</code>的时候会有很多告警，会提示函数定义的时候没有指定参数类型。</p>
 
 <h4>2.3 新增shims-vue.d.ts</h4>
 
