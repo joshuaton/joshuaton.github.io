@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2020-07-27T19:47:30+08:00</updated>
+  <updated>2020-07-28T11:56:00+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -369,7 +369,32 @@
 
 <h3>4. 给typescript代码加上注释</h3>
 
-<p>待补充</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * 设置cookie</span>
+</span><span class='line'><span class="cm">   * @param sName  cookie名称</span>
+</span><span class='line'><span class="cm">   * @param sValue  cookie值</span>
+</span><span class='line'><span class="cm">   * @param iExpireSec  过期时间，单位秒</span>
+</span><span class='line'><span class="cm">   * @param sDomain  cookie作用域名</span>
+</span><span class='line'><span class="cm">   * @param sPath  cookie作用路径</span>
+</span><span class='line'><span class="cm">   * @param bSecure  是否加密</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">set</span><span class="p">(</span><span class="nx">sName</span><span class="o">:</span><span class="nx">string</span><span class="p">,</span> <span class="nx">sValue</span><span class="o">:</span><span class="nx">string</span><span class="p">,</span> <span class="nx">iExpireSec</span><span class="o">:</span><span class="nx">number</span><span class="p">,</span> <span class="nx">sDomain</span><span class="o">:</span><span class="nx">string</span><span class="p">,</span> <span class="nx">sPath</span><span class="o">:</span><span class="nx">string</span><span class="p">,</span> <span class="nx">bSecure</span><span class="o">?:</span><span class="kr">boolean</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>像上面这样写好注释后，调用方就能看到了。如下</p>
+
+<p><img src="https://raw.githubusercontent.com/joshuaton/img/master/20200728115458.png" alt="" /></p>
 
 <h3>5. 参考资料</h3>
 
