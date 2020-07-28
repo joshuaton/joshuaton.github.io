@@ -110,7 +110,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>2.2 编写typescript配置</h3>
+<h4>2.2 编写typescript配置</h4>
 
 <p>在根目录下新建文件tsconfig.json，以下边的内容为例</p>
 
@@ -144,41 +144,35 @@
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="s2">&quot;compilerOptions&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="s2">&quot;target&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;module&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;strict&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;importHelpers&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;moduleResolution&quot;</span><span class="o">:</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;experimentalDecorators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;esModuleInterop&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;allowSyntheticDefaultImports&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;sourceMap&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;baseUrl&quot;</span><span class="o">:</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;allowJs&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;noEmit&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="s2">&quot;types&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="s2">&quot;webpack-env&quot;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="s2">&quot;paths&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="s2">&quot;@/*&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s2">&quot;src/*&quot;</span>
+</span><span class='line'>    <span class="s2">&quot;compilerOptions&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="s2">&quot;target&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;module&quot;</span><span class="o">:</span> <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;strict&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;importHelpers&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;moduleResolution&quot;</span><span class="o">:</span> <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;experimentalDecorators&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;esModuleInterop&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;allowSyntheticDefaultImports&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;sourceMap&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;baseUrl&quot;</span><span class="o">:</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;allowJs&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;noEmit&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="s2">&quot;paths&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;@/*&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>          <span class="s2">&quot;src/*&quot;</span>
+</span><span class='line'>        <span class="p">]</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="s2">&quot;lib&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;dom&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;dom.iterable&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;scripthost&quot;</span>
 </span><span class='line'>      <span class="p">]</span>
 </span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="s2">&quot;lib&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="s2">&quot;esnext&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="s2">&quot;dom&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="s2">&quot;dom.iterable&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="s2">&quot;scripthost&quot;</span>
+</span><span class='line'>    <span class="s2">&quot;exclude&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>      <span class="s2">&quot;node_modules&quot;</span>
 </span><span class='line'>    <span class="p">]</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="s2">&quot;exclude&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>    <span class="s2">&quot;node_modules&quot;</span>
-</span><span class='line'>  <span class="p">]</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -186,6 +180,8 @@
 <p>由于实际项目中改写的工作量比较多，暂时先将<code>"strict": true</code>改为<code>"strict": false</code>，如果设置为true的话，<code>npm run dev</code>的时候会有很多告警，会提示函数定义的时候没有指定参数类型。</p>
 
 <h4>2.3 新增shims-vue.d.ts</h4>
+
+<p>如果调用方是vue工程，且需要在vue文件里写ts，需要加上这一步。</p>
 
 <p>根目录下新建文件<code>shims-vue.d.ts</code>，让 <code>ts</code> 识别 <code>*.vue</code> 文件</p>
 
