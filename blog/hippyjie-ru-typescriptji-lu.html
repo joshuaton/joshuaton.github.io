@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hippy接入typescript记录 - 移动开发技术</title>
+  <meta name="author" content="jason">
+
+  
+  <meta name="description" content="项目的package.json如下 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12 &quot;scripts&quot;: { &quot;dev&quot;: &quot;vue-cli-service serve --https true --port 443 --host test. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jason5.cn/blog/hippyjie-ru-typescriptji-lu.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">移动开发技术</a></h1>
+  
+    <h2>Jason's Blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com.hk/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jason5.cn">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hippy接入typescript记录</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-01-09T17:32:08+08:00'><span class='date'>2021 年1 月9 日</span> <span class='time'>5:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>项目的package.json如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;dev&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service serve --https true --port 443 --host test.igame.qq.com&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;build&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service build&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint:fix&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --fix --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:debug&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-debug&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:dev&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.dev.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:vendor&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios-vendor.js --config ./scripts/hippy-webpack.android-vendor.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:build&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios.js --config ./scripts/hippy-webpack.android.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-publish igame-match-test&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish:prod&quot;</span><span class="o">:</span> <span class="s2">&quot;NODE_ENV=&#39;release&#39; hippy-publish igame-match-release&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，如果是sudo npm run dev的方式来启动服务的话，用的是vue-cli-service，这个是@vue/cli-service的命令，其默认是去读取根目录的配置文件vue.config.js。如果是以npm run hippy:dev 去启动的话，读取的是配置文件hippy-webpack.dev.js。由于两个配置文件不一样，所以，对ts的支持需要两边配置文件都要修改。</p>
+
+<!--more-->
+
+
+<h2>1. vue.config.js的配置</h2>
+
+<p>vue.config.js这边，我们不需要去配置ts-loader，参考现有的项目igame-match，只要安装@vue/cli-plugin-typescript和typescript，就可以自动帮我们配置好。这里有个问题，如果不在vue.config.js里加上entry配置的话，默认项目启动会去寻找main.ts文件，这个文件是不存在的，所以这里起不来，解决方法是修改entry文件就可以了，在vue.config.js里加上如下配置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">runtimeCompiler</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">configureWebpack</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">entry</span><span class="o">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;main.js&#39;</span><span class="p">),</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里会用到的两个小技巧</p>
+
+<ol>
+<li><p>初始化tsconfig.json文件</p>
+
+<pre><code class="shell">tsc init
+</code></pre></li>
+<li><p>检查webpack的配置，由于vue.config.js会对webpack的配置进行一些封装，并不是很直观，所以可以运行以下的命令，查看真正的配置</p>
+
+<pre><code class="shell">vue inspect
+vue inspect --rule vue
+</code></pre>
+
+<p>详细参考 <a href="https://cli.vuejs.org/zh/guide/webpack.html#%E4%BF%AE%E6%94%B9%E6%8F%92%E4%BB%B6%E9%80%89%E9%A1%B9">webpack 相关 | Vue CLI</a></p></li>
+</ol>
+
+
+<h2>2. hippy-webpack.dev.js的配置</h2>
+
+<p>hippy-webpack.dev.js这边，需要加上ts-loader对ts文件进行解析，加上如下的配置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">modules</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(ts|tsx)?$/i</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">use</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>              <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;ts-loader&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">appendTsSuffixTo</span><span class="o">:</span> <span class="p">[</span><span class="sr">/\.vue$/</span><span class="p">],</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>            <span class="p">}],</span>
+</span><span class='line'>            <span class="nx">exclude</span><span class="o">:</span> <span class="sr">/node_modules/</span><span class="p">,</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">extensions</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;.js&#39;</span><span class="p">,</span> <span class="s1">&#39;.vue&#39;</span><span class="p">,</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="s1">&#39;.ts&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">jason</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2021-01-09T17:32:08+08:00'><span class='date'>2021 年1 月9 日</span> <span class='time'>5:32 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/jiang-xian-you-jsku-gai-cheng-tsku.html" title="Previous Post: 将现有js库改成ts库">&laquo; 将现有js库改成ts库</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  <h1>Comments</h1>
+  <div id="container"></div>
+</section>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+    id: 'Hippy接入typescript记录',
+    owner: 'joshuaton',
+    repo: 'joshuaton.github.io',
+    oauth: {
+        client_id: 'eec868eaacadc00f17c0',
+        client_secret: '9840ef585828127e5f235ff6d2b28141ae182f98',
+    },
+});
+gitment.render('container');
+</script>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (13)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
+<li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (4)</a></li>
+<li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
+
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jiang-xian-you-jsku-gai-cheng-tsku.html">将现有js库改成ts库</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/zai-xian-you-iosxiang-mu-zhong-ji-cheng-flutterfang-an.html">在现有iOS项目中集成Flutter方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2021 - jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+<script>
+var _mtac = {};
+(function() {
+    var mta = document.createElement("script");
+    mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.2";
+    mta.setAttribute("name", "MTAH5");
+    mta.setAttribute("sid", "500600841");
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(mta, s);
+})();
+</script>
+            
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

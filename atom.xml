@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2020-07-28T18:51:21+08:00</updated>
+  <updated>2021-01-09T17:34:20+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,128 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hippy接入typescript记录]]></title>
+    <link href="http://jason5.cn/blog/hippyjie-ru-typescriptji-lu.html"/>
+    <updated>2021-01-09T17:32:08+08:00</updated>
+    <id>http://jason5.cn/blog/hippyjie-ru-typescriptji-lu</id>
+    <content type="html"><![CDATA[<p>项目的package.json如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;dev&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service serve --https true --port 443 --host test.igame.qq.com&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;build&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service build&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint:fix&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --fix --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:debug&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-debug&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:dev&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.dev.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:vendor&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios-vendor.js --config ./scripts/hippy-webpack.android-vendor.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:build&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios.js --config ./scripts/hippy-webpack.android.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-publish igame-match-test&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish:prod&quot;</span><span class="o">:</span> <span class="s2">&quot;NODE_ENV=&#39;release&#39; hippy-publish igame-match-release&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，如果是sudo npm run dev的方式来启动服务的话，用的是vue-cli-service，这个是@vue/cli-service的命令，其默认是去读取根目录的配置文件vue.config.js。如果是以npm run hippy:dev 去启动的话，读取的是配置文件hippy-webpack.dev.js。由于两个配置文件不一样，所以，对ts的支持需要两边配置文件都要修改。</p>
+
+<!--more-->
+
+
+<h2>1. vue.config.js的配置</h2>
+
+<p>vue.config.js这边，我们不需要去配置ts-loader，参考现有的项目igame-match，只要安装@vue/cli-plugin-typescript和typescript，就可以自动帮我们配置好。这里有个问题，如果不在vue.config.js里加上entry配置的话，默认项目启动会去寻找main.ts文件，这个文件是不存在的，所以这里起不来，解决方法是修改entry文件就可以了，在vue.config.js里加上如下配置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">runtimeCompiler</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">configureWebpack</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">entry</span><span class="o">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;main.js&#39;</span><span class="p">),</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里会用到的两个小技巧</p>
+
+<ol>
+<li><p>初始化tsconfig.json文件</p>
+
+<pre><code class="shell">tsc init
+</code></pre></li>
+<li><p>检查webpack的配置，由于vue.config.js会对webpack的配置进行一些封装，并不是很直观，所以可以运行以下的命令，查看真正的配置</p>
+
+<pre><code class="shell">vue inspect
+vue inspect --rule vue
+</code></pre>
+
+<p>详细参考 <a href="https://cli.vuejs.org/zh/guide/webpack.html#%E4%BF%AE%E6%94%B9%E6%8F%92%E4%BB%B6%E9%80%89%E9%A1%B9">webpack 相关 | Vue CLI</a></p></li>
+</ol>
+
+
+<h2>2. hippy-webpack.dev.js的配置</h2>
+
+<p>hippy-webpack.dev.js这边，需要加上ts-loader对ts文件进行解析，加上如下的配置</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">modules</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(ts|tsx)?$/i</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">use</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>              <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;ts-loader&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">appendTsSuffixTo</span><span class="o">:</span> <span class="p">[</span><span class="sr">/\.vue$/</span><span class="p">],</span>
+</span><span class='line'>              <span class="p">},</span>
+</span><span class='line'>            <span class="p">}],</span>
+</span><span class='line'>            <span class="nx">exclude</span><span class="o">:</span> <span class="sr">/node_modules/</span><span class="p">,</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">},</span>
+</span><span class='line'><span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">extensions</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;.js&#39;</span><span class="p">,</span> <span class="s1">&#39;.vue&#39;</span><span class="p">,</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="s1">&#39;.ts&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[将现有js库改成ts库]]></title>
@@ -2895,494 +3017,6 @@
 <p>3.改造svr接入层，验证Weex h5登录态，进行openid转换</p>
 
 <p>以微信登录为例，之前iOS和Android用的是App授权登录，由于Weex h5是微信公众号授权登录，两者appid不同，授权得到的openid和accesstoken都不一样，需要支持对公众号进行登录校验。校验完登录态后，将公众号openid转换为App openid，再与svr逻辑层进行通信。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Weex与原生页面间的相互跳转]]></title>
-    <link href="http://jason5.cn/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan.html"/>
-    <updated>2018-04-09T15:33:36+08:00</updated>
-    <id>http://jason5.cn/blog/weexyu-yuan-sheng-ye-mian-jian-de-xiang-hu-tiao-zhuan</id>
-    <content type="html"><![CDATA[<p>我们在现有应用中集成Weex，难免会遇到Weex页面与原生页面相互跳转的问题。通常的一种场景是，某一个中间的原生页面我们用Weex来替换，这样就存在原生页面跳转到Weex页面，再由Weex页面跳转到原生页面的场景。这篇文章讲述如何实现这种场景。</p>
-
-<!--more-->
-
-
-<h3>1. 原生页面跳转到Weex页面</h3>
-
-<p>这个其实很简单。首先需要知道的是，Weex页面其实也是一个原生页面，只是这个原生页面的View是由Weex渲染出来的而已。所以这一步实际上是原生页面跳原生页面，用navigationController的push方法就可以了。代码如下</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">IGWeexDemoViewController</span> <span class="o">*</span><span class="n">vc</span> <span class="o">=</span> <span class="p">[</span><span class="n">IGWeexDemoViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[[</span><span class="n">CPBaseViewController</span> <span class="n">currentViewController</span><span class="p">].</span><span class="n">navigationController</span> <span class="nl">pushViewController</span><span class="p">:</span><span class="n">vc</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. Weex页面跳转到原生页面</h3>
-
-<p>Weex要跳回原生页面，是需要借用原生代码的能力的。实现方式就是自定义Module，Weex将需要跳转的页面和参数传递个Module，然后Module利用原生代码，控制navigationController进行跳转。</p>
-
-<p>首先自定义跳转的Module，代码如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@implementation</span> <span class="nc">WXNavigationModule</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">WX_EXPORT_METHOD</span><span class="p">(</span><span class="k">@selector</span><span class="p">(</span><span class="nl">navigationToUrl</span><span class="p">:))</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">navigationToUrl</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">url</span><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">IGJumpMediator</span> <span class="nl">jumpActionWithUrl</span><span class="p">:</span><span class="n">url</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">CPBaseViewController</span> <span class="n">currentViewController</span><span class="p">].</span><span class="n">navigationController</span> <span class="nl">setNavigationBarHidden</span><span class="p">:</span><span class="nb">NO</span> <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>关键在方法中的第一行代码 [IGJumpMediator jumpActionWithUrl:url]，通过拿到Weex里传递进来的参数url，进行解析，然后利用Runtime机制，通过字符串得到要跳转的ViewController类，然后再设置需要的初始化参数，最后push就可以了。方法具体的代码实现这里不再赘述。</p>
-
-<p>第二行代码是设置了导航栏为显示，下边的篇幅讲下为什么要这样设置。</p>
-
-<h3>3. Weex页面中的自定义导航栏实现</h3>
-
-<p>Weex页面我没有用原生的导航栏，而是参考了一些资料和代码自己实现了导航栏，主要的原则是，一切可以在Weex中实现的，都放在Weex中，不放在原生代码中，这样可以更好的进行跨平台代码复用。</p>
-
-<p>原生跳转到Weex的时候，先隐藏原生里的导航栏。Weex调回原生的时候，在显示原生导航栏。所以有了上边那一行代码。</p>
-
-<p>在Weex中实现导航栏，最好封装成一个组件，这样方便所有页面一起复用。以下是导航栏NavigationBar.vue的代码。</p>
-
-<p>模板部分</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;template&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;div&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!--iPhoneX --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;iPhoneXDiv navbar&quot;</span> <span class="na">v-if=</span><span class="s">&quot;isiPhoneX&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!--其他iOS设备 --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;iOSDiv navbar&quot;</span> <span class="na">v-else-if=</span><span class="s">&quot;isiOS&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class='line'>        <span class="c">&lt;!--安卓设备 --&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;android navbar&quot;</span> <span class="na">v-else-if=</span><span class="s">&quot;isAndroid&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;subviews&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!--Title--&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;text</span> <span class="na">class=</span><span class="s">&quot;titletext&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/text&gt;</span>
-</span><span class='line'>            <span class="c">&lt;!--左边图片--&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;left&quot;</span> <span class="err">@</span><span class="na">click=</span><span class="s">&quot;leftButtonClicked&quot;</span> <span class="na">v-if=</span><span class="s">&quot;showLeft&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;image</span> <span class="na">src=</span><span class="s">&quot;local:///team_navi_back@2x.png&quot;</span> <span class="na">class=</span><span class="s">&quot;left-button&quot;</span><span class="nt">&gt;&lt;/image&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/div&gt;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;right&quot;</span> <span class="err">@</span><span class="na">click=</span><span class="s">&quot;rightButtonClicked&quot;</span> <span class="na">v-if=</span><span class="s">&quot;showRight&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="c">&lt;!--如果显示右边item ， 图片或者文字 2选1 --&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;text</span> <span class="na">class=</span><span class="s">&quot;right-text&quot;</span> <span class="na">v-if=</span><span class="s">&quot;rightText&quot;</span><span class="nt">&gt;</span><span class="nt">&lt;/text&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;image</span> <span class="na">:src=</span><span class="s">&quot;rightImage&quot;</span> <span class="na">class=</span><span class="s">&quot;left-button&quot;</span> <span class="na">v-if=</span><span class="s">&quot;rightImage&quot;</span><span class="nt">&gt;&lt;/image&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/div&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/div&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
-</span><span class='line'><span class="nt">&lt;/template&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>样式部分</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;</span><span class="nt">style</span> <span class="nt">scoped</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="nc">.iPhoneXDiv</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">86px</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nc">.iOSDiv</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">38px</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nc">.android</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nc">.navbar</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">750px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">left</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">background-color</span><span class="o">:</span> <span class="m">#1A1B2F</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*大佈局样式*/</span>
-</span><span class='line'>    <span class="nc">.subviews</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">750px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">left</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">background-color</span><span class="o">:</span> <span class="m">#1A1B2F</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*中间文字样式*/</span>
-</span><span class='line'>    <span class="nc">.titletext</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">font-size</span><span class="o">:</span> <span class="m">36px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">750px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">line-height</span><span class="o">:</span> <span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">bottom</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*左边图片*/</span>
-</span><span class='line'>    <span class="nc">.left</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">justify</span><span class="o">-</span><span class="k">content</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">align</span><span class="o">-</span><span class="n">items</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">flex</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">left</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">bottom</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">50px</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*图片按钮*/</span>
-</span><span class='line'>    <span class="nc">.left-button</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">50px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">50px</span><span class="p">;</span>
-</span><span class='line'>        <span class="c">/*margin-left: 40px;*/</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*右边图片*/</span>
-</span><span class='line'>    <span class="nc">.right</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">justify</span><span class="o">-</span><span class="k">content</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">align</span><span class="o">-</span><span class="n">items</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">flex</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span> <span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">right</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">bottom</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">50px</span><span class="p">;</span>
-</span><span class='line'>        <span class="c">/*background-color: white;*/</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">/*右边文字*/</span>
-</span><span class='line'>    <span class="nc">.right-text</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">font-size</span><span class="o">:</span> <span class="m">30px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">right</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">width</span><span class="o">:</span> <span class="m">100px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">height</span><span class="o">:</span><span class="m">90px</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">text-align</span><span class="o">:</span> <span class="k">center</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">bottom</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>js代码部分</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">device</span> <span class="o">=</span> <span class="nx">weex</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">env</span><span class="p">;</span>
-</span><span class='line'><span class="kr">const</span> <span class="nx">Navigator</span> <span class="o">=</span> <span class="nx">weex</span><span class="p">.</span><span class="nx">requireModule</span><span class="p">(</span><span class="s1">&#39;navigator&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/*props 属性列表*/</span>
-</span><span class='line'>    <span class="nx">props</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="cm">/*返回图片*/</span>
-</span><span class='line'>        <span class="nx">leftImage</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="s2">&quot;img/other/backbtn.png&quot;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="cm">/*Title*/</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">titleText</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="s2">&quot;Title&quot;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="cm">/*是否显示左边图片*/</span>
-</span><span class='line'>        <span class="nx">showLeft</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">Boolean</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="cm">/*showLeft=true时,左边是否是点击返回事件，否，则显示其他图片，重新给leftImage属性赋值*/</span>
-</span><span class='line'>        <span class="nx">isBack</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">Boolean</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="cm">/*是否显示右边item*/</span>
-</span><span class='line'>        <span class="nx">showRight</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">Boolean</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="kc">false</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="cm">/*右边文字*/</span>
-</span><span class='line'>        <span class="nx">rightText</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="cm">/*右边图片*/</span>
-</span><span class='line'>        <span class="nx">rightImage</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="nb">String</span><span class="p">,</span>
-</span><span class='line'>            <span class="k">default</span><span class="o">:</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">isiPhoneX</span><span class="o">:</span> <span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">platform</span> <span class="o">===</span> <span class="s1">&#39;iOS&#39;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">deviceWidth</span> <span class="o">===</span> <span class="mi">1125</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">deviceHeight</span> <span class="o">===</span> <span class="mi">2436</span><span class="p">),</span>
-</span><span class='line'>            <span class="nx">isiOS</span><span class="o">:</span> <span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">platform</span> <span class="o">===</span> <span class="s1">&#39;iOS&#39;</span><span class="p">),</span>
-</span><span class='line'>            <span class="nx">isAndroid</span><span class="o">:</span> <span class="p">(</span><span class="nx">device</span><span class="p">.</span><span class="nx">platform</span> <span class="o">===</span> <span class="s1">&#39;android&#39;</span><span class="p">),</span>
-</span><span class='line'>            <span class="nx">TitleText</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//左边点击事件</span>
-</span><span class='line'>        <span class="nx">leftButtonClicked</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">showLeft</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isBack</span><span class="p">)</span>  <span class="c1">//点击pop返回</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;click back&#39;</span><span class="p">);</span>
-</span><span class='line'>                    <span class="nx">Navigator</span><span class="p">.</span><span class="nx">pop</span><span class="p">({},</span> <span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
-</span><span class='line'>                    <span class="p">});</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>                <span class="k">else</span> <span class="c1">//其他操作</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;LeftItemClicked&#39;</span><span class="p">);</span>
-</span><span class='line'>                    <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;LeftItemClicked&#39;</span><span class="p">);</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="c1">//右边点击事件</span>
-</span><span class='line'>        <span class="nx">rightButtonClicked</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">showRight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;RightItemClicked&#39;</span><span class="p">);</span>
-</span><span class='line'>                <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;RightItemClicked&#39;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>导航栏支持设置标题，左边和右边部分的显隐，左图片，右图片和右文字。对不同的平台做了下适配。</p>
-
-<p>调用的时候比较简单，在页面头部加上如下代码就可以了</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">NavBar</span>
-</span><span class='line'>    <span class="o">:</span><span class="nx">show</span><span class="o">-</span><span class="nx">left</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
-</span><span class='line'>    <span class="o">:</span><span class="nx">title</span><span class="o">-</span><span class="nx">text</span><span class="o">=</span><span class="s2">&quot;titleText&quot;</span>
-</span><span class='line'>    <span class="o">:</span><span class="nx">show</span><span class="o">-</span><span class="nx">right</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/NavBar&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4.效果</h3>
-
-<p>最后看一下效果，看得出来哪部分是原生实现，哪部分是Weex实现吗
-<a href="http://jason5.cn/images/weex-navi-demo.gif"><img src="http://jason5.cn/images/weex-navi-demo.gif" alt="" /></a></p>
-
-<hr />
-
-<p>参考资料</p>
-
-<ul>
-<li><a href="https://www.jianshu.com/p/e9bbd8a2244a">Weex系列（1）-App端自定义导航条</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

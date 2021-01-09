@@ -9,8 +9,18 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="1. 背景 现在的公共库用js来书写，有两个问题： 调用方无法获得语法提示，且对调用函数的参数类型不明
-公共库中的一些变量类型模糊不清 以上两个问题虽然不大，但是一定程度上影响了项目的开发效率和质量。通过typescript来改写公共库，有利于解决上述两个问题。 ">
+  <meta name="description" content="项目的package.json如下 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12 &quot;scripts&quot;: { &quot;dev&quot;: &quot;vue-cli-service serve --https true --port 443 --host test. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +75,69 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-01-09T17:32:08+08:00'><span class='date'>2021 年1 月9 日</span> <span class='time'>5:32 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>项目的package.json如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="s2">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;dev&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service serve --https true --port 443 --host test.igame.qq.com&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;build&quot;</span><span class="o">:</span> <span class="s2">&quot;vue-cli-service build&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;lint:fix&quot;</span><span class="o">:</span> <span class="s2">&quot;eslint --fix --ext .js,.vue,.ts .&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:debug&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-debug&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:dev&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.dev.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:vendor&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios-vendor.js --config ./scripts/hippy-webpack.android-vendor.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:build&quot;</span><span class="o">:</span> <span class="s2">&quot;webpack --config ./scripts/hippy-webpack.ios.js --config ./scripts/hippy-webpack.android.js&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish&quot;</span><span class="o">:</span> <span class="s2">&quot;hippy-publish igame-match-test&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;hippy:publish:prod&quot;</span><span class="o">:</span> <span class="s2">&quot;NODE_ENV=&#39;release&#39; hippy-publish igame-match-release&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，如果是sudo npm run dev的方式来启动服务的话，用的是vue-cli-service，这个是@vue/cli-service的命令，其默认是去读取根目录的配置文件vue.config.js。如果是以npm run hippy:dev 去启动的话，读取的是配置文件hippy-webpack.dev.js。由于两个配置文件不一样，所以，对ts的支持需要两边配置文件都要修改。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/hippyjie-ru-typescriptji-lu.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -390,42 +463,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/dui-jspatchyuan-li-de-li-jie.html">对JSPatch原理的理解</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-11-08T15:08:47+08:00'><span class='date'>2018 年11 月8 日</span> <span class='time'>3:08 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>JSPatch利用OC语言的动态特性，让OC语言根据传入的JS代码，进行动态行为修改，以达到热更新的目的。</p>
-
-<p>项目中根据JSPatch的原理，自己实现了一套简单的热更新方案。以替换方法实现为例，热更新运行的步骤如下：</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/dui-jspatchyuan-li-de-li-jie.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -444,13 +481,17 @@
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
-<li class='category'><a href='/blog/categories/web/'>web (3)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (4)</a></li>
 <li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
 
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
+      </li>
     
       <li class="post">
         <a href="/blog/jiang-xian-you-jsku-gai-cheng-tsku.html">将现有js库改成ts库</a>
@@ -468,10 +509,6 @@
         <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/tong-guo-yuan-ma-li-jie-autorelease-poolyuan-li.html">通过源码理解Autorelease Pool原理</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -485,7 +522,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2020 - jason -
+  Copyright &copy; 2021 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 <script>
