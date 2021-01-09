@@ -22,54 +22,53 @@ categories:
 
 #### 2.1 命令行安装Typescript
 
+vue项目如果要想使用ts，需要先安装typescript和@vue/cli-plugin-typescript
+
 ```bash
 npm install --save-dev typescript
 npm install --save-dev @vue/cli-plugin-typescript
 ```
 
-### 2.2 编写typescript配置
+#### 2.2 编写typescript配置
 
 在根目录下新建文件tsconfig.json，以下边的内容为例
 
 ```javascript
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "allowJs": false,
-    "noEmit": true,
-    "types": [
-      "webpack-env"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "strict": true,
+      "importHelpers": true,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "sourceMap": true,
+      "baseUrl": ".",
+      "allowJs": false,
+      "noEmit": true,
+      "paths": {
+        "@/*": [
+          "src/*"
+        ]
+      },
+      "lib": [
+        "esnext",
+        "dom",
+        "dom.iterable",
+        "scripthost"
       ]
     },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
+    "exclude": [
+      "node_modules"
     ]
-  },
-  "exclude": [
-    "node_modules"
-  ]
 }
 ```
 
-由于实际项目中改写的工作量比较多，暂时先将`"strict": true`改为`"strict": false`，如果设置为true的话，`npm run dev`的时候会有很多告警，会提示函数定义的时候没有指定参数类型。
-
 #### 2.3 新增shims-vue.d.ts
+
+如果调用方是vue工程，且需要在vue文件里写ts，需要加上这一步。
 
 根目录下新建文件`shims-vue.d.ts`，让 `ts` 识别 `*.vue` 文件
 
@@ -243,7 +242,22 @@ if (typeof env.authQuery['tipmdl'] !== 'undefined' && env.authQuery['tipmdl'] !=
 
 ### 4. 给typescript代码加上注释
 
-待补充
+```javascript
+  /**
+   * 设置cookie
+   * @param sName  cookie名称
+   * @param sValue  cookie值
+   * @param iExpireSec  过期时间，单位秒
+   * @param sDomain  cookie作用域名
+   * @param sPath  cookie作用路径
+   * @param bSecure  是否加密
+   */
+  static set(sName:string, sValue:string, iExpireSec:number, sDomain:string, sPath:string, bSecure?:boolean)
+```
+
+像上面这样写好注释后，调用方就能看到了。如下
+
+![](https://raw.githubusercontent.com/joshuaton/img/master/20200728115458.png)
 
 ### 5. 参考资料
 
