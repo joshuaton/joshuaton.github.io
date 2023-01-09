@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="目前腾讯监控系统发现space.aili.com存在大量恶意的请求，通过xxx.qq.com以期望达到刷微博粉丝的效果 ">
+  <meta name="description" content="众所周知，屏幕刷新频率必须要达到60Hz，人眼才能感觉不到界面的卡顿。60Hz意味着界面每一帧的计算加渲染时间不能超过16ms，当某些业务逻辑比较耗时的时候，执行时间可能超过16ms的阈值，这时候给用户直观的感受就是界面卡顿。 traceview是安卓sdk提供的一个性能分析工具， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,42 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">利用traceview优化Android应用流畅度</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-08-03T18:19:30+08:00'><span class='date'>2016 年8 月3 日</span> <span class='time'>6:19 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>众所周知，屏幕刷新频率必须要达到60Hz，人眼才能感觉不到界面的卡顿。60Hz意味着界面每一帧的计算加渲染时间不能超过16ms，当某些业务逻辑比较耗时的时候，执行时间可能超过16ms的阈值，这时候给用户直观的感受就是界面卡顿。</p>
+
+<p>traceview是安卓sdk提供的一个性能分析工具，能够收集函数的执行时间，以精确的分析系统的瓶颈所在。当我们遇到系统卡顿问题的时候，可以利用这个工具来进行分析。下边的篇幅就项目中一个真实的卡顿问题，来介绍traceview工具的使用。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/li-yong-traceviewyou-hua-androidying-yong-liu-chang-du.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -432,39 +468,9 @@ compile 'com.android.support:cardview-v7:23.1.1'
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/hello-world.html">Hello World第一篇</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-07-21T12:26:37+08:00'><span class='date'>2015 年7 月21 日</span> <span class='time'>12:26 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>哈哈，我的“你好，世界”<br/>
-终于建好了我的博客，参考了这篇文章，写得很好很详细，感谢作者。<br/>
-注：用 Octopress + Github Pages构建博客是不需要自己准备服务器的哦，这点就完爆WordPress了。
-<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">Octopress 搭建流程 – Github Pages</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/posts/5">&larr; Older</a>
     
     <a href="/blog/archives">文章列表</a>
     
@@ -482,13 +488,17 @@ compile 'com.android.support:cardview-v7:23.1.1'
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
-<li class='category'><a href='/blog/categories/web/'>web (4)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (5)</a></li>
 <li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
 
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/nginxri-zhi-qie-ge.html">Nginx日志切割</a>
+      </li>
     
       <li class="post">
         <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
@@ -506,10 +516,6 @@ compile 'com.android.support:cardview-v7:23.1.1'
         <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -523,7 +529,7 @@ compile 'com.android.support:cardview-v7:23.1.1'
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2021 - jason -
+  Copyright &copy; 2023 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 <script>

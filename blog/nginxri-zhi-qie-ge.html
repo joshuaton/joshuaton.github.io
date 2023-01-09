@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Nginx日志切割 - 移动开发技术</title>
+  <meta name="author" content="jason">
+
+  
+  <meta name="description" content="随着nginx日志越来越大，最终会将服务器上的日志占满，方案是用logformat自动进行日志切割，需要以下步骤 创建logformat配置文件 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+/data/logs/*.log { daily missingok rotate 7 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jason5.cn/blog/nginxri-zhi-qie-ge.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">移动开发技术</a></h1>
+  
+    <h2>Jason's Blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com.hk/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jason5.cn">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Nginx日志切割</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2023-01-09T14:56:40+08:00'><span class='date'>2023 年1 月9 日</span> <span class='time'>2:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>随着nginx日志越来越大，最终会将服务器上的日志占满，方案是用logformat自动进行日志切割，需要以下步骤</p>
+
+<!--more-->
+
+
+<h3>创建logformat配置文件</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/data/logs/*.log {
+</span><span class='line'>  daily
+</span><span class='line'>  missingok
+</span><span class='line'>  rotate 7
+</span><span class='line'>  ifempty
+</span><span class='line'>  create 640 nginx root
+</span><span class='line'>  sharedscripts
+</span><span class='line'>  dateext
+</span><span class='line'>  postrotate
+</span><span class='line'>    if [ -f /var/run/nginx.pid ]; then
+</span><span class='line'>      kill -USR1 \`cat /var/run/nginx.pid\`
+</span><span class='line'>    fi
+</span><span class='line'>  endscript
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>daily表示日志按天切割</p>
+
+<p>rotate 7 表示只保留最近的7条切割文件</p>
+
+<p>postrotate 表示切割日志后要运行的命令，这里是杀掉nginx进程，使其能重新用新文件写入日志</p>
+
+<h3>修改Dockerfile</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>FROM xxx/nginx:1.18
+</span><span class='line'>
+</span><span class='line'># 安装logrotate
+</span><span class='line'>RUN apt-get update && apt-get -y install logrotate
+</span><span class='line'>
+</span><span class='line'># 设置时区
+</span><span class='line'>ENV TZ=Asia/Shanghai
+</span><span class='line'>RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' &gt; /etc/timezone
+</span><span class='line'>
+</span><span class='line'>COPY ${domain}/. /usr/share/nginx/html/
+</span><span class='line'>COPY default.conf /etc/nginx/conf.d/default.conf
+</span><span class='line'>COPY logrotate-nginx /etc/logrotate.d/
+</span><span class='line'>WORKDIR /usr/share/nginx/html
+</span><span class='line'>EXPOSE 80
+</span><span class='line'>
+</span><span class='line'>CMD service cron start && nginx -g 'daemon off;'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>主要增加了以下内容</p>
+
+<ol>
+<li>安装logrotate，因为原始镜像里没有</li>
+<li>设置时区，这样日志的时间是准确的，不会早8个小时</li>
+<li>将logrotate的配置文件copy到配置目录下</li>
+<li>启动crontab，并且修改nginx的启动方式</li>
+</ol>
+
+
+<h3>容器运行之后的效果</h3>
+
+<p>查看容器的crontab内容</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SHELL=/bin/sh
+</span><span class='line'>PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</span><span class='line'>
+</span><span class='line'># Example of job definition:
+</span><span class='line'># .---------------- minute (0 - 59)
+</span><span class='line'># |  .------------- hour (0 - 23)
+</span><span class='line'># |  |  .---------- day of month (1 - 31)
+</span><span class='line'># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+</span><span class='line'># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+</span><span class='line'># |  |  |  |  |
+</span><span class='line'># *  *  *  *  * user-name command to be executed
+</span><span class='line'>17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+</span><span class='line'>25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+</span><span class='line'>47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+</span><span class='line'>52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到每天6点25分会运行/etc/cron.daily</p>
+
+<p>/etc/cron.daily/logrotate 是一个脚本，每天会定时调用，执行logrotate二进制命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>
+</span><span class='line'># skip in favour of systemd timer
+</span><span class='line'>if [ -d /run/systemd/system ]; then
+</span><span class='line'>    exit 0
+</span><span class='line'>fi
+</span><span class='line'>
+</span><span class='line'># this cronjob persists removals (but not purges)
+</span><span class='line'>if [ ! -x /usr/sbin/logrotate ]; then
+</span><span class='line'>    exit 0
+</span><span class='line'>fi
+</span><span class='line'>
+</span><span class='line'>/usr/sbin/logrotate /etc/logrotate.conf
+</span><span class='line'>EXITVALUE=$?
+</span><span class='line'>if [ $EXITVALUE != 0 ]; then
+</span><span class='line'>    /usr/bin/logger -t logrotate "ALERT exited abnormally with [$EXITVALUE]"
+</span><span class='line'>fi
+</span><span class='line'>exit $EXITVALUE</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>切割后的日志</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-rw-r----- 1 nginx root  1241741 Sep  9 15:11 nginx_error_log.log-20220909
+</span><span class='line'>-rw-r----- 1 nginx root   639982 Sep 13 06:04 nginx_error_log.log-20220912
+</span><span class='line'>-rw-r----- 1 nginx root 26065270 Sep 13 19:40 nginx_error_log.log-20220910
+</span><span class='line'>-rw-r----- 1 nginx root  5055874 Sep 14 06:38 nginx_error_log.log-20220911
+</span><span class='line'>-rw-r----- 1 nginx root   312747 Sep 14 12:17 nginx_error_log.log-20220913
+</span><span class='line'>-rw-r----- 1 nginx root  1343155 Sep 15 06:39 nginx_error_log.log-20220914
+</span><span class='line'>-rw-r----- 1 nginx root  2816323 Sep 15 14:35 nginx_error_log.log-20220915
+</span><span class='line'>-rw-r----- 1 nginx root  1141083 Sep 15 20:13 nginx_error_log.log</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">jason</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2023-01-09T14:56:40+08:00'><span class='date'>2023 年1 月9 日</span> <span class='time'>2:56 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/hippyjie-ru-typescriptji-lu.html" title="Previous Post: Hippy接入typescript记录">&laquo; Hippy接入typescript记录</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+<section>
+  <h1>Comments</h1>
+  <div id="container"></div>
+</section>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+    id: 'nginx日志切割',
+    owner: 'joshuaton',
+    repo: 'joshuaton.github.io',
+    oauth: {
+        client_id: 'eec868eaacadc00f17c0',
+        client_secret: '9840ef585828127e5f235ff6d2b28141ae182f98',
+    },
+});
+gitment.render('container');
+</script>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/ios/'>ios (13)</a></li>
+<li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
+<li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
+<li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (5)</a></li>
+<li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
+
+  </ul>
+</section><section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/nginxri-zhi-qie-ge.html">Nginx日志切割</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jiang-xian-you-jsku-gai-cheng-tsku.html">将现有js库改成ts库</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/zai-xian-you-iosxiang-mu-zhong-ji-cheng-flutterfang-an.html">在现有iOS项目中集成Flutter方案</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2023 - jason -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+<script>
+var _mtac = {};
+(function() {
+    var mta = document.createElement("script");
+    mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.2";
+    mta.setAttribute("name", "MTAH5");
+    mta.setAttribute("sid", "500600841");
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(mta, s);
+})();
+</script>
+            
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

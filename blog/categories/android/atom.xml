@@ -4,7 +4,7 @@
   <title><![CDATA[分类：android | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2021-01-09T17:34:20+08:00</updated>
+  <updated>2023-01-09T16:25:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -36,6 +36,8 @@ compile 'com.android.support:cardview-v7:23.1.1'
   ...
 &lt;/android.support.v7.widget.CardView&gt;
 </code></pre>
+
+
 
 <!--more-->
 

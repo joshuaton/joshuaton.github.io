@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2021-01-09T17:34:20+08:00</updated>
+  <updated>2023-01-09T16:25:43+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,200 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Nginx日志切割]]></title>
+    <link href="http://jason5.cn/blog/nginxri-zhi-qie-ge.html"/>
+    <updated>2023-01-09T14:56:40+08:00</updated>
+    <id>http://jason5.cn/blog/nginxri-zhi-qie-ge</id>
+    <content type="html"><![CDATA[<p>随着nginx日志越来越大，最终会将服务器上的日志占满，方案是用logformat自动进行日志切割，需要以下步骤</p>
+
+<!--more-->
+
+
+<h3>创建logformat配置文件</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/data/logs/*.log {
+</span><span class='line'>  daily
+</span><span class='line'>  missingok
+</span><span class='line'>  rotate 7
+</span><span class='line'>  ifempty
+</span><span class='line'>  create 640 nginx root
+</span><span class='line'>  sharedscripts
+</span><span class='line'>  dateext
+</span><span class='line'>  postrotate
+</span><span class='line'>    if [ -f /var/run/nginx.pid ]; then
+</span><span class='line'>      kill -USR1 \`cat /var/run/nginx.pid\`
+</span><span class='line'>    fi
+</span><span class='line'>  endscript
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>daily表示日志按天切割</p>
+
+<p>rotate 7 表示只保留最近的7条切割文件</p>
+
+<p>postrotate 表示切割日志后要运行的命令，这里是杀掉nginx进程，使其能重新用新文件写入日志</p>
+
+<h3>修改Dockerfile</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>FROM xxx/nginx:1.18
+</span><span class='line'>
+</span><span class='line'># 安装logrotate
+</span><span class='line'>RUN apt-get update && apt-get -y install logrotate
+</span><span class='line'>
+</span><span class='line'># 设置时区
+</span><span class='line'>ENV TZ=Asia/Shanghai
+</span><span class='line'>RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' &gt; /etc/timezone
+</span><span class='line'>
+</span><span class='line'>COPY ${domain}/. /usr/share/nginx/html/
+</span><span class='line'>COPY default.conf /etc/nginx/conf.d/default.conf
+</span><span class='line'>COPY logrotate-nginx /etc/logrotate.d/
+</span><span class='line'>WORKDIR /usr/share/nginx/html
+</span><span class='line'>EXPOSE 80
+</span><span class='line'>
+</span><span class='line'>CMD service cron start && nginx -g 'daemon off;'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>主要增加了以下内容</p>
+
+<ol>
+<li>安装logrotate，因为原始镜像里没有</li>
+<li>设置时区，这样日志的时间是准确的，不会早8个小时</li>
+<li>将logrotate的配置文件copy到配置目录下</li>
+<li>启动crontab，并且修改nginx的启动方式</li>
+</ol>
+
+
+<h3>容器运行之后的效果</h3>
+
+<p>查看容器的crontab内容</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SHELL=/bin/sh
+</span><span class='line'>PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</span><span class='line'>
+</span><span class='line'># Example of job definition:
+</span><span class='line'># .---------------- minute (0 - 59)
+</span><span class='line'># |  .------------- hour (0 - 23)
+</span><span class='line'># |  |  .---------- day of month (1 - 31)
+</span><span class='line'># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+</span><span class='line'># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+</span><span class='line'># |  |  |  |  |
+</span><span class='line'># *  *  *  *  * user-name command to be executed
+</span><span class='line'>17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+</span><span class='line'>25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+</span><span class='line'>47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+</span><span class='line'>52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到每天6点25分会运行/etc/cron.daily</p>
+
+<p>/etc/cron.daily/logrotate 是一个脚本，每天会定时调用，执行logrotate二进制命令</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/bin/sh
+</span><span class='line'>
+</span><span class='line'># skip in favour of systemd timer
+</span><span class='line'>if [ -d /run/systemd/system ]; then
+</span><span class='line'>    exit 0
+</span><span class='line'>fi
+</span><span class='line'>
+</span><span class='line'># this cronjob persists removals (but not purges)
+</span><span class='line'>if [ ! -x /usr/sbin/logrotate ]; then
+</span><span class='line'>    exit 0
+</span><span class='line'>fi
+</span><span class='line'>
+</span><span class='line'>/usr/sbin/logrotate /etc/logrotate.conf
+</span><span class='line'>EXITVALUE=$?
+</span><span class='line'>if [ $EXITVALUE != 0 ]; then
+</span><span class='line'>    /usr/bin/logger -t logrotate "ALERT exited abnormally with [$EXITVALUE]"
+</span><span class='line'>fi
+</span><span class='line'>exit $EXITVALUE</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>切割后的日志</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-rw-r----- 1 nginx root  1241741 Sep  9 15:11 nginx_error_log.log-20220909
+</span><span class='line'>-rw-r----- 1 nginx root   639982 Sep 13 06:04 nginx_error_log.log-20220912
+</span><span class='line'>-rw-r----- 1 nginx root 26065270 Sep 13 19:40 nginx_error_log.log-20220910
+</span><span class='line'>-rw-r----- 1 nginx root  5055874 Sep 14 06:38 nginx_error_log.log-20220911
+</span><span class='line'>-rw-r----- 1 nginx root   312747 Sep 14 12:17 nginx_error_log.log-20220913
+</span><span class='line'>-rw-r----- 1 nginx root  1343155 Sep 15 06:39 nginx_error_log.log-20220914
+</span><span class='line'>-rw-r----- 1 nginx root  2816323 Sep 15 14:35 nginx_error_log.log-20220915
+</span><span class='line'>-rw-r----- 1 nginx root  1141083 Sep 15 20:13 nginx_error_log.log</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hippy接入typescript记录]]></title>
@@ -78,19 +272,23 @@
 <p>这里会用到的两个小技巧</p>
 
 <ol>
-<li><p>初始化tsconfig.json文件</p>
-
-<pre><code class="shell">tsc init
-</code></pre></li>
-<li><p>检查webpack的配置，由于vue.config.js会对webpack的配置进行一些封装，并不是很直观，所以可以运行以下的命令，查看真正的配置</p>
-
-<pre><code class="shell">vue inspect
-vue inspect --rule vue
-</code></pre>
-
-<p>详细参考 <a href="https://cli.vuejs.org/zh/guide/webpack.html#%E4%BF%AE%E6%94%B9%E6%8F%92%E4%BB%B6%E9%80%89%E9%A1%B9">webpack 相关 | Vue CLI</a></p></li>
+<li>初始化tsconfig.json文件</li>
 </ol>
 
+
+<pre><code class="```shell">   tsc init
+</code></pre>
+
+<ol>
+<li>检查webpack的配置，由于vue.config.js会对webpack的配置进行一些封装，并不是很直观，所以可以运行以下的命令，查看真正的配置</li>
+</ol>
+
+
+<pre><code class="```shell">   vue inspect
+   vue inspect --rule vue
+</code></pre>
+
+<p>   详细参考 <a href="https://cli.vuejs.org/zh/guide/webpack.html#%E4%BF%AE%E6%94%B9%E6%8F%92%E4%BB%B6%E9%80%89%E9%A1%B9">webpack 相关 | Vue CLI</a></p>
 
 <h2>2. hippy-webpack.dev.js的配置</h2>
 
@@ -2993,30 +3191,6 @@ vue inspect --rule vue
 <h3>原理</h3>
 
 <p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[用Weex实现三端开发架构和思路]]></title>
-    <link href="http://jason5.cn/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu.html"/>
-    <updated>2018-08-25T21:59:32+08:00</updated>
-    <id>http://jason5.cn/blog/yong-weexshi-xian-san-duan-kai-fa-jia-gou-he-si-lu</id>
-    <content type="html"><![CDATA[<p>基于目前项目的已有架构，若要实现Weex三端开发，设计的架构如下图：</p>
-
-<p><a href="http://jason5.cn/images/weex-http-proxy.png"><img src="http://jason5.cn/images/weex-http-proxy.png" alt="" /></a></p>
-
-<!--more-->
-
-
-<p>1.iOS和Android客户端维持tcp+pb方式不变</p>
-
-<p>2.新增http proxy模块，提供http接口给Weex h5访问</p>
-
-<p>职责是将已有的tcp+pb方式访问的服务转换成http+json形式，提供给Weex h5调用。目前http proxy用java实现，与Android客户端网络层复用代码。</p>
-
-<p>3.改造svr接入层，验证Weex h5登录态，进行openid转换</p>
-
-<p>以微信登录为例，之前iOS和Android用的是App授权登录，由于Weex h5是微信公众号授权登录，两者appid不同，授权得到的openid和accesstoken都不一样，需要支持对公众号进行登录校验。校验完登录态后，将公众号openid转换为App openid，再与svr逻辑层进行通信。</p>
 ]]></content>
   </entry>
   

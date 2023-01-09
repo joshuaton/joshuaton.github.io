@@ -9,18 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="项目的package.json如下 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12 &quot;scripts&quot;: { &quot;dev&quot;: &quot;vue-cli-service serve --https true --port 443 --host test. &hellip;">
+  <meta name="description" content="随着nginx日志越来越大，最终会将服务器上的日志占满，方案是用logformat自动进行日志切割，需要以下步骤 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +64,40 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/nginxri-zhi-qie-ge.html">Nginx日志切割</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2023-01-09T14:56:40+08:00'><span class='date'>2023 年1 月9 日</span> <span class='time'>2:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>随着nginx日志越来越大，最终会将服务器上的日志占满，方案是用logformat自动进行日志切割，需要以下步骤</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/nginxri-zhi-qie-ge.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -429,40 +452,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/acpectsyuan-ma-jie-du.html">Aspects源码解读</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2019-01-07T15:25:12+08:00'><span class='date'>2019 年1 月7 日</span> <span class='time'>3:25 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/acpectsyuan-ma-jie-du.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -481,13 +470,17 @@
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
 <li class='category'><a href='/blog/categories/security/'>security (4)</a></li>
-<li class='category'><a href='/blog/categories/web/'>web (4)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (5)</a></li>
 <li class='category'><a href='/blog/categories/weex/'>weex (5)</a></li>
 
   </ul>
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/nginxri-zhi-qie-ge.html">Nginx日志切割</a>
+      </li>
     
       <li class="post">
         <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
@@ -505,10 +498,6 @@
         <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/ios-zhong-de-nsproxy.html">iOS 中的 NSProxy</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -522,7 +511,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2021 - jason -
+  Copyright &copy; 2023 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 <script>
