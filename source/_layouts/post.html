@@ -27,25 +27,6 @@ single: true
   </footer>
 </article>
 
-<section>
-  <h1>Comments</h1>
-  <div id="container"></div>
-</section>
-<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
-<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
-<script>
-var gitment = new Gitment({
-    id: '{{page.title}}',
-    owner: 'joshuaton',
-    repo: 'joshuaton.github.io',
-    oauth: {
-        client_id: '3f0d1f3a68502d5cc932',
-        client_secret: 'e808c32f3e709d750297f6c34d51c3c673bbcc25',
-    },
-});
-gitment.render('container');
-</script>
-
 {% if site.disqus_short_name and page.comments == true %}
   <section>
     <h1>Comments</h1>

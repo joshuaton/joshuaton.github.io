@@ -69,3 +69,8 @@ github_user:
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
+
+# Comments
+disqus_short_name: jason5
+disqus_show_comment_count: true
+
