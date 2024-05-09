@@ -7,7 +7,7 @@ footer: true
 ---
 程序员@Tencent
 
-关注移动开发技术，iOS、Android、HTML5、小程序、跨平台开发等
+关注移动开发技术，HTML5、小程序、iOS、Android、跨平台开发等
 
 Mail: joshuaton@gmail.com
 
