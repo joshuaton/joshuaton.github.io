@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="Aspects是iOS面向切面编程的第三方库，它可以在不改变原有代码的情况下，在任意函数之前或之后插入代码，也可以替换掉函数原有的代码。它的原理是基于oc语言的runtime，这篇文章对Aspects进行源码解读，并阐述其原理。 ">
+  <meta name="description" content="SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,43 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/sdwebimageyuan-ma-qian-xi.html">SDWebImage源码解读</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-01-28T16:21:16+08:00'><span class='date'>2019 年1 月28 日</span> <span class='time'>4:21 pm</span></time>
+        
+           | <a href="/blog/sdwebimageyuan-ma-qian-xi.html#disqus_thread"
+             data-disqus-identifier="http://jason5.cn/blog/sdwebimageyuan-ma-qian-xi.html">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>SDWebImage是最流行的iOS第三方图片加载库，也是github上star数目最多的objective-c第三方库。这篇文章对SDWebImage的源码进行简单的分析，主要是分析代码的执行流程。源码版本是目前最新的稳定版本4.4.4。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/sdwebimageyuan-ma-qian-xi.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -410,45 +447,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">iOS开发中支持实时UI调试的方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-18T14:02:46+08:00'><span class='date'>2018 年10 月18 日</span> <span class='time'>2:02 pm</span></time>
-        
-           | <a href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>背景</h3>
-
-<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html">阅读全文 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -465,6 +463,7 @@
   <h1>Categories</h1>
   <ul id="categories">
     <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+<li class='category'><a href='/blog/categories/game/'>game (1)</a></li>
 <li class='category'><a href='/blog/categories/ios/'>ios (13)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
 <li class='category'><a href='/blog/categories/performance/'>performance (1)</a></li>
@@ -476,6 +475,10 @@
 </section><section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/swithpo-jie-he-sheng-ji.html">Swith破解和升级</a>
+      </li>
     
       <li class="post">
         <a href="/blog/nginxri-zhi-qie-ge.html">Nginx日志切割</a>
@@ -491,10 +494,6 @@
     
       <li class="post">
         <a href="/blog/zai-xian-you-iosxiang-mu-zhong-ji-cheng-flutterfang-an.html">在现有iOS项目中集成Flutter方案</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/bridge-bridge-retained-bridge-transferde-qu-bie.html">__bridge __bridge retained __bridge transfer的区别</a>
       </li>
     
   </ul>

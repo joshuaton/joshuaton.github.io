@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：game | 移动开发技术]]></title>
+  <link href="http://jason5.cn/blog/categories/game/atom.xml" rel="self"/>
+  <link href="http://jason5.cn/"/>
+  <updated>2024-09-13T12:13:56+08:00</updated>
+  <id>http://jason5.cn/</id>
+  <author>
+    <name><![CDATA[jason]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Swith破解和升级]]></title>
+    <link href="http://jason5.cn/blog/swithpo-jie-he-sheng-ji.html"/>
+    <updated>2024-05-12T00:51:40+08:00</updated>
+    <id>http://jason5.cn/blog/swithpo-jie-he-sheng-ji</id>
+    <content type="html"><![CDATA[<h3>如何进入引导界面</h3>
+
+<p><a href="https://blog.csdn.net/Goals1989/article/details/114836473">switch如何更新大气层，和进入hekate界面_hekate怎么进入游戏界面-CSDN博客</a></p>
+
+<h3>如何重装系统</h3>
+
+<p>将文件全部复制到sd卡，然后按照文档操作createMMC等</p>
+
+<h3>如何升级系统</h3>
+
+<p>将文件复制到sd卡，需要保留emcMMC文件和YOUXI文件，需要按阶梯升级，不能跳</p>
+]]></content>
+  </entry>
+  
+</feed>

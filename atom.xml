@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2024-05-09T18:07:36+08:00</updated>
+  <updated>2024-09-13T12:13:56+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Swith破解和升级]]></title>
+    <link href="http://jason5.cn/blog/swithpo-jie-he-sheng-ji.html"/>
+    <updated>2024-05-12T00:51:40+08:00</updated>
+    <id>http://jason5.cn/blog/swithpo-jie-he-sheng-ji</id>
+    <content type="html"><![CDATA[<h3>如何进入引导界面</h3>
+
+<p><a href="https://blog.csdn.net/Goals1989/article/details/114836473">switch如何更新大气层，和进入hekate界面_hekate怎么进入游戏界面-CSDN博客</a></p>
+
+<h3>如何重装系统</h3>
+
+<p>将文件全部复制到sd卡，然后按照文档操作createMMC等</p>
+
+<h3>如何升级系统</h3>
+
+<p>将文件复制到sd卡，需要保留emcMMC文件和YOUXI文件，需要按阶梯升级，不能跳</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Nginx日志切割]]></title>
@@ -3152,45 +3171,6 @@
 
 
 <p>username为github用户名</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS开发中支持实时UI调试的方法]]></title>
-    <link href="http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa.html"/>
-    <updated>2018-10-18T14:02:46+08:00</updated>
-    <id>http://jason5.cn/blog/ioskai-fa-zhong-zhi-chi-shi-shi-uidiao-shi-de-fang-fa</id>
-    <content type="html"><![CDATA[<h3>背景</h3>
-
-<p>平时在开发iOS界面的过程中，如果修改了布局代码，需要重新启动模拟器，进行效果查看。如果工程较大，启动将耗时比较长，比较浪费时间。这里介绍一个工具InjectionIII，使用后可以不重启应用，保存文件后直接查看修改效果，极大提升界面开发工作的效率。</p>
-
-<!--more-->
-
-
-<h3>使用方法</h3>
-
-<p>1.在App Store下载InjectionIII</p>
-
-<p>2.在应用启动函数 加入以下代码</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>    <span class="bp">NSBundle</span> <span class="o">*</span><span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="nl">bundleWithPath</span><span class="p">:</span><span class="s">@&quot;/Applications/InjectionIII.app/Contents/Resources/iOSInjection10.bundle&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">bundle</span> <span class="n">load</span><span class="p">];</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>3.启动InjectionIII，重启XCode，然后用模拟器启动应用。状态栏上有InjectionIII的小图标，确认File Watcher选项已经勾选。这时候修改文件，只要保存，在模拟器界面上会立即更新效果</p>
-
-<p>PS: 这个工具的缺点是只支持模拟器，原因参见原理部分。</p>
-
-<h3>原理</h3>
-
-<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5NTQ2NzE0NQ==&amp;mid=2247483999&amp;idx=1&amp;sn=bc88d37b6f819bd6bd7d8b76e9787620&amp;chksm=a6f958b9918ed1af9a084ce2c2732aaee715193e37fdb830dc31d8f0174c0314b22dc5c0dd1e&amp;mpshare=1&amp;scene=1&amp;srcid=0612tT8PS1pePiL5EmqMr9HH#rd">Injection：iOS热重载背后的黑魔法</a></p>
 ]]></content>
   </entry>
   
