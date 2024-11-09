@@ -37,8 +37,7 @@ node_modules
             C@3.0.0
 ```
 
-
-C如果安装在node_modules里，会造成版本冲突，所有将不同版本的C安装到了子node_modules里。当然，如果C的版本相对，那么会提取到根目录的node_modules里，这样不会造成冲突，也节省空间，但会丢失依赖树结构。
+C如果安装在node_modules里，会造成版本冲突，所有将不同版本的C安装到了子node_modules里。当然，如果C的版本相同，会提取到根目录的node_modules里，这样不会造成冲突，也节省空间，但会丢失依赖树结构。
 
 * pnpm安装
   
@@ -108,8 +107,6 @@ export default defineConfig({
 ```
 
 参考资料 [Troubleshooting | Rollup](https://rollupjs.org/troubleshooting/#warning-treating-module-as-external-dependency)
-
-
 
 除了以上方法，还发现另外一个解决方案，将第三方库pnpm install的时候进行平铺安装，需要在.npmrc文件里增加配置
 
