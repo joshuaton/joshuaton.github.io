@@ -4,7 +4,7 @@
   <title><![CDATA[移动开发技术]]></title>
   <link href="http://jason5.cn/atom.xml" rel="self"/>
   <link href="http://jason5.cn/"/>
-  <updated>2024-11-06T20:31:46+08:00</updated>
+  <updated>2024-11-09T11:08:22+08:00</updated>
   <id>http://jason5.cn/</id>
   <author>
     <name><![CDATA[jason]]></name>
@@ -65,7 +65,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>C如果安装在node_modules里，会造成版本冲突，所有将不同版本的C安装到了子node_modules里。当然，如果C的版本相对，那么会提取到根目录的node_modules里，这样不会造成冲突，也节省空间，但会丢失依赖树结构。</p>
+<p>C如果安装在node_modules里，会造成版本冲突，所有将不同版本的C安装到了子node_modules里。当然，如果C的版本相同，会提取到根目录的node_modules里，这样不会造成冲突，也节省空间，但会丢失依赖树结构。</p>
 
 <ul>
 <li><p>pnpm安装</p>
