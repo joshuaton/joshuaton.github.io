@@ -9,7 +9,7 @@
   <meta name="author" content="jason">
 
   
-  <meta name="description" content="本篇文章向iOS逆向初学者介绍如何越狱手机，并且安装cycript工具来调试第三方App。 ">
+  <meta name="description" content="1. 问题出现 之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +23,7 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="移动开发技术" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//libs.baidu.com/jquery/1.9.1/jquery.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   
@@ -56,7 +56,6 @@
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/about">About</a></li>
 </ul>
 
 </nav>
@@ -64,6 +63,45 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">记一次数据库被攻击的经历</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-05-14T15:05:33+08:00'><span class='date'>2019 年5 月14 日</span> <span class='time'>3:05 pm</span></time>
+        
+           | <a href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html#disqus_thread"
+             data-disqus-identifier="http://jason5.cn/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1. 问题出现</h3>
+
+<p>之前为了练手做了一个基于nodejs的后台系统。有一天突然发现http api访问没有数据了，赶快打开浏览器看了下报错信息，发现数据库的表找不到了，于是觉得问题可能有点大，马上登录服务器查看。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/ji-%5B%3F%5D-ci-shu-ju-ku-bei-gong-ji-de-jing-li.html">阅读全文 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -401,40 +439,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html">Github Pages支持https的方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-10-20T19:38:41+08:00'><span class='date'>2018 年10 月20 日</span> <span class='time'>7:38 pm</span></time>
-        
-           | <a href="/blog/github-pageszhi-chi-httpsde-fang-fa.html#disqus_thread"
-             data-disqus-identifier="http://jason5.cn/blog/github-pageszhi-chi-httpsde-fang-fa.html">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>到Github Pages项目里，点击Setting，勾选Enforce HTTPS</p>
-
-<p><img src="https://jason5.cn/images/WX20181020-194050@2x.png" alt="" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -450,7 +454,8 @@
     <section>
   <h1>Categories</h1>
   <ul id="categories">
-    <li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
+    <li class='category'><a href='/blog/categories/ai/'>ai (1)</a></li>
+<li class='category'><a href='/blog/categories/android/'>android (2)</a></li>
 <li class='category'><a href='/blog/categories/game/'>game (1)</a></li>
 <li class='category'><a href='/blog/categories/ios/'>ios (13)</a></li>
 <li class='category'><a href='/blog/categories/other/'>other (9)</a></li>
@@ -461,8 +466,12 @@
 
   </ul>
 </section><section>
-  <h1>Recent Posts</h1>
+  <h1>最新发布</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/li-yong-mcpbian-xie-ye-wu-dai-ma.html">利用MCP编写业务代码</a>
+      </li>
     
       <li class="post">
         <a href="/blog/pnpman-zhuang-hou-npmku-de-jia-zai-ji-zhi.html">Npm和pnpm对第三方库的安装和查找区别</a>
@@ -480,10 +489,6 @@
         <a href="/blog/hippyjie-ru-typescriptji-lu.html">Hippy接入typescript记录</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/jiang-xian-you-jsku-gai-cheng-tsku.html">将现有js库改成ts库</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -497,21 +502,9 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2024 - jason -
+  Copyright &copy; 2025 - jason -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
-<script>
-var _mtac = {};
-(function() {
-    var mta = document.createElement("script");
-    mta.src = "https://pingjs.qq.com/h5/stats.js?v2.0.2";
-    mta.setAttribute("name", "MTAH5");
-    mta.setAttribute("sid", "500600841");
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(mta, s);
-})();
-</script>
-            
 
 </footer>
   
