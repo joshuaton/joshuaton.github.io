@@ -176,12 +176,15 @@
 
 <p>例如，我们可以有以下一些MCP服务：</p>
 
-<p><img src="https://markdown-1254230183.cos.ap-guangzhou.myqcloud.com/202507021818865.png" alt="" /></p>
+<p><img src="https://markdown-1254230183.cos.ap-guangzhou.myqcloud.com/202507041946194.png" alt="" /></p>
 
 <ol>
 <li><p>pb2ts：根据开发者输入的Protobuf协议文件，生成前端Typescript网络请求代码，并将相关代码自动上传到项目git仓库，更新本地仓库文件。开发者可以直接在IDE里使用最新的Typescript代码完成网络请求功能。</p></li>
 <li><p>拉起游戏：比如我们的项目需要拉起一个外部游戏或者App，那么我们可以让MCP返回固定的业务代码，通过某个SDK来进行外部拉起</p></li>
-<li><p>数据查询：我们的MCP还可以连接后台的数据库，进行相关的数据查询服务，将数据结果返回给大模型分析和使用</p></li>
+<li><ul>
+<li>RAG：我们的MCP还可以连接RAG向量检索，进行相关的查询服务，将数据结果返回给大模型分析和使用</li>
+</ul>
+</li>
 </ol>
 
 
